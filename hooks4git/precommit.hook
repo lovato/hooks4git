@@ -1,0 +1,5 @@
+# -*- coding: utf-8 -*-
+from app.scripts import Exec
+
+if __name__ == '__main__':
+    Exec.add_pre_commit()

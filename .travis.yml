@@ -1,0 +1,33 @@
+language: python
+
+python:
+    - '3.5'
+
+install:
+    - pip install -r requirements.txt
+    - pip install -r requirements-dev.txt
+
+script:
+    - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
+    - nosetests --with-coverage
+
+deploy:
+  - provider: pypi
+    user: marco.lovato
+    password:
+        secure: E1ayTfE3K+HL8qk6aMmh4qNItmn1DtDDBBAXrtUica/o9dtToSFePFqjDR3nJQAe58pjky/TWzCX494iAZwOfFKVBABj0LUc97fefQyHhnBkIoPYt0saZPEKV6vi08qqaYlSFESwxQ70n/wXOvsJjWmafP0sLledB3AtQ6x790CspioFAW+USl/CZC8SLtK5zJHjLWZeoKPC4S15YX6l57T5LaC+qGeUPAaEhzG/sjJKvunw/ZdM9d8l6YchXfvPDPH2siaYJN3jU49tTjVWy6NoIax2LjutRf9WRvmsfQFgknIprWel8GZ8GvCI3yv8mGIYyuch+6sT3EcRg7+wX6bbd4p8bFAgAk0dDKOdDFi6j8L95+SHRKa2d0OLhm0apQX+lRmq3QizH2mFz3mMpvRYsw9oNh/nYTkAOUlpk75k2Uwoqh5Aqc1ljivBJIbkt4zbsKpUiLEmq+hEoVNZlhjGnfrJiHM34UIMCJuPl+vbp3LoW6xtoICaWSW0MGcsiy7+dOzYRzhVo6Y2a5HKoM5/buz1RZlR3UsJ3K7fmYL0JbyCXJbCP0Nhm7H70G5sS01rmSFmuN2/jkcf91DzyHFZ6SyKxCYxBmMyHy4MMG72DeuNLYBf7fRXiUdEZD/oM+PAIH/PwSUBLhpWMntIbAaDgbCuc3w1uvNaeECf3BE=
+    on:
+        branch: master
+  - provider: pypi
+    server: https://test.pypi.org/legacy/
+    user: marco.lovato
+    password:
+        secure: E1ayTfE3K+HL8qk6aMmh4qNItmn1DtDDBBAXrtUica/o9dtToSFePFqjDR3nJQAe58pjky/TWzCX494iAZwOfFKVBABj0LUc97fefQyHhnBkIoPYt0saZPEKV6vi08qqaYlSFESwxQ70n/wXOvsJjWmafP0sLledB3AtQ6x790CspioFAW+USl/CZC8SLtK5zJHjLWZeoKPC4S15YX6l57T5LaC+qGeUPAaEhzG/sjJKvunw/ZdM9d8l6YchXfvPDPH2siaYJN3jU49tTjVWy6NoIax2LjutRf9WRvmsfQFgknIprWel8GZ8GvCI3yv8mGIYyuch+6sT3EcRg7+wX6bbd4p8bFAgAk0dDKOdDFi6j8L95+SHRKa2d0OLhm0apQX+lRmq3QizH2mFz3mMpvRYsw9oNh/nYTkAOUlpk75k2Uwoqh5Aqc1ljivBJIbkt4zbsKpUiLEmq+hEoVNZlhjGnfrJiHM34UIMCJuPl+vbp3LoW6xtoICaWSW0MGcsiy7+dOzYRzhVo6Y2a5HKoM5/buz1RZlR3UsJ3K7fmYL0JbyCXJbCP0Nhm7H70G5sS01rmSFmuN2/jkcf91DzyHFZ6SyKxCYxBmMyHy4MMG72DeuNLYBf7fRXiUdEZD/oM+PAIH/PwSUBLhpWMntIbAaDgbCuc3w1uvNaeECf3BE=
+    on:
+        branch: develop
+
+notifications:
+    email: true
+
+after_success:
+  - coveralls
