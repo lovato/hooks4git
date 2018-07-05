@@ -1,0 +1,34 @@
+applypatch-msg:
+  - echo 'Running "applypatch-msg" hook\n'
+
+commit-msg:
+  - echo 'Running "commit-msg" hook\n'
+
+fsmonitor-watchman:
+  - echo 'Running "fsmonitor-watchman" hook\n'
+
+post-update:
+  - echo 'Running "post-update" hook\n'
+
+pre-applypatch:
+  - echo 'Running "pre-applypatch" hook\n'
+
+pre-commit:
+  - echo 'Running "pre-commit" hook\n'
+  - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
+  - nosetests --with-coverage
+
+prepare-commit-msg:
+  - echo 'Running "prepare-commit-msg" hook\n'
+
+pre-push:
+  - echo 'Running "pre-push" hook\n'
+
+pre-rebase:
+  - echo 'Running "pre-rebase" hook\n'
+
+pre-receive:
+  - echo 'Running "pre-receive" hook\n'
+
+update:
+  - echo 'Running "update" hook\n'

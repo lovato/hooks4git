@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from hooks4git.scripts import Exec
+
+if __name__ == '__main__':
+    Exec.add_hooks()
