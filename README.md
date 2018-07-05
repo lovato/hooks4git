@@ -11,7 +11,7 @@ Auto checks the quality of your python code before you ship it.
 These instructions will show you how to install and use the application
 
 ### Availability
-Production module is available from https://pypi.python.org/pypi/hooks4git/, and development branch is also published by Travis-CI to https://testpypi.python.org/pypi/hooks4git/. Both are provided as EGG packages, since there is a Post Install section which creates the hook files on your local directory. Wheel packaging is not intented to do that.
+Production module is available from https://test.pypi.org/project/hooks4git/, and development branch is also published by Travis-CI to https://test.pypi.org/project/hooks4git/. Both are provided as EGG packages, since there is a Post Install section which creates the hook files on your local directory. Wheel packaging is not intented to do that.
 
 Both can be downloaded and installed via the pip command.
 
