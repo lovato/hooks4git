@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from app.scripts import Post_install
+from hooks4git.scripts import Post_install
 from setuptools import setup, find_packages
 import codecs
 from os import path
@@ -42,7 +42,7 @@ setup(
     extras_require={
         'dev': [requirements_dev.split('\n')]
     },
-    scripts=["app/precommit.hook"],
+    scripts=["hooks4git/precommit.hook"],
     cmdclass={
             "install": Post_install,
     },

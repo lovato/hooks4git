@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 template = '''#!/usr/bin/env python
 
 import os

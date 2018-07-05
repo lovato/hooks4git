@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from setuptools.command.install import install
-from app.extras import template
+from hooks4git.extras import template
 import stat
 import os
 import sys
