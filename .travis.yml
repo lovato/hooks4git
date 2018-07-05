@@ -19,7 +19,7 @@ deploy:
     on:
         branch: master
   - provider: pypi
-    server: https://test.pypi.org/pypi
+    server: https://test.pypi.org/legacy
     user: marco.lovato
     password:
         secure: xrJxZMnzeXHszYt1g7xLiPzxkHbsP2Tjj6fjvDK3iPMN0wlnGfhDmYEV5cVPMzkpTi1T9mtatoB2BjTDZL7fuEdSv59mvP39soj8qqj/i6opOCQqepvDPRMaCCq7hT/ViUcgSho9h5NBTiHvblhtrOic+hZTVVjt2nG4uCP2af0=
