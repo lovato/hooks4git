@@ -19,7 +19,7 @@ After you install the package, your repo is automatically hooked for commits.
 ## License
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This project is licensed under MIT license. see the ![LICENSE](LICENSE) file for details
+This project is licensed under MIT license. See the <a href="./LICENSE">LICENSE</a> file for details
 
 ## Authors
 See list of <a href="https://github.com/lovato/hooks4git/graphs/contributors">contributors</a> who participated in this project.
