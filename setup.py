@@ -14,9 +14,13 @@ with codecs.open(path.join(here, 'README.md'), encoding='utf-8') as f:
 with codecs.open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
     requirements = f.read()
 
-# Get the dev requirements from the requirements-dev.txt file
-with codecs.open(path.join(here, 'requirements-dev.txt'), encoding='utf-8') as f:
-    requirements_dev = f.read()
+try:
+    # Get the dev requirements from the requirements-dev.txt file
+    with codecs.open(path.join(here, 'requirements-dev.txt'), encoding='utf-8') as f:
+        requirements_dev = f.read()
+except:  # noqa
+    # It is ok, this file only exists when developing this package, not when installing.
+    requirements_dev = ''
 
 project_name = 'hooks4git'
 __version__ = __import__(project_name).__version__
