@@ -1,10 +1,11 @@
 # hooks4git
 Based on https://github.com/collin5/precommit-hook
+
 [![Build Status](https://travis-ci.org/lovato/hooks4git.svg?branch=master)](https://travis-ci.org/lovato/hooks4git)
 [![Coverage Status](https://coveralls.io/repos/github/lovato/hooks4git/badge.svg?branch=master)](https://coveralls.io/github/lovato/hooks4git?branch=master)
 [![PyPI version](https://badge.fury.io/py/hooks4git.svg)](https://badge.fury.io/py/hooks4git)
 
-Auto check the quality of your python code before you ship it
+Auto checks the quality of your python code before you ship it.
 
 ## Getting started
 These instructions will show you how to install and use the application

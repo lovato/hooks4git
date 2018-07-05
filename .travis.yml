@@ -9,7 +9,7 @@ install:
 
 script:
     - flake8
-    - nosetests
+    - nosetests --with-coverage
 
 deploy:
   - provider: pypi
