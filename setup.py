@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from hooks4git.scripts import Post_install
 from setuptools import setup, find_packages
+from hooks4git.scripts import Post_install
 import codecs
 from os import path
 
