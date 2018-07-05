@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from tests import BaseTestCase
-from app.scripts import Exec
+from hooks4git.scripts import Exec
 import os
 
 
