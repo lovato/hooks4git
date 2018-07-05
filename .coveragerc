@@ -1,0 +1,3 @@
+[run]
+source = hooks4git
+omit = *docs*, hooks4git/setup.py
