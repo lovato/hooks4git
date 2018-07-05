@@ -1,33 +1,32 @@
 language: python
-
 python:
-    - '3.5'
-
+- '3.5'
 install:
-    - pip install -r requirements.txt
-    - pip install -r requirements-dev.txt
-
+- pip install -r requirements.txt
+- pip install -r requirements-dev.txt
 script:
-    - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
-    - nosetests --with-coverage
-
+- flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
+- nosetests --with-coverage
 deploy:
-  - provider: pypi
-    user: marco.lovato
-    password:
-        secure: E1ayTfE3K+HL8qk6aMmh4qNItmn1DtDDBBAXrtUica/o9dtToSFePFqjDR3nJQAe58pjky/TWzCX494iAZwOfFKVBABj0LUc97fefQyHhnBkIoPYt0saZPEKV6vi08qqaYlSFESwxQ70n/wXOvsJjWmafP0sLledB3AtQ6x790CspioFAW+USl/CZC8SLtK5zJHjLWZeoKPC4S15YX6l57T5LaC+qGeUPAaEhzG/sjJKvunw/ZdM9d8l6YchXfvPDPH2siaYJN3jU49tTjVWy6NoIax2LjutRf9WRvmsfQFgknIprWel8GZ8GvCI3yv8mGIYyuch+6sT3EcRg7+wX6bbd4p8bFAgAk0dDKOdDFi6j8L95+SHRKa2d0OLhm0apQX+lRmq3QizH2mFz3mMpvRYsw9oNh/nYTkAOUlpk75k2Uwoqh5Aqc1ljivBJIbkt4zbsKpUiLEmq+hEoVNZlhjGnfrJiHM34UIMCJuPl+vbp3LoW6xtoICaWSW0MGcsiy7+dOzYRzhVo6Y2a5HKoM5/buz1RZlR3UsJ3K7fmYL0JbyCXJbCP0Nhm7H70G5sS01rmSFmuN2/jkcf91DzyHFZ6SyKxCYxBmMyHy4MMG72DeuNLYBf7fRXiUdEZD/oM+PAIH/PwSUBLhpWMntIbAaDgbCuc3w1uvNaeECf3BE=
-    on:
-        branch: master
-  - provider: pypi
-    server: https://test.pypi.org/legacy/
-    user: marco.lovato
-    password:
-        secure: E1ayTfE3K+HL8qk6aMmh4qNItmn1DtDDBBAXrtUica/o9dtToSFePFqjDR3nJQAe58pjky/TWzCX494iAZwOfFKVBABj0LUc97fefQyHhnBkIoPYt0saZPEKV6vi08qqaYlSFESwxQ70n/wXOvsJjWmafP0sLledB3AtQ6x790CspioFAW+USl/CZC8SLtK5zJHjLWZeoKPC4S15YX6l57T5LaC+qGeUPAaEhzG/sjJKvunw/ZdM9d8l6YchXfvPDPH2siaYJN3jU49tTjVWy6NoIax2LjutRf9WRvmsfQFgknIprWel8GZ8GvCI3yv8mGIYyuch+6sT3EcRg7+wX6bbd4p8bFAgAk0dDKOdDFi6j8L95+SHRKa2d0OLhm0apQX+lRmq3QizH2mFz3mMpvRYsw9oNh/nYTkAOUlpk75k2Uwoqh5Aqc1ljivBJIbkt4zbsKpUiLEmq+hEoVNZlhjGnfrJiHM34UIMCJuPl+vbp3LoW6xtoICaWSW0MGcsiy7+dOzYRzhVo6Y2a5HKoM5/buz1RZlR3UsJ3K7fmYL0JbyCXJbCP0Nhm7H70G5sS01rmSFmuN2/jkcf91DzyHFZ6SyKxCYxBmMyHy4MMG72DeuNLYBf7fRXiUdEZD/oM+PAIH/PwSUBLhpWMntIbAaDgbCuc3w1uvNaeECf3BE=
-    on:
-        branch: develop
-
+- provider: pypi
+  user: marco.lovato
+  password:
+    secure: E1ayTfE3K+HL8qk6aMmh4qNItmn1DtDDBBAXrtUica/o9dtToSFePFqjDR3nJQAe58pjky/TWzCX494iAZwOfFKVBABj0LUc97fefQyHhnBkIoPYt0saZPEKV6vi08qqaYlSFESwxQ70n/wXOvsJjWmafP0sLledB3AtQ6x790CspioFAW+USl/CZC8SLtK5zJHjLWZeoKPC4S15YX6l57T5LaC+qGeUPAaEhzG/sjJKvunw/ZdM9d8l6YchXfvPDPH2siaYJN3jU49tTjVWy6NoIax2LjutRf9WRvmsfQFgknIprWel8GZ8GvCI3yv8mGIYyuch+6sT3EcRg7+wX6bbd4p8bFAgAk0dDKOdDFi6j8L95+SHRKa2d0OLhm0apQX+lRmq3QizH2mFz3mMpvRYsw9oNh/nYTkAOUlpk75k2Uwoqh5Aqc1ljivBJIbkt4zbsKpUiLEmq+hEoVNZlhjGnfrJiHM34UIMCJuPl+vbp3LoW6xtoICaWSW0MGcsiy7+dOzYRzhVo6Y2a5HKoM5/buz1RZlR3UsJ3K7fmYL0JbyCXJbCP0Nhm7H70G5sS01rmSFmuN2/jkcf91DzyHFZ6SyKxCYxBmMyHy4MMG72DeuNLYBf7fRXiUdEZD/oM+PAIH/PwSUBLhpWMntIbAaDgbCuc3w1uvNaeECf3BE=
+  on:
+    branch: master
+- provider: pypi
+  server: https://test.pypi.org/legacy/
+  user: marco.lovato
+  password:
+    secure: E1ayTfE3K+HL8qk6aMmh4qNItmn1DtDDBBAXrtUica/o9dtToSFePFqjDR3nJQAe58pjky/TWzCX494iAZwOfFKVBABj0LUc97fefQyHhnBkIoPYt0saZPEKV6vi08qqaYlSFESwxQ70n/wXOvsJjWmafP0sLledB3AtQ6x790CspioFAW+USl/CZC8SLtK5zJHjLWZeoKPC4S15YX6l57T5LaC+qGeUPAaEhzG/sjJKvunw/ZdM9d8l6YchXfvPDPH2siaYJN3jU49tTjVWy6NoIax2LjutRf9WRvmsfQFgknIprWel8GZ8GvCI3yv8mGIYyuch+6sT3EcRg7+wX6bbd4p8bFAgAk0dDKOdDFi6j8L95+SHRKa2d0OLhm0apQX+lRmq3QizH2mFz3mMpvRYsw9oNh/nYTkAOUlpk75k2Uwoqh5Aqc1ljivBJIbkt4zbsKpUiLEmq+hEoVNZlhjGnfrJiHM34UIMCJuPl+vbp3LoW6xtoICaWSW0MGcsiy7+dOzYRzhVo6Y2a5HKoM5/buz1RZlR3UsJ3K7fmYL0JbyCXJbCP0Nhm7H70G5sS01rmSFmuN2/jkcf91DzyHFZ6SyKxCYxBmMyHy4MMG72DeuNLYBf7fRXiUdEZD/oM+PAIH/PwSUBLhpWMntIbAaDgbCuc3w1uvNaeECf3BE=
+  on:
+    branch: develop
 notifications:
-    email: true
-
+  email: false
+  slack:
+    on_success: change
+    on_failure: always
+    rooms:
+      secure: LwmtPkwyfoITVgDsbejKchM2vwsPq70zVYpfyqVbFUCys8qFII16HEmz38PDV8SujggbUsmJd1Oug0vW6K0Ie/VSXrZoDleJBTVxsgACNjiFXYca3ZDxpKw0tkfCF9MMM2Wjns5JfW28sqktHddpsC+VWgEG2Fv169/ouOAxiiCiUiTxM9Pmsg9RT89CaHjlrjlHvKg9OgGai3rEvp5rAyvJNvr4yfMyXBozvamNA8u1i7DniB9Jueq06OdBM6JjhiNC0lLoDHvcuvjhhm5P3eh4lzuUxbktyyujcBb6UGXH0Pd0mnyWRlHILseCL/a26dxNtgE3SNcbZHR/aSNhXu7vlVPx9Tf+s/XpHhWTJeofka/+iAGDXkOwlw+ycmrZZt5gDtq0vYS3f+lYDFcCxst6ToJfB9lXV7hnpg2WDvjo7aHx4dvxI/18CGwfOK4JNQxpJfsAMIGjwPPes4FmewSIsDSBygrn39CAhKryOifdR9bqqihjEFqGfSUe3JjOV95Wb13SwTEO17qoZQSpqjt6VwH7VCeAKaHfcWBDEQzRJxLi/Az25iOxbloJdc0wl22t7o6zMr3EaAGjI8HaE9KTIiBiBwU/4HjxjnuKFSH6c6LdHa5BHtfhgqSpNnXnHmdCschBPD5qEwrjPdQ73g/dkzel1RmNIwwUzCmpksw=
 after_success:
-  - coveralls
+- coveralls
