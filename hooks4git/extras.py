@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-template = '''#!/usr/bin/env python
+pre_commit = '''#!/usr/bin/env python
 
 import os
 import sys
@@ -23,6 +23,16 @@ COLOR = {
     'yellow': '\\033[1;33m',
 }
 
+
+# import yaml
+
+# with open("config.yml", 'r') as ymlfile:
+#     cfg = yaml.load(ymlfile)
+
+# for section in cfg:
+#     print(section)
+# print(cfg['mysql'])
+# print(cfg['other'])
 
 def parse_settings(config_file):
     """

@@ -46,7 +46,7 @@ setup(
     extras_require={
         'dev': [requirements_dev.split('\n')]
     },
-    scripts=["hooks4git/precommit.hook"],
+    scripts=["hooks4git/install-hooks"],
     cmdclass={
             "install": Post_install,
     },
