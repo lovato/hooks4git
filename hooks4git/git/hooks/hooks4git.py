@@ -5,23 +5,37 @@ import subprocess
 import yaml
 import sys
 from colorama import Fore
+from colorama import Back
 from colorama import Style
+import datetime
 
-error = False
+# from hooks4git import __version__
+__version__ = 0.1
+
+cmdbarwidth = 5
+steps_executed = 0
+start_time = datetime.datetime.now()
 
 
-def out(msg_type, msg, color=Fore.WHITE):
+def out(msg_type, msg, color='', bgcolor=''):
     label = msg_type
+    style = Style.BRIGHT
     if msg_type == 'FAIL':
-        color = Fore.RED
+        if color == '':
+            color = Fore.RED
+    if msg_type == 'OUT':
+        style = Style.DIM
     if msg_type == 'INFO':
-        color = Fore.BLUE
+        if color == '':
+            color = Fore.BLUE
     if msg_type == 'WARN':
-        color = Fore.YELLOW
+        if color == '':
+            color = Fore.YELLOW
     if msg_type == 'PASS':
-        color = Fore.GREEN
-    label = label.ljust(8)+'|'
-    print('\n' + Style.BRIGHT + color + label + ' ' + Style.RESET_ALL + msg)
+        if color == '':
+            color = Fore.GREEN
+    label = label.ljust(cmdbarwidth)
+    print(style + color + bgcolor + label + '|' + Style.RESET_ALL + color + ' ' + Style.RESET_ALL + msg)
 
 
 def system(*args, **kwargs):
@@ -33,19 +47,15 @@ def system(*args, **kwargs):
         proc = subprocess.Popen(args, **kwargs)
         out, err = proc.communicate()
         out = out.decode('utf-8')
-        out = str(out).strip().replace('\n', '\n'.ljust(9)+'| ')
+        out = str(out)
         returncode = proc.returncode
     except Exception as e:  # noqa
         out = str(e)
         returncode = -1
-    if len(out) < 1:
-        out = 'None'
-    out = ''.ljust(8)+'| ' + out + Style.RESET_ALL
-
     return returncode, out
 
 
-def execute(step, cmd, files, settings):
+def execute(cmd, files, settings):
     """
     Prepare system command.
     """
@@ -54,9 +64,14 @@ def execute(step, cmd, files, settings):
     args = settings[:]
     args.insert(0, cmd)
     args.extend(files)
-    out("INFO", "Script %s\n%s        | $ %s%s\n\n        | Output:" % (step, Style.BRIGHT, ' '.join(args), Style.RESET_ALL))
-
-    return system(*args)
+    out("STEP", "$ %s" % ' '.join(args), color=Fore.BLUE)
+    code, result = system(*args)
+    result = result.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
+    if len(result) < 1:
+        result = 'None'
+    # result = ''.ljust(cmdbarwidth)+'| ' + result + Style.RESET_ALL
+    out('OUT', "%s%s%s" % (Style.DIM, result, Style.RESET_ALL))
+    return code, result
 
 
 def get_changed_files():
@@ -64,8 +79,9 @@ def get_changed_files():
     Get python files from 'files to commit' git cache list.
     """
     files = []
-    filelist = system('git', 'diff', '--cached', '--name-status').strip()
-    for line in str(filelist.decode('utf-8')).split('\\n'):
+    # filelist = system('git', 'diff', '--cached', '--name-status')[1]
+    filelist = system('git', 'diff', '--name-status')[1]
+    for line in filelist:
         try:
             action, filename = line.strip().split()
             if filename.endswith('.py') and action != 'D':
@@ -77,40 +93,69 @@ def get_changed_files():
 
 def main():
     cmd = os.path.basename(__file__)
-    with open("../../.hooks4git.yml", 'r') as ymlfile:
-        cfg = yaml.load(ymlfile)
-
-    step = 0
+    git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
+    configfile = "%s/.hooks4git.yml" % git_root
     try:
-        cfg = cfg.get('hooks')
-        commands = cfg.get(cmd, {'scripts': []}).get('scripts', [])
+        with open(configfile, 'r') as ymlfile:
+            cfg = yaml.load(ymlfile)
+    except Exception as e:  # noqa
+        cfg = {}
+
+    global steps_executed
+    steps_executed = 0
+    no_fails = True
+    try:
+        cfg = cfg.get('hooks', [])
+        hook = cfg.get(cmd, {'scripts': []})
+        if not hook:
+            hook = {'scripts': []}
+        commands = hook.get('scripts', [])
+        if not commands:
+            commands = []
         if len(commands) > 0:
-            title = "hooks4git :: %s Hook Called" % cmd.title()
+            title = "\nhooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
             title = Fore.YELLOW + Style.BRIGHT + title + Style.RESET_ALL
             print(title)
         for command in commands:
-            step += 1
-            result = execute(step, command.split()[0], [], command.split()[1:])
-            print(result[1])
+            divider()
+            steps_executed += 1
+            files = []
+            # if cmd == 'pre-commit':
+            #     files = get_changed_files()
+            result = execute(command.split()[0], files, command.split()[1:])
             if result[0] != 0:
-                global error
-                error = True
-                out('FAIL', "%s'%s' step failed to execute%s" % (Fore.RED, command.split()[0], Style.RESET_ALL))
+                no_fails = False
+                style = Fore.RED + Style.BRIGHT
+                out('FAIL', "%s'%s' step failed to execute ✘ %s" % (style, command.split()[0], Style.RESET_ALL))
             else:
-                out('PASS', "%s'%s' step executed successfully%s" % (Fore.GREEN, command.split()[0], Style.RESET_ALL))
-
+                style = Fore.GREEN
+                out('PASS', "%s'%s' step executed successfully ✔ %s" % (style, command.split()[0], Style.RESET_ALL))
+        return no_fails
     except Exception as e:  # noqa
-        # print(e)
-        pass
-    # if step == 0:
-    #     print("%s There was no step configured for %s." % (colored('[Ignore]', 'green'), cmd))
+        out('ERR!', str(e), color=Fore.RED)
+        raise(e)
+        return False
+
+
+def divider():
+    print('—' * cmdbarwidth + '—' + '—' * (79 - 1 - cmdbarwidth))
+
+
+def report():
+    if steps_executed > 0:
+        divider()
+        end_time = datetime.datetime.now()
+        out('STEPS', '%s were executed' % steps_executed, color=Fore.BLUE)
+        out('TIME', 'Execution took ' + str(end_time - start_time), color=Fore.BLUE)
 
 
 if __name__ == '__main__':
-    main()
-    if error:
-        out('FAILURE', "You have failed. One or more steps failed to execute", Fore.RED)
-        sys.exit(1)
-    else:
-        out('ALL PASS', "You rock!", Fore.GREEN)
+    if main():
+        report()
+        if steps_executed > 0:
+            out('PASS', "All green! Good!", Fore.WHITE, Back.GREEN)
         sys.exit(0)
+    else:
+        report()
+        out('FAIL', "You have failed. One or more steps failed to execute.", Fore.YELLOW, Back.RED)
+        sys.exit(1)
