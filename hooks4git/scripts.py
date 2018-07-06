@@ -47,14 +47,15 @@ def query_yes_no(question, default="yes"):
 def copy(src, dest):
     print('From: %s' % src)
     print('To: %s' % dest)
-    if os.path.isfile(dest):
-        if query_yes_no('Target file exists. Can I replace it?'):
-            pass
-            # shutil.copy(src, dest)
-        else:
-            print('Your file was left untouched.')
-    else:
-        shutil.copy(src, dest)
+    shutil.copy(src, dest)
+    # TODO: Fix this to ask for user permission
+    # if os.path.isfile(dest):
+    #     if query_yes_no('Target file exists. Can I replace it?'):
+    #         shutil.copy(src, dest)
+    #     else:
+    #         print('Your file was left untouched.')
+    # else:
+    #     shutil.copy(src, dest)
 
 
 def system(*args, **kwargs):
