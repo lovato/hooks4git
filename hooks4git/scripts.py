@@ -27,10 +27,11 @@ def query_yes_no(question, default="yes"):
     else:
         raise ValueError("invalid default answer: '%s'" % default)
 
-    try:
-        input = raw_input
-    except NameError:
-        pass
+    # TODO: Fix this for Python 2.7
+    # try:
+    #     input = raw_input
+    # except NameError:
+    #     pass
 
     while True:
         print('>>>> ' + question + prompt)
