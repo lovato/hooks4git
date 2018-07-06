@@ -14,8 +14,8 @@ install:
 script:
 - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
 - nosetests --with-coverage
-- rm -f .hooks4git.yml
-- pip install . -t /tmp
+# - rm -f .hooks4git.yml
+# - pip install . -t /tmp
 after_success:
 - coveralls
 deploy:
