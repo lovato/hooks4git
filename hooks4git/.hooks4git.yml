@@ -1,6 +1,3 @@
-config:
-  colored: true
-
 hooks:
   # applypatch-msg:
   #   scripts:
