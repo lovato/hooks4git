@@ -45,7 +45,7 @@ def system(*args, **kwargs):
     try:
         kwargs.setdefault('stdout', subprocess.PIPE)
         proc = subprocess.Popen(args, **kwargs)
-        out, err = proc.communicate()
+        out = proc.communicate()[0]
         out = out.decode('utf-8')
         out = str(out)
         returncode = proc.returncode
@@ -74,21 +74,21 @@ def execute(cmd, files, settings):
     return code, result
 
 
-def get_changed_files():
-    """
-    Get python files from 'files to commit' git cache list.
-    """
-    files = []
-    # filelist = system('git', 'diff', '--cached', '--name-status')[1]
-    filelist = system('git', 'diff', '--name-status')[1]
-    for line in filelist:
-        try:
-            action, filename = line.strip().split()
-            if filename.endswith('.py') and action != 'D':
-                files.append(filename)
-        except Exception as ex:  # noqa
-            pass
-    return files
+# def get_changed_files():
+#     """
+#     Get python files from 'files to commit' git cache list.
+#     """
+#     files = []
+#     # filelist = system('git', 'diff', '--cached', '--name-status')[1]
+#     filelist = system('git', 'diff', '--name-status')[1]
+#     for line in filelist:
+#         try:
+#             action, filename = line.strip().split()
+#             if filename.endswith('.py') and action != 'D':
+#                 files.append(filename)
+#         except Exception as ex:  # noqa
+#             pass
+#     return files
 
 
 def main():
@@ -97,7 +97,7 @@ def main():
     configfile = "%s/.hooks4git.yml" % git_root
     try:
         with open(configfile, 'r') as ymlfile:
-            cfg = yaml.load(ymlfile)
+            cfg = yaml.safe_load(ymlfile)
     except Exception as e:  # noqa
         cfg = {}
 
@@ -134,7 +134,6 @@ def main():
     except Exception as e:  # noqa
         out('ERR!', str(e), color=Fore.RED)
         raise(e)
-        return False
 
 
 def divider():

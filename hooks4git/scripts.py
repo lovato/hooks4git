@@ -62,7 +62,7 @@ def system(*args, **kwargs):
     try:
         kwargs.setdefault('stdout', subprocess.PIPE)
         proc = subprocess.Popen(args, **kwargs)
-        out, err = proc.communicate()
+        out = proc.communicate()[0]
         out = out.decode('utf-8')
         out = str(out)
         returncode = proc.returncode
