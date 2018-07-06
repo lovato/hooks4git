@@ -42,6 +42,7 @@ setup(
     description=__description__,
     long_description=long_description,
     long_description_content_type='text/markdown',
+    install_requires=requirements,
     platforms=['any'],
     extras_require={
         'dev': [requirements_dev.split('\n')]
