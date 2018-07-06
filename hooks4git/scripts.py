@@ -73,10 +73,10 @@ def system(*args, **kwargs):
 
 class Exec:
     @staticmethod
-    def add_hooks():
-        print('Current Working Folder: %s' % os.environ["PWD"])
-        path = system('git', '-C', os.environ["PWD"], 'rev-parse', '--show-toplevel')[1].replace('\n', '')
-        git_path = system('git', '-C', os.environ["PWD"], 'rev-parse', '--git-dir')[1].replace('\n', '')
+    def add_hooks(path=os.environ["PWD"]):
+        print('Current Working Folder: %s' % path)
+        path = system('git', '-C', path, 'rev-parse', '--show-toplevel')[1].replace('\n', '')
+        git_path = system('git', '-C', path, 'rev-parse', '--git-dir')[1].replace('\n', '')
         if git_path == '.git':
             git_path = os.path.join(path, git_path)
         setup_path = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
