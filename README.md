@@ -22,7 +22,7 @@ These instructions will show you how to install and use the application.
 
 ### Usage
 After you install the package, your repo is automatically hooked for all events.
-You just need to open <a href="./.hooks4git.yml"> and configure it the way you want.
+You just need to open <a href="./.hooks4git.yml">.hooks4git.yml</a> file on the root of your project and configure it the way you want.
 Example section is meant for Python, but you can use any tool you want, at any given git hook event.
 
 Example section for pre-commit, for Python:
