@@ -11,16 +11,17 @@ error = False
 
 
 def out(msg_type, msg, color=Fore.WHITE):
-    label = color + '[ ' + msg_type + ' ]'
+    label = msg_type
     if msg_type == 'FAIL':
-        label = Fore.RED + '[  FAIL  ]'
+        color = Fore.RED
     if msg_type == 'INFO':
-        label = Fore.BLUE + '[  INFO  ]'
+        color = Fore.BLUE
     if msg_type == 'WARN':
-        label = Fore.YELLOW + '[  WARN  ]'
+        color = Fore.YELLOW
     if msg_type == 'PASS':
-        label = Fore.GREEN + '[  PASS  ]'
-    print('\n' + Style.BRIGHT + label + ' ' + Style.RESET_ALL + msg)
+        color = Fore.GREEN
+    label = label.ljust(8)+'|'
+    print('\n' + Style.BRIGHT + color + label + ' ' + Style.RESET_ALL + msg)
 
 
 def system(*args, **kwargs):
@@ -32,15 +33,14 @@ def system(*args, **kwargs):
         proc = subprocess.Popen(args, **kwargs)
         out, err = proc.communicate()
         out = out.decode('utf-8')
-        out = str(out).strip().replace('\n', '\n• ')
+        out = str(out).strip().replace('\n', '\n'.ljust(9)+'| ')
         returncode = proc.returncode
     except Exception as e:  # noqa
         out = str(e)
         returncode = -1
     if len(out) < 1:
-        out = '• None'
-    else:
-        out = '• ' + out + Style.RESET_ALL
+        out = 'None'
+    out = ''.ljust(8)+'| ' + out + Style.RESET_ALL
 
     return returncode, out
 
@@ -54,7 +54,7 @@ def execute(step, cmd, files, settings):
     args = settings[:]
     args.insert(0, cmd)
     args.extend(files)
-    out("INFO", "Script %s\n%s$ %s%s\n\nOutput:" % (step, Style.BRIGHT, ' '.join(args), Style.RESET_ALL))
+    out("INFO", "Script %s\n%s        | $ %s%s\n\n        | Output:" % (step, Style.BRIGHT, ' '.join(args), Style.RESET_ALL))
 
     return system(*args)
 
