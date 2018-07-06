@@ -7,10 +7,6 @@ hooks:
   #   scripts:
   #     - echo Running "commit-msg" hook
 
-  # fsmonitor-watchman:
-  #   scripts:
-  #     - echo Running "fsmonitor-watchman" hook
-
   # post-update:
   #   scripts:
   #     - echo Running "post-update" hook
@@ -21,8 +17,8 @@ hooks:
 
   pre-commit:
     scripts:
-      # - echo Running "pre-commit" hook
-      - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
+      - echo Running "pre-commit" hook
+      - flake8 --max-line-length=120 --exclude .git,build,dist,.env,.venv
 
   # prepare-commit-msg:
   #   scripts:
@@ -36,10 +32,6 @@ hooks:
   # pre-rebase:
   #   scripts:
   #     - echo 'Running "pre-rebase" hook\n'
-
-  # pre-receive:
-  #   scripts:
-  #     - echo 'Running "pre-receive" hook\n'
 
   # update:
   #   scripts:
