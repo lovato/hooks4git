@@ -1,0 +1,46 @@
+hooks:
+  # applypatch-msg:
+  #   scripts:
+  #     - echo Running "applypatch-msg" hook
+
+  # commit-msg:
+  #   scripts:
+  #     - echo Running "commit-msg" hook
+
+  # fsmonitor-watchman:
+  #   scripts:
+  #     - echo Running "fsmonitor-watchman" hook
+
+  # post-update:
+  #   scripts:
+  #     - echo Running "post-update" hook
+
+  # pre-applypatch:
+  #   scripts:
+  #     - echo Running "pre-applypatch" hook
+
+  pre-commit:
+    scripts:
+      # - echo Running "pre-commit" hook
+      - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
+
+  # prepare-commit-msg:
+  #   scripts:
+  #     - echo Running 'prepare-commit-msg' hook
+
+  pre-push:
+    scripts:
+      # - echo Running 'pre-push' hook
+      - nosetests --with-coverage
+
+  # pre-rebase:
+  #   scripts:
+  #     - echo 'Running "pre-rebase" hook\n'
+
+  # pre-receive:
+  #   scripts:
+  #     - echo 'Running "pre-receive" hook\n'
+
+  # update:
+  #   scripts:
+  #     - echo 'Running "update" hook\n'
