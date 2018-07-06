@@ -32,6 +32,7 @@ def query_yes_no(question, default="yes"):
 
     while True:
         print('>>>> ' + question + prompt)
+        # TODO: Python 2.7 é "input_raw"
         choice = input().lower()
         if default is not None and choice == '':
             return valid[default]
@@ -90,7 +91,6 @@ class Exec:
             message += '* hooks4git is installed anyway. Then, just run "hooks4git" to install the hooks.'
             print(message)
         else:
-            # TODO: Tell the user we are just about to change his filesystem. Ask for permission.
             files_to_copy = system('ls', os.path.join(setup_path, 'hooks4git/git/hooks'))
             for file in files_to_copy[1].split('\n'):
                 if file not in ['__pycache__', '', 'hooks4git.py']:
