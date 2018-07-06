@@ -46,9 +46,24 @@ setup(
     extras_require={
         'dev': [requirements_dev.split('\n')]
     },
-    scripts=["hooks4git/install-hooks"],
+    scripts=["hooks4git/hooks4git"],
     cmdclass={
             "install": Post_install,
     },
-    zip_safe=True
+    zip_safe=True,
+    CLASSIFIERS=[
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Topic :: Software Development :: Quality Assurance",
+        "Topic :: Software Development :: Version Control",
+        "Topic :: Utilities"
+    ]
 )

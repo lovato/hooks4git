@@ -1,34 +1,52 @@
-applypatch-msg:
-  - echo 'Running "applypatch-msg" hook\n'
+config:
+  colored: true
 
-commit-msg:
-  - echo 'Running "commit-msg" hook\n'
+hooks:
+  # applypatch-msg:
+  #   scripts:
+  #     - echo Running "applypatch-msg" hook
 
-fsmonitor-watchman:
-  - echo 'Running "fsmonitor-watchman" hook\n'
+  # commit-msg:
+  #   scripts:
+  #     - echo Running "commit-msg" hook
 
-post-update:
-  - echo 'Running "post-update" hook\n'
+  # fsmonitor-watchman:
+  #   scripts:
+  #     - echo Running "fsmonitor-watchman" hook
 
-pre-applypatch:
-  - echo 'Running "pre-applypatch" hook\n'
+  # post-update:
+  #   scripts:
+  #     - echo Running "post-update" hook
 
-pre-commit:
-  - echo 'Running "pre-commit" hook\n'
-  - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
-  - nosetests --with-coverage
+  # pre-applypatch:
+  #   scripts:
+  #     - echo Running "pre-applypatch" hook
 
-prepare-commit-msg:
-  - echo 'Running "prepare-commit-msg" hook\n'
+  pre-commit:
+    scripts:
+      - echo Running "pre-commit" hook
+      - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
+      - nosetests --with-coverage
 
-pre-push:
-  - echo 'Running "pre-push" hook\n'
+  # prepare-commit-msg:
+  #   scripts:
+  #     - echo Running 'prepare-commit-msg' hook
 
-pre-rebase:
-  - echo 'Running "pre-rebase" hook\n'
+  pre-push:
+    scripts:
+      - echo Running 'pre-push' hook
+      - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
+      - git --version
+      - ls
 
-pre-receive:
-  - echo 'Running "pre-receive" hook\n'
+  # pre-rebase:
+  #   scripts:
+  #     - echo 'Running "pre-rebase" hook\n'
 
-update:
-  - echo 'Running "update" hook\n'
+  # pre-receive:
+  #   scripts:
+  #     - echo 'Running "pre-receive" hook\n'
+
+  # update:
+  #   scripts:
+  #     - echo 'Running "update" hook\n'
