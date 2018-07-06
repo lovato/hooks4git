@@ -3,4 +3,5 @@
 from hooks4git.scripts import Exec
 
 if __name__ == '__main__':
+    # TODO: When installing manually, needs to get source file from site-packages
     Exec.add_hooks()

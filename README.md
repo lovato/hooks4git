@@ -1,3 +1,5 @@
+<a href="https://asciinema.org/a/190505" target="_blank"><img src="https://asciinema.org/a/190505.png" height="400" /></a>
+
 # hooks4git
 
 [![Build Status](https://travis-ci.org/lovato/hooks4git.svg?branch=master)](https://travis-ci.org/lovato/hooks4git)
@@ -17,8 +19,10 @@ These instructions will show you how to install and use the application.
 
 ### Installation
  ```
- pip install hooks4git
+ pip install hooks4git --no-cache-dir
  ```
+The option to not use from cache is mandatory since after download the tar.gz file, pip generates a wheel file on the cache.
+Wheel files do not carry information for Post Script Installs, which is the feature that enables auto-creation of hook files. Only egg packaging supports this.
 
 ### Usage
 After you install the package, your repo is automatically hooked for all events.
@@ -71,6 +75,5 @@ See list of <a href="https://github.com/lovato/hooks4git/graphs/contributors">co
 ## Credits
 <ul>
  <li><a href="https://github.com/lovato">Marco Lovato</a></li>
- <li><a href="https://github.com/collin5">Collins Abitekaniza</a> (where I forked from)</li>
- <li><a href="https://github.com/andela-engmkwalusimbi">Walusimbi Mahad</a></li>
+ <li><a href="https://github.com/collin5/precommit-hook">Collins Abitekaniza</a> (where I forked from)</li>
 </ul>
