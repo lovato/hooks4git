@@ -5,7 +5,7 @@ include hooks4git/.hooks4git.yml
 include LICENSE
 include README.md
 
-recursive-include hooks4git/git/*
+recursive-include hooks4git/git *
 
 recursive-exclude tests *
 recursive-exclude * __pycache__
