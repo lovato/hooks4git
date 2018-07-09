@@ -5,6 +5,7 @@ import sys
 import os
 import shutil
 import subprocess
+from hooks4git import __version__
 
 standalone_run = False
 
@@ -84,36 +85,46 @@ def system(*args, **kwargs):
 class Exec:
     @staticmethod
     def add_hooks(path=os.environ["PWD"]):
-        print('Current Working Folder: %s' % path)
-        path = system('git', '-C', path, 'rev-parse', '--show-toplevel')[1].replace('\n', '')
-        git_path = system('git', '-C', path, 'rev-parse', '--git-dir')[1].replace('\n', '')
-        if git_path == '.git':
-            git_path = os.path.join(path, git_path)
+        # print('Current Working Folder: %s' % path)
         # setup_path = os.path.join(system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', ''), 'hooks4git')
         setup_path = os.path.dirname(os.path.realpath(__file__))
         if 'site-packages' in setup_path:
             global standalone_run
             standalone_run = True
-        path = os.path.abspath(path)
-        setup_path = os.path.abspath(setup_path)
-        if not os.path.isdir(os.path.join(git_path, "hooks")):
-            message = '*****************************************************************\n'
-            message += '* hooks4git is installed. Just run "hooks4git" to install the hooks.'
-            print(message)
+        try:
+            path = system('git', '-C', path, 'rev-parse', '--show-toplevel')[1].replace('\n', '')
+            git_path = system('git', '-C', path, 'rev-parse', '--git-dir')[1].replace('\n', '')
+            if git_path == '.git':
+                git_path = os.path.join(path, git_path)
+        except Exception as e:  # noqa
+            git_path = None
+
+        if git_path:
+            path = os.path.abspath(path)
+            setup_path = os.path.abspath(setup_path)
+            if os.path.isdir(os.path.join(git_path, "hooks")):
+                origin_yml = os.path.join(setup_path, '.hooks4git.yml')
+                target_yml = os.path.join(path, '.hooks4git.yml')
+                if os.path.isfile(target_yml):
+                    target_yml = target_yml.replace('.yml', '-' + __version__ + '.yml')
+                copy(origin_yml, target_yml)
+                files_to_copy = system('ls', os.path.join(setup_path, 'git/hooks'))
+                for file in files_to_copy[1].split('\n'):
+                    if file not in ['__pycache__', '', 'hooks4git.py']:
+                        src = os.path.join(setup_path, 'git/hooks', file)
+                        target = os.path.join(git_path, 'hooks', file)
+                        copy(src, target)
+                print("\nhooks4git scripts and files copied successfully! Thanks for hooking!")
+                print("TIP: If you want to get rid of the hooks, just delete the .hooks4git.yml from your project.")
+            else:
+                if not standalone_run:
+                    message = '*****************************************************************\n'
+                    message += '* hooks4git is installed. Just run "hooks4git" to install the hooks.'
+                    print(message)
+                else:
+                    print("I am afraid I can't to that. Looks like your .git folder is not standard.")
         else:
-            origin_yml = os.path.join(setup_path, '.hooks4git.yml')
-            target_yml = os.path.join(path, '.hooks4git.yml')
-            if os.path.isfile(target_yml):
-                target_yml = target_yml + '.NEWVERSION'
-            copy(origin_yml, target_yml)
-            files_to_copy = system('ls', os.path.join(setup_path, 'git/hooks'))
-            for file in files_to_copy[1].split('\n'):
-                if file not in ['__pycache__', '', 'hooks4git.py']:
-                    src = os.path.join(setup_path, 'git/hooks', file)
-                    target = os.path.join(git_path, 'hooks', file)
-                    copy(src, target)
-            print("Precommit scripts added successfully, continuing ...")
-            print("TIP: If you want to get rid of the hooks, just delete the .hooks4git.yml from your project folder.")
+            print("I am afraid I can't to that. You are not inside a GIT repo. Reach one and re-run this tool.")
         return True
 
 
