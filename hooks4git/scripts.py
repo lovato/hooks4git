@@ -5,6 +5,8 @@ import os
 import shutil
 import subprocess
 
+standalone_run = False
+
 
 def query_yes_no(question, default="yes"):
     """Ask a yes/no question via raw_input() and return their answer.
@@ -45,17 +47,20 @@ def query_yes_no(question, default="yes"):
 
 
 def copy(src, dest):
-    print('From: %s' % src)
-    print('To: %s' % dest)
-    shutil.copy(src, dest)
-    # TODO: Fix this to ask for user permission
-    # if os.path.isfile(dest):
-    #     if query_yes_no('Target file exists. Can I replace it?'):
-    #         shutil.copy(src, dest)
-    #     else:
-    #         print('Your file was left untouched.')
-    # else:
-    #     shutil.copy(src, dest)
+    # print('From: %s' % src)
+    # print('To: %s' % dest)
+    if standalone_run:
+        if os.path.isfile(dest):
+            print(dest)
+            if query_yes_no('Target file exists. Can I replace it?'):
+                shutil.copy(src, dest)
+            else:
+                print('Your file was left untouched. Please consider upgrading it.')
+        else:
+            shutil.copy(src, dest)
+    else:
+        if not os.path.isfile(dest):
+            shutil.copy(src, dest)
 
 
 def system(*args, **kwargs):
@@ -83,27 +88,31 @@ class Exec:
         git_path = system('git', '-C', path, 'rev-parse', '--git-dir')[1].replace('\n', '')
         if git_path == '.git':
             git_path = os.path.join(path, git_path)
-        setup_path = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
-        # if .git/hooks directory does not exist (which means a non valid git repo)
+        # setup_path = os.path.join(system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', ''), 'hooks4git')
+        setup_path = os.path.dirname(os.path.realpath(__file__))
+        if 'site-packages' in setup_path:
+            global standalone_run
+            standalone_run = True
         path = os.path.abspath(path)
         setup_path = os.path.abspath(setup_path)
         if not os.path.isdir(os.path.join(git_path, "hooks")):
             message = '*****************************************************************\n'
-            message += '* Oops, hooks can only be installed on a GIT repository\n'
-            message += '* Please, make sure to do a "git init" on this folder.\n\n'
-            message += '* hooks4git is installed anyway. Then, just run "hooks4git" to install the hooks.'
+            message += '* hooks4git is installed. Just run "hooks4git" to install the hooks.'
             print(message)
         else:
-            files_to_copy = system('ls', os.path.join(setup_path, 'hooks4git/git/hooks'))
+            origin_yml = os.path.join(setup_path, '.hooks4git.yml')
+            target_yml = os.path.join(path, '.hooks4git.yml')
+            if os.path.isfile(target_yml):
+                target_yml = target_yml + '.NEWVERSION'
+            copy(origin_yml, target_yml)
+            files_to_copy = system('ls', os.path.join(setup_path, 'git/hooks'))
             for file in files_to_copy[1].split('\n'):
                 if file not in ['__pycache__', '', 'hooks4git.py']:
-                    src = os.path.join(setup_path, 'hooks4git/git/hooks', file)
+                    src = os.path.join(setup_path, 'git/hooks', file)
                     target = os.path.join(git_path, 'hooks', file)
                     copy(src, target)
-            # copy(os.path.join(setup_path, 'hooks4git/git/hooks'), '{}/hooks'.format(git_path))
-            copy(os.path.join(setup_path, 'hooks4git/.hooks4git.yml'), os.path.join(path, '.hooks4git.yml'))
             print("Precommit scripts added successfully, continuing ...")
-            print("TIP: If you want to get rid of the hooks, just delete the .hooks4git.yml from your project.")
+            print("TIP: If you want to get rid of the hooks, just delete the .hooks4git.yml from your project folder.")
         return True
 
 
