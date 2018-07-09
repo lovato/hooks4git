@@ -17,8 +17,8 @@ hooks:
 
   pre-commit:
     scripts:
-      - echo Running "pre-commit" hook
-      - flake8 --max-line-length=120 --exclude .git,build,dist,.env,.venv
+      - echo Running "pre-commit" hook ... Please add more scripts!!!
+      # - flake8 --max-line-length=120 --exclude .git,build,dist,.env,.venv
 
   # prepare-commit-msg:
   #   scripts:
@@ -26,8 +26,8 @@ hooks:
 
   pre-push:
     scripts:
-      # - echo Running 'pre-push' hook
-      - nosetests --with-coverage
+      - echo Running 'pre-push' hook ... Please add more scripts!!!
+      # - nosetests --with-coverage
 
   # pre-rebase:
   #   scripts:
