@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from setuptools.command.install import install
+import sys
 import os
 import shutil
 import subprocess
@@ -29,15 +30,15 @@ def query_yes_no(question, default="yes"):
     else:
         raise ValueError("invalid default answer: '%s'" % default)
 
-    # TODO: Fix this for Python 2.7
-    # try:
-    #     input = raw_input
-    # except NameError:
-    #     pass
+    if sys.version_info[:2] <= (2, 7):
+        # If this is Python 2, use raw_input()
+        get_input = eval('raw_input')
+    else:
+        get_input = eval('input')
 
     while True:
         print('>>>> ' + question + prompt)
-        choice = input().lower()
+        choice = get_input().lower()
         if default is not None and choice == '':
             return valid[default]
         elif choice in valid:
