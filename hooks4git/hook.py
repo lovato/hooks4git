@@ -9,7 +9,7 @@ import datetime
 # *****************************************************************************
 # https://github.com/tartley/colorama/blob/83364bf1dc2bd5a53ca9bd0154fe21d769d6f90f/colorama/ansi.py
 #
-# THIS FILE WAS MODIFIED FROM ORIGINAL
+# THIS FILE WAS MODIFIED FROM ORIGINAL for Flake8 passing only
 #
 # Copyright Jonathan Hartley 2013. BSD 3-Clause license, see LICENSE file.
 '''
@@ -122,7 +122,6 @@ Back = AnsiBack()
 Style = AnsiStyle()
 Cursor = AnsiCursor()
 # *****************************************************************************
-
 
 # from hooks4git import __version__
 __version__ = 0.1
