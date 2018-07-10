@@ -249,7 +249,7 @@ def main():
                 out('FAIL', "%s'%s' step failed to execute ✘ %s" % (style, command.split()[0], Style.RESET_ALL))
             else:
                 style = Fore.GREEN
-                # out('PASS', "%s'%s' step executed successfully ✔ %s" % (style, command.split()[0], Style.RESET_ALL))
+                out('PASS', "%s'%s' step executed successfully  %s" % (style, command.split()[0], Style.RESET_ALL))
         return no_fails
     except Exception as e:  # noqa
         out('ERR!', str(e), color=Fore.RED)
