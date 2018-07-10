@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 import os
 import subprocess
-import yaml
 import sys
+import configparser
 from colorama import Fore
 from colorama import Back
 from colorama import Style
@@ -90,38 +90,43 @@ def execute(cmd, files, settings):
 #             pass
 #     return files
 
+def ini_as_dict(conf):
+    d = dict(conf._sections)
+    for k in d:
+        d[k] = dict(conf._defaults, **d[k])
+        d[k].pop('__name__', None)
+    return d
+
 
 def main():
     cmd = os.path.basename(__file__)
     git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
-    configfile = "%s/.hooks4git.yml" % git_root
+    configfile = "%s/.hooks4git.ini" % git_root
+    config = configparser.ConfigParser()
     try:
-        with open(configfile, 'r') as ymlfile:
-            cfg = yaml.safe_load(ymlfile)
+        config.read(configfile)
+        cfg = ini_as_dict(config)
     except Exception as e:  # noqa
-        cfg = {}
+        cfg = []
 
     global steps_executed
     steps_executed = 0
     no_fails = True
     try:
-        cfg = cfg.get('hooks', [])
-        hook = cfg.get(cmd, {'scripts': []})
-        if not hook:
-            hook = {'scripts': []}
-        commands = hook.get('scripts', [])
-        if not commands:
-            commands = []
+        scripts = cfg.get('scripts', {})
+        hook = cfg.get('hooks.%s.scripts' % cmd, {})
+        commands = hook.keys()
         if len(commands) > 0:
             title = "\nhooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
             title = Fore.YELLOW + Style.BRIGHT + title + Style.RESET_ALL
             print(title)
-        for command in commands:
+        for command_item in commands:
             divider()
             steps_executed += 1
             files = []
             # if cmd == 'pre-commit':
             #     files = get_changed_files()
+            command = scripts[hook[command_item]]
             result = execute(command.split()[0], files, command.split()[1:])
             if result[0] != 0:
                 no_fails = False

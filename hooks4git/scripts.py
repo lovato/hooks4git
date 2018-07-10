@@ -61,8 +61,7 @@ def copy(src, dest):
         else:
             shutil.copy(src, dest)
     else:
-        if not os.path.isfile(dest):
-            shutil.copy(src, dest)
+        shutil.copy(src, dest)
 
 
 def system(*args, **kwargs):
@@ -103,11 +102,11 @@ class Exec:
             path = os.path.abspath(path)
             setup_path = os.path.abspath(setup_path)
             if os.path.isdir(os.path.join(git_path, "hooks")):
-                origin_yml = os.path.join(setup_path, '.hooks4git.yml')
-                target_yml = os.path.join(path, '.hooks4git.yml')
-                if os.path.isfile(target_yml):
-                    target_yml = target_yml.replace('.yml', '-' + __version__ + '.yml')
-                copy(origin_yml, target_yml)
+                origin_config = os.path.join(setup_path, '.hooks4git.ini')
+                target_config = os.path.join(path, '.hooks4git.ini')
+                if os.path.isfile(target_config):
+                    target_config = target_config.replace('.ini', '-' + __version__ + '.ini')
+                copy(origin_config, target_config)
                 files_to_copy = system('ls', os.path.join(setup_path, 'git/hooks'))
                 for file in files_to_copy[1].split('\n'):
                     if file not in ['__pycache__', '', 'hooks4git.py']:
@@ -115,7 +114,7 @@ class Exec:
                         target = os.path.join(git_path, 'hooks', file)
                         copy(src, target)
                 print("\nhooks4git scripts and files copied successfully! Thanks for hooking!")
-                print("TIP: If you want to get rid of the hooks, just delete the .hooks4git.yml from your project.")
+                print("TIP: If you want to get rid of the hooks, just delete the .hooks4git.ini from your project.")
             else:
                 if not standalone_run:
                     message = '*****************************************************************\n'
