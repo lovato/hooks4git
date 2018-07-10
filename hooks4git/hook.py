@@ -235,21 +235,21 @@ def main():
             title = "\nhooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
             title = Fore.YELLOW + Style.BRIGHT + title + Style.RESET_ALL
             print(title)
-        # for command_item in commands:
-        #     divider()
-        #     steps_executed += 1
-        #     files = []
-        #     # if cmd == 'pre-commit':
-        #     #     files = get_changed_files()
-        #     command = scripts[hook[command_item]]
-        #     result = execute(command.split()[0], files, command.split()[1:])
-        #     if result[0] != 0:
-        #         no_fails = False
-        #         style = Fore.RED + Style.BRIGHT
-        #         out('FAIL', "%s'%s' step failed to execute ✘ %s" % (style, command.split()[0], Style.RESET_ALL))
-        #     else:
-        #         style = Fore.GREEN
-        #         out('PASS', "%s'%s' step executed successfully ✔ %s" % (style, command.split()[0], Style.RESET_ALL))
+        for command_item in commands:
+            divider()
+            steps_executed += 1
+            files = []
+            # if cmd == 'pre-commit':
+            #     files = get_changed_files()
+            command = scripts[hook[command_item]]
+            result = execute(command.split()[0], files, command.split()[1:])
+            # if result[0] != 0:
+            #     no_fails = False
+            #     style = Fore.RED + Style.BRIGHT
+            #     out('FAIL', "%s'%s' step failed to execute ✘ %s" % (style, command.split()[0], Style.RESET_ALL))
+            # else:
+            #     style = Fore.GREEN
+            #     out('PASS', "%s'%s' step executed successfully ✔ %s" % (style, command.split()[0], Style.RESET_ALL))
         return no_fails
     except Exception as e:  # noqa
         out('ERR!', str(e), color=Fore.RED)
