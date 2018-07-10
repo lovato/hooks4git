@@ -241,8 +241,8 @@ def main():
             files = []
             # if cmd == 'pre-commit':
             #     files = get_changed_files()
-            command = scripts[hook[command_item]]
-            result = execute(command.split()[0], files, command.split()[1:])
+            # command = scripts[hook[command_item]]
+            # result = execute(command.split()[0], files, command.split()[1:])
             # if result[0] != 0:
             #     no_fails = False
             #     style = Fore.RED + Style.BRIGHT
