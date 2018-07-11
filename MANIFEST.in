@@ -1,7 +1,7 @@
 include LICENSE
 include requirements.txt
 include hooks4git/build.info
-include hooks4git/.hooks4git.yml
+include hooks4git/.hooks4git.ini
 include LICENSE
 include README.md
 
