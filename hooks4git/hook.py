@@ -9,13 +9,12 @@ import datetime
 # *****************************************************************************
 # https://github.com/tartley/colorama/blob/83364bf1dc2bd5a53ca9bd0154fe21d769d6f90f/colorama/ansi.py
 #
-# THIS FILE WAS MODIFIED FROM ORIGINAL for Flake8 and Codacy passing only
+# THIS FILE WAS MODIFIED FROM ORIGINAL for Flake8 and Codacy passing
 #
 # Copyright Jonathan Hartley 2013. BSD 3-Clause license, see LICENSE file.
-'''
-This module generates ANSI character codes to printing colors to terminals.
-See: http://en.wikipedia.org/wiki/ANSI_escape_code
-'''
+#
+# This module generates ANSI character codes to printing colors to terminals.
+# See: http://en.wikipedia.org/wiki/ANSI_escape_code
 
 CSI = '\033['
 OSC = '\033]'

@@ -6,6 +6,7 @@ import os
 import shutil
 import subprocess
 from hooks4git import __version__
+import ast
 
 standalone_run = False
 
@@ -33,9 +34,9 @@ def query_yes_no(question, default="yes"):
 
     if sys.version_info[:2] <= (2, 7):
         # If this is Python 2, use raw_input()
-        get_input = eval('raw_input')
+        get_input = ast.literal_eval('raw_input')
     else:
-        get_input = eval('input')
+        get_input = ast.literal_eval('input')
 
     while True:
         print('>>>> ' + question + prompt)
@@ -95,7 +96,7 @@ class Exec:
             git_path = system('git', '-C', path, 'rev-parse', '--git-dir')[1].replace('\n', '')
             if git_path == '.git':
                 git_path = os.path.join(path, git_path)
-        except Exception as e:  # noqa
+        except:  # noqa
             git_path = None
 
         if git_path:
