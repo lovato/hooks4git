@@ -6,6 +6,7 @@ import os
 import shutil
 import subprocess
 from hooks4git import __version__
+import ast
 
 standalone_run = False
 
@@ -33,9 +34,9 @@ def query_yes_no(question, default="yes"):
 
     if sys.version_info[:2] <= (2, 7):
         # If this is Python 2, use raw_input()
-        get_input = eval('raw_input')
+        get_input = ast.literal_eval('raw_input')
     else:
-        get_input = eval('input')
+        get_input = ast.literal_eval('input')
 
     while True:
         print('>>>> ' + question + prompt)
@@ -61,8 +62,7 @@ def copy(src, dest):
         else:
             shutil.copy(src, dest)
     else:
-        if not os.path.isfile(dest):
-            shutil.copy(src, dest)
+        shutil.copy(src, dest)
 
 
 def system(*args, **kwargs):
@@ -96,18 +96,18 @@ class Exec:
             git_path = system('git', '-C', path, 'rev-parse', '--git-dir')[1].replace('\n', '')
             if git_path == '.git':
                 git_path = os.path.join(path, git_path)
-        except Exception as e:  # noqa
+        except:  # noqa
             git_path = None
 
         if git_path:
             path = os.path.abspath(path)
             setup_path = os.path.abspath(setup_path)
             if os.path.isdir(os.path.join(git_path, "hooks")):
-                origin_yml = os.path.join(setup_path, '.hooks4git.yml')
-                target_yml = os.path.join(path, '.hooks4git.yml')
-                if os.path.isfile(target_yml):
-                    target_yml = target_yml.replace('.yml', '-' + __version__ + '.yml')
-                copy(origin_yml, target_yml)
+                origin_config = os.path.join(setup_path, '.hooks4git.ini')
+                target_config = os.path.join(path, '.hooks4git.ini')
+                if os.path.isfile(target_config):
+                    target_config = target_config.replace('.ini', '-' + __version__ + '.ini')
+                copy(origin_config, target_config)
                 files_to_copy = system('ls', os.path.join(setup_path, 'git/hooks'))
                 for file in files_to_copy[1].split('\n'):
                     if file not in ['__pycache__', '', 'hooks4git.py']:
@@ -115,7 +115,7 @@ class Exec:
                         target = os.path.join(git_path, 'hooks', file)
                         copy(src, target)
                 print("\nhooks4git scripts and files copied successfully! Thanks for hooking!")
-                print("TIP: If you want to get rid of the hooks, just delete the .hooks4git.yml from your project.")
+                print("TIP: If you want to get rid of the hooks, just delete the .hooks4git.ini from your project.")
             else:
                 if not standalone_run:
                     message = '*****************************************************************\n'
