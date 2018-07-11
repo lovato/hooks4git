@@ -9,7 +9,7 @@ import datetime
 # *****************************************************************************
 # https://github.com/tartley/colorama/blob/83364bf1dc2bd5a53ca9bd0154fe21d769d6f90f/colorama/ansi.py
 #
-# THIS FILE WAS MODIFIED FROM ORIGINAL for Flake8 passing only
+# THIS FILE WAS MODIFIED FROM ORIGINAL for Flake8 and Codacy passing only
 #
 # Copyright Jonathan Hartley 2013. BSD 3-Clause license, see LICENSE file.
 '''
@@ -50,19 +50,24 @@ class AnsiCodes(object):
 
 
 class AnsiCursor(object):
-    def UP(self, n=1):
+    @classmethod
+    def UP(cls, n=1):
         return CSI + str(n) + 'A'
 
-    def DOWN(self, n=1):
+    @classmethod
+    def DOWN(cls, n=1):
         return CSI + str(n) + 'B'
 
-    def FORWARD(self, n=1):
+    @classmethod
+    def FORWARD(cls, n=1):
         return CSI + str(n) + 'C'
 
-    def BACK(self, n=1):
+    @classmethod
+    def BACK(cls, n=1):
         return CSI + str(n) + 'D'
 
-    def POS(self, x=1, y=1):
+    @classmethod
+    def POS(cls, x=1, y=1):
         return CSI + str(y) + ';' + str(x) + 'H'
 
 
