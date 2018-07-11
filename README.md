@@ -2,14 +2,14 @@
 
 # hooks4git
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/lovato/hooks4git.svg?branch=master)](https://travis-ci.org/lovato/hooks4git)
 [![Coverage Status](https://coveralls.io/repos/github/lovato/hooks4git/badge.svg?branch=master)](https://coveralls.io/github/lovato/hooks4git?branch=master)
 [![PyPI version](https://badge.fury.io/py/hooks4git.svg)](https://badge.fury.io/py/hooks4git)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Fully configurable language agnostic git hooks.
+Fully configurable language-agnostic git hooks.
 
-Auto checks your code before you ship it. Works with any programmning language.
+Auto checks your code before you ship it. Works with any programmning language. If not, let me know.
 
 ## Availability
 
@@ -48,30 +48,32 @@ If by any reason you already have any of the target files on your harddrive, thi
 
 ### Usage
 
-After activation, your repo is hooked for all events.
+After execution or installation, your repo is hooked for all events. Prior version used YAML for configuration management, but that caused PyYAML to be a dependency, and things went a little wrong when running it as a tool. So I choose .ini files over .json files (both have Python native parsers) because it looked less ugly.
 
-You just need to open <a href="./.hooks4git.yml">.hooks4git.yml</a> file on the root of your project and configure it the way you want.
-Example section is meant for Python, but you can use any tool you want, at any given git hook event.
+You just need to open <a href="./.hooks4git.ini">.hooks4git.ini</a> file on the root of your project and configure it the way you want.
+This first example section is meant for Python, but you can use any tool you want, at any given git hook event.
 
 Example section for pre-commit, for Python:
 
  ```
-hooks:
-  pre-commit:
-    scripts:
-      # - echo Running "pre-commit" hook
-      - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
+[scripts]
+flake8 = flake8 --max-line-length=120 --exclude .git,build,dist,.env,.venv
+nosetests = nosetests --with-coverage
+
+[hooks.pre-commit.scripts]
+check = flake8
  ```
 
-But it could be for NodeJS:
+It also could be for NodeJS:
 
  ```
-hooks:
-  pre-commit:
-    scripts:
-      # - echo Running "pre-commit" hook
-      - eslint server.js
-      - jshint *.js
+[scripts]
+eslint = eslint -f checkstyle index.js > checkstyle-result.xml
+jshint = jshint *.js
+
+[hooks.pre-commit.scripts]
+check_a = eslint
+check_b = jslint
  ```
 
 Note: All scripts you add here need to be available on your PATH for execution. So you need to make all of them depedencies on your current project, no matter the language it is written with. Per default, the available hooks are only `echo` commands, which will always pass!
@@ -91,6 +93,11 @@ STEPS| 1 were executed
 TIME | Execution took 0:00:00.684762
 PASS | All green! Good!
  ```
+
+## Final Notes
+
+This is supposed to run fine on Windows too, BUT windows has no native support for GIT, and this is a GIT tool, not a Python tool.
+So, make sure you run this on the same command prompt you use to perform your git commands. Do not use it on `cmd.exe`.
 
 ## License
 

@@ -9,7 +9,7 @@ import datetime
 # *****************************************************************************
 # https://github.com/tartley/colorama/blob/83364bf1dc2bd5a53ca9bd0154fe21d769d6f90f/colorama/ansi.py
 #
-# THIS FILE WAS MODIFIED FROM ORIGINAL for Flake8 and Codacy passing
+# THIS FILE WAS MODIFIED FROM ORIGINAL
 #
 # Copyright Jonathan Hartley 2013. BSD 3-Clause license, see LICENSE file.
 #
@@ -116,7 +116,15 @@ class AnsiBack(AnsiCodes):
 
 class AnsiStyle(AnsiCodes):
     BRIGHT = 1
-    DIM = 2
+    DIM = 2   # not supported on Windows
+    ITALIC = 3   # not supported on Windows
+    UNDERLINE = 4   # not supported on Windows
+    # BLINK = 5   # slow blink. not supported on Windows and not widely supported on Linux
+    # RBLINK = 6   # rapid blink. not supported on Windows and not widely supported on Linux
+    REVERSEVID = 7   # not supported on Windows
+    # CONCEAL = 8   # not supported on Windows and not widely supported on Linux
+    # STRIKETHROUGH = 9   # not supported on Windows and not widely supported on Linux
+    # FRAKTUR = 20  # not supported on Windows and not widely supported on Linux
     NORMAL = 22
     RESET_ALL = 0
 
