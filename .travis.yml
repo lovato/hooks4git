@@ -11,8 +11,12 @@ before_install:
 install:
 - pip install -r requirements.txt
 - pip install -r requirements-dev.txt
+before_script:
+- travis-lint .travis.yml
+- markdownlint README.md
 script:
 - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
+after_script:
 - nosetests --with-coverage
 # - rm -f .hooks4git.yml
 # - pip install . -t /tmp
