@@ -1,11 +1,11 @@
 # hooks4git
 
-[![asciicast](https://asciinema.org/a/190505.png)](https://asciinema.org/a/190505)
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/lovato/hooks4git.svg?branch=master)](https://travis-ci.org/lovato/hooks4git)
 [![Coverage Status](https://coveralls.io/repos/github/lovato/hooks4git/badge.svg?branch=master)](https://coveralls.io/github/lovato/hooks4git?branch=master)
 [![PyPI version](https://badge.fury.io/py/hooks4git.svg)](https://badge.fury.io/py/hooks4git)
+
+[![asciicast](https://asciinema.org/a/190505.png)](https://asciinema.org/a/190505)
 
 Fully configurable language-agnostic git hooks.
 
@@ -50,7 +50,7 @@ If by any reason you already have any of the target files on your harddrive, thi
 
 After execution or installation, your repo is hooked for all events. Prior version used YAML for configuration management, but that caused PyYAML to be a dependency, and things went a little wrong when running it as a tool. So I choose .ini files over .json files (both have Python native parsers) because it looked less ugly.
 
-You just need to open [.hooks4git.ini](.hooks4git.ini) file on the root of your project and configure it the way you want.
+You just need to open [.hooks4git.ini](hooks4git/.hooks4git.ini) file on the root of your project and configure it the way you want.
 This first example section is meant for Python, but you can use any tool you want, at any given git hook event.
 
 Example section for pre-commit, for Python:
@@ -105,7 +105,7 @@ This project is licensed under MIT license. See the [LICENSE](LICENSE) file for 
 
 ## Authors
 
-See list of [contributors](./graphs/contributors) who participated in this project.
+See list of [contributors](../../graphs/contributors) who participated in this project.
 
 ## Credits
 

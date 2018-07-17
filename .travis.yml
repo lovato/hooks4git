@@ -8,9 +8,13 @@ cache: pip
 before_install:
 - sudo apt-get update -qq
 - pip install -U pip
+- sudo apt-get install nodejs
+- sudo apt-get install npm
 install:
 - pip install -r requirements.txt
 - pip install -r requirements-dev.txt
+- npm install -g travis-lint
+- npm install -g markdownlint-cli
 before_script:
 - travis-lint .travis.yml
 - markdownlint README.md
