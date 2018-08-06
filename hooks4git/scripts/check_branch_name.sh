@@ -1,6 +1,12 @@
 #!/bin/bash
 
-valid='^(feature|bugfix|hotfix)\/.+'
+if [ -z "$1" ]
+then
+    valid='^(feature|bugfix|hotfix)\/.+'
+else
+    valid="$1"
+fi
+
 branch=`git rev-parse --abbrev-ref HEAD`
 if [[ $branch =~ $valid ]]; then
     echo Branch is OK with naming conventions

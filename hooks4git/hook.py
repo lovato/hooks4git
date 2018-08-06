@@ -188,6 +188,8 @@ def execute(cmd, files, settings):
     # if cmd not in ('pep8', 'flake8'):
     #     raise Exception("Unknown lint command: {}".format(cmd))
     args = settings[:]
+    if cmd[0] == '_':
+        cmd = './hooks4git/scripts/' + cmd[1:] + '.sh'
     args.insert(0, cmd)
     args.extend(files)
     out("STEP", "$ %s" % ' '.join(args), color=Fore.BLUE)
