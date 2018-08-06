@@ -189,7 +189,13 @@ def execute(cmd, files, settings):
     #     raise Exception("Unknown lint command: {}".format(cmd))
     args = settings[:]
     if cmd[0] == '_':
-        cmd = './hooks4git/scripts/' + cmd[1:] + '.sh'
+        git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
+        sys.path.insert(0, git_root)
+        for path in sys.path:
+            _cmd = path + '/hooks4git/scripts/' + cmd[1:] + '.sh'
+            if os.path.exists(_cmd):
+                cmd = _cmd
+                break
     args.insert(0, cmd)
     args.extend(files)
     out("STEP", "$ %s" % ' '.join(args), color=Fore.BLUE)
