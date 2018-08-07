@@ -9,7 +9,7 @@ fi
 
 # branch=`git rev-parse --abbrev-ref HEAD`
 # branch=`git symbolic-ref --short HEAD`  # https://stackoverflow.com/questions/6245570/how-to-get-the-current-branch-name-in-git
-branch=`git status | head -1 | sed -n '/On branch /s///p'`
+branch=$(git status | head -1 | sed -n '/On branch /s///p')
 
 if [[ $branch =~ $valid ]]; then
     echo Branch is OK with naming conventions
