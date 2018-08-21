@@ -21,7 +21,7 @@ before_script:
 script:
 - flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
 after_script:
-- nosetests --with-coverage
+- python -m pytest tests
 # - rm -f .hooks4git.yml
 # - pip install . -t /tmp
 after_success:
