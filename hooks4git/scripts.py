@@ -54,11 +54,11 @@ def copy(src, dest):
     # print('To: %s' % dest)
     if standalone_run:
         if os.path.isfile(dest):
-            print(dest)
-            if query_yes_no('Target file exists. Can I replace it?'):
-                shutil.copy(src, dest)
-            else:
-                print('Your file was left untouched. Please consider upgrading it.')
+            # print(dest)
+            # if query_yes_no('Target file exists. Can I replace it?'):
+            shutil.copy(src, dest)
+            # else:
+            #     print('Your file was left untouched. Please consider upgrading it.')
         else:
             shutil.copy(src, dest)
     else:
