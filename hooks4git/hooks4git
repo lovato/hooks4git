@@ -21,10 +21,10 @@ def parse_args(args):
         "--version", action="version", version="hooks4git {ver}".format(ver=__version__)
     )
     parser.add_argument(
-        "--install",
-        dest="install",
+        "--init",
+        dest="init",
         action="store_const",
-        help="Install the hooks on current repo",
+        help="Install hooks4git on current repository",
         const=True
     )
     parser.add_argument(
@@ -43,7 +43,7 @@ def main(args):
       args ([str]): command line parameter list
     """
     args = parse_args(args)
-    if args.install:
+    if args.init:
         Exec.add_hooks()
     else:
         if args.git_hook:
