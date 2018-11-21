@@ -264,10 +264,10 @@ def main(cmd):
             if result[0] != 0:
                 no_fails = False
                 style = Fore.RED + Style.BRIGHT
-                out('FAIL', "%s'%s' step failed to execute %s" % (style, hook[command_item], Style.RESET_ALL))
+                out('FAIL', "%s'%s/%s' step failed to execute %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
             else:
                 style = Fore.GREEN
-                out('PASS', "%s'%s' step executed successfully %s" % (style, hook[command_item], Style.RESET_ALL))
+                out('PASS', "%s'%s/%s' step executed successfully %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
         return no_fails
     except Exception as e:  # noqa
         out('ERR!', str(e), color=Fore.RED)
