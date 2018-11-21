@@ -232,8 +232,7 @@ def ini_as_dict(conf):
     return d
 
 
-def main():
-    cmd = os.path.basename(__file__)
+def main(cmd):
     git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
     configfile = "%s/.hooks4git.ini" % git_root
     config = configparser.ConfigParser()
@@ -287,8 +286,8 @@ def report():
         out('TIME', 'Execution took ' + str(end_time - start_time), color=Fore.BLUE)
 
 
-if __name__ == '__main__':
-    if main():
+def run_trigger(cmd):
+    if main(cmd):
         report()
         if steps_executed > 0:
             out('PASS', "All green! Good!", Fore.WHITE, Back.GREEN)
@@ -297,3 +296,7 @@ if __name__ == '__main__':
         report()
         out('FAIL', "You have failed. One or more steps failed to execute.", Fore.YELLOW, Back.RED)
         sys.exit(1)
+
+
+if __name__ == '__main__':
+    run_trigger(os.path.basename(__file__))
