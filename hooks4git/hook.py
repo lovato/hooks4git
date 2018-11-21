@@ -232,8 +232,7 @@ def ini_as_dict(conf):
     return d
 
 
-def main():
-    cmd = os.path.basename(__file__)
+def main(cmd):
     git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
     configfile = "%s/.hooks4git.ini" % git_root
     config = configparser.ConfigParser()
@@ -265,10 +264,10 @@ def main():
             if result[0] != 0:
                 no_fails = False
                 style = Fore.RED + Style.BRIGHT
-                out('FAIL', "%s'%s' step failed to execute %s" % (style, hook[command_item], Style.RESET_ALL))
+                out('FAIL', "%s'%s/%s' step failed to execute %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
             else:
                 style = Fore.GREEN
-                out('PASS', "%s'%s' step executed successfully %s" % (style, hook[command_item], Style.RESET_ALL))
+                out('PASS', "%s'%s/%s' step executed successfully %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
         return no_fails
     except Exception as e:  # noqa
         out('ERR!', str(e), color=Fore.RED)
@@ -287,8 +286,8 @@ def report():
         out('TIME', 'Execution took ' + str(end_time - start_time), color=Fore.BLUE)
 
 
-if __name__ == '__main__':
-    if main():
+def run_trigger(cmd):
+    if main(cmd):
         report()
         if steps_executed > 0:
             out('PASS', "All green! Good!", Fore.WHITE, Back.GREEN)
@@ -297,3 +296,7 @@ if __name__ == '__main__':
         report()
         out('FAIL', "You have failed. One or more steps failed to execute.", Fore.YELLOW, Back.RED)
         sys.exit(1)
+
+
+if __name__ == '__main__':
+    run_trigger(os.path.basename(__file__))

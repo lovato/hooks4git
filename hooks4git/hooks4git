@@ -1,6 +1,61 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import argparse
+import sys
 from hooks4git.scripts import Exec
+from hooks4git import __version__
+from hooks4git.hook import run_trigger
 
-if __name__ == '__main__':
-    Exec.add_hooks()
+
+def parse_args(args):
+    """Parse command line parameters
+
+    Args:
+      args ([str]): command line parameters as list of strings
+
+    Returns:
+      :obj:`argparse.Namespace`: command line parameters namespace
+    """
+    parser = argparse.ArgumentParser(description="hooks4git")
+    parser.add_argument(
+        "--version", action="version", version="hooks4git {ver}".format(ver=__version__)
+    )
+    parser.add_argument(
+        "--init",
+        dest="init",
+        action="store_const",
+        help="Install hooks4git on current repository",
+        const=True
+    )
+    parser.add_argument(
+        "-t",
+        "--trigger",
+        dest="git_hook",
+        help="Select which hook to trigger",
+    )
+    return parser.parse_args(args)
+
+
+def main(args):
+    """Main entry point allowing external calls
+
+    Args:
+      args ([str]): command line parameter list
+    """
+    args = parse_args(args)
+    if args.init:
+        Exec.add_hooks()
+    else:
+        if args.git_hook:
+            run_trigger(args.git_hook)
+
+
+def run():
+    """Entry point for console_scripts
+    """
+    print("hooks4git v" + __version__)
+    main(sys.argv[1:])
+
+
+if __name__ == "__main__":
+    run()
