@@ -191,6 +191,16 @@ def execute(cmd, files, settings):
     if cmd[0] == '_':
         git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
         sys.path.insert(0, git_root)
+        try:
+            user_site2 = system('python2', '-m', 'site', '--user-site')[1].replace('\n', '')
+            sys.path.insert(0, user_site2)
+        except:  # noqa
+            pass
+        try:
+            user_site3 = system('python3', '-m', 'site', '--user-site')[1].replace('\n', '')
+            sys.path.insert(0, user_site3)
+        except:  # noqa
+            pass
         for path in sys.path:
             _cmd = path + '/hooks4git/scripts/' + cmd[1:] + '.sh'
             if os.path.exists(_cmd):
