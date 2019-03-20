@@ -6,7 +6,7 @@ import logging
 import getpass
 import tempfile
 
-__version__ = '0.1'
+__version__ = '0.2'
 __author__ = 'Marco Lovato'
 __author_username__ = 'lovato'
 __author_email__ = 'maglovato@gmail.com'

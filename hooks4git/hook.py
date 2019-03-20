@@ -5,6 +5,8 @@ import subprocess
 import sys
 import configparser
 import datetime
+from hooks4git import __version__
+# __version__ = 0.1
 
 # *****************************************************************************
 # https://github.com/tartley/colorama/blob/83364bf1dc2bd5a53ca9bd0154fe21d769d6f90f/colorama/ansi.py
@@ -135,9 +137,6 @@ Style = AnsiStyle()
 Cursor = AnsiCursor()
 # *****************************************************************************
 
-# from hooks4git import __version__
-__version__ = 0.1
-
 cmdbarwidth = 5
 steps_executed = 0
 start_time = datetime.datetime.now()
@@ -192,6 +191,11 @@ def execute(cmd, files, settings):
         git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
         sys.path.insert(0, git_root)
         try:
+            user_site = system('python', '-m', 'site', '--user-site')[1].replace('\n', '')
+            sys.path.insert(0, user_site)
+        except:  # noqa
+            pass
+        try:
             user_site2 = system('python2', '-m', 'site', '--user-site')[1].replace('\n', '')
             sys.path.insert(0, user_site2)
         except:  # noqa
@@ -202,8 +206,10 @@ def execute(cmd, files, settings):
         except:  # noqa
             pass
         for path in sys.path:
-            _cmd = path + '/hooks4git/scripts/' + cmd[1:] + '.sh'
+            _cmd = os.path.realpath(path + '/hooks4git/scripts/' + cmd[1:] + '.sh')
             if os.path.exists(_cmd):
+                if get_platform() == 'WindowsGitBash':
+                    _cmd = '/' + _cmd[0].lower() + _cmd[2:].replace('\\', '/')
                 cmd = _cmd
                 break
     args.insert(0, cmd)
@@ -233,7 +239,8 @@ def execute(cmd, files, settings):
 #         except Exception as ex:  # noqa
 #             pass
 #     return files
-
+#
+#
 def ini_as_dict(conf):
     d = dict(conf._sections)
     for k in d:
@@ -260,7 +267,8 @@ def main(cmd):
         hook = cfg.get('hooks.%s.scripts' % cmd, {})
         commands = hook.keys()
         if len(commands) > 0:
-            title = "\nhooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
+            divider()
+            title = "hooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
             title = Fore.YELLOW + Style.BRIGHT + title + Style.RESET_ALL
             print(title)
         for command_item in commands:
@@ -284,8 +292,44 @@ def main(cmd):
         raise(e)
 
 
+def get_platform():
+    platforms = {
+        'linux': 'Linux',
+        'linux1': 'Linux',
+        'linux2': 'Linux',
+        'darwin': 'Mac',
+        'win32': 'Windows',
+        'win32MINGW64': 'WindowsGitBash'
+    }
+    platform = sys.platform + os.environ.get('MSYSTEM', '')
+    if platform not in platforms:
+        return sys.platform
+    return platforms[platform]
+
+
 def divider():
-    print('—' * cmdbarwidth + '—' + '—' * (79 - 1 - cmdbarwidth))
+    dash = '-'
+    if get_platform() == 'Linux':
+        if sys.version_info[0] < 3:
+            dash = unichr(8213)  # noqa
+        else:
+            dash = chr(8213)
+    if get_platform() == 'Mac':
+        if sys.version_info[0] < 3:
+            dash = unichr(8212)  # noqa
+        else:
+            dash = chr(8212)
+    if get_platform() == 'Windows':  # CMD.exe
+        if sys.version_info[0] < 3:
+            dash = '-'
+        else:
+            dash = chr(8212)
+    if get_platform() == 'WindowsGitBash':
+        if sys.version_info[0] < 3:
+            dash = '-'
+        else:
+            dash = '-'
+    print(dash * cmdbarwidth + dash + dash * (79 - 1 - cmdbarwidth))
 
 
 def report():
@@ -301,10 +345,12 @@ def run_trigger(cmd):
         report()
         if steps_executed > 0:
             out('PASS', "All green! Good!", Fore.WHITE, Back.GREEN)
+            divider()
         sys.exit(0)
     else:
         report()
         out('FAIL', "You have failed. One or more steps failed to execute.", Fore.YELLOW, Back.RED)
+        divider()
         sys.exit(1)
 
 

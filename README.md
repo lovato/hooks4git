@@ -26,31 +26,25 @@ These instructions will show you how to install and use the application.
 #### As a programming tool
 
  ```bash
- sudo pip install hooks4git
+ pip install hooks4git --user
  ```
 
 In this case, a script called `hooks4git` will be available all the time, to hook any project you are currently in.
 By running this script, hooks will be applied. Please note you need to manually keep upgrading your system tools, like you do for others, like pip itself.
 You probably added virtualenv and others with sudo. If in doubt, please take a look at source files.
 
-#### As a Python project dependency
-
- ```bash
- pip install hooks4git --no-cache-dir
- ```
-
-The option to not use from cache is mandatory since after download the tar.gz file, pip generates a wheel file on the cache.
-Wheel files do not carry information for Post Script Installs, which is the feature that enables auto-creation of hook files. Only egg packaging supports this.
-
-In this case, since pip doesn't recognize dev dependencies as default to be installed, the suggestion is to use it in requirements.txt file. However, this can lead to distribute this package into production environment. The solution for this is in [PipFile](https://github.com/pypa/pipfile) project.
-
-If by any reason you already have any of the target files on your harddrive, this method will not touch those files. If you really need to update those files, you need to run `hooks4git` on the terminal, since this is the only way to interact with you asking yes or no to replace files. During egg or wheel setup, this is impossible. It is also impossible to print out information to at least tell you the tool is updating your files.
-
 ### Usage
 
-After execution or installation, your repo is hooked for all events. Prior version used YAML for configuration management, but that caused PyYAML to be a dependency, and things went a little wrong when running it as a tool. So I choose .ini files over .json files (both have Python native parsers) because it looked less ugly.
+After installation, your repo needs to be hooked for all events. Prior version used YAML for configuration management, but that caused PyYAML to be a dependency, and things went a little wrong when running it as a tool. So I choose .ini files over .json files (both have Python native parsers) because it looked less ugly.
 
-You just need to open [.hooks4git.ini](hooks4git/.hooks4git.ini) file on the root of your project and configure it the way you want.
+Inside your git repository, just type:
+
+ ```bash
+hooks4git --init
+ ```
+
+And get all your regular hook scripts updated.
+Then, you just need to open [.hooks4git.ini](hooks4git/.hooks4git.ini) file on the root of your project and configure it the way you want.
 This first example section is meant for Python, but you can use any tool you want, at any given git hook event.
 
 Example section for pre-commit, for Python:
@@ -83,7 +77,7 @@ Note: All scripts you add here need to be available on your PATH for execution. 
 Here is a sample output for a Python configuration, with Flake8 (black and white... it has actually a full colored output):
 
  ```bash
-hooks4git v0.1 :: Pre-Commit :: hook triggered
+hooks4git v0.1.1 :: Pre-Commit :: hook triggered
 ———————————————————————————————————————————————————————————————————————————————
 STEP | $ flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
 OUT  | None
@@ -97,7 +91,7 @@ PASS | All green! Good!
 ## Final Notes
 
 This is supposed to run fine on Windows too, BUT windows has no native support for GIT, and this is a GIT tool, not a Python tool.
-So, make sure you run this on the same command prompt you use to perform your git commands. Do not use it on `cmd.exe`.
+So, make sure you run this on the same command prompt you use to perform your git commands (i.e GitBash). DO NOT use it on `cmd.exe`.
 
 ## License
 
