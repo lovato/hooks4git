@@ -187,6 +187,7 @@ def execute(cmd, files, settings):
     # if cmd not in ('pep8', 'flake8'):
     #     raise Exception("Unknown lint command: {}".format(cmd))
     args = settings[:]
+    builtin_path = ""
     if cmd[0] == '_':
         git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
         sys.path.insert(0, git_root)
@@ -206,15 +207,20 @@ def execute(cmd, files, settings):
         except:  # noqa
             pass
         for path in sys.path:
-            _cmd = os.path.realpath(path + '/hooks4git/scripts/' + cmd[1:] + '.sh')
+            builtin_path = os.path.realpath(path + '/hooks4git/scripts/')
+            ext = 'sh' if get_platform() != 'Windows' else 'bat'
+            _cmd = os.path.realpath(os.path.join(builtin_path, cmd + '.' + ext))
             if os.path.exists(_cmd):
-                # if get_platform() == 'WindowsGitBash':
-                #     _cmd = '/' + _cmd[0].lower() + _cmd[2:].replace('\\', '/')
-                cmd = _cmd
+                cmd = os.path.join(builtin_path, cmd + '.' + ext)
                 break
     args.insert(0, cmd)
     args.extend(files)
-    out("STEP", "$ %s" % ' '.join(args), color=Fore.BLUE)
+
+    if builtin_path == "":
+        cmd = args[0]
+    else:
+        cmd = args[0].replace(builtin_path, "scripts")
+    out("STEP", "$ %s %s" % (cmd, ' '.join(args[1:])), color=Fore.BLUE)
     code, result = system(*args)
     result = result.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
     if len(result) < 1:
