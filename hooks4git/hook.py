@@ -188,7 +188,8 @@ def execute(cmd, files, settings):
     #     raise Exception("Unknown lint command: {}".format(cmd))
     args = settings[:]
     builtin_path = ""
-    if cmd[0] == '_':
+    cmd_list = cmd.split('/')
+    if cmd_list[0] == 'scripts':
         git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
         sys.path.insert(0, git_root)
         try:
@@ -209,9 +210,9 @@ def execute(cmd, files, settings):
         for path in sys.path:
             builtin_path = os.path.realpath(path + '/hooks4git/scripts/')
             ext = 'sh' if get_platform() != 'Windows' else 'bat'
-            _cmd = os.path.realpath(os.path.join(builtin_path, cmd + '.' + ext))
+            _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1] + '.' + ext))
             if os.path.exists(_cmd):
-                cmd = os.path.join(builtin_path, cmd + '.' + ext)
+                cmd = os.path.join(builtin_path, cmd_list[1] + '.' + ext)
                 break
     args.insert(0, cmd)
     args.extend(files)
