@@ -233,7 +233,8 @@ def execute(cmd, files, settings):
 #         except Exception as ex:  # noqa
 #             pass
 #     return files
-
+#
+#
 def ini_as_dict(conf):
     d = dict(conf._sections)
     for k in d:
@@ -284,8 +285,42 @@ def main(cmd):
         raise(e)
 
 
+def get_platform():
+    platforms = {
+        'linux1': 'Linux',
+        'linux2': 'Linux',
+        'darwin': 'Mac',
+        'win32': 'Windows',
+        'win32MINGW64': 'WindowsGitBash'
+    }
+    platform = sys.platform + os.environ.get('MSYSTEM')
+    if platform not in platforms:
+        return sys.platform
+    return platforms[sys.platform]
+
+
 def divider():
-    dash = chr(8213)
+    dash = '-'
+    if get_platform() == 'Linux':
+        if sys.version_info[0] < 3:
+            dash = unichr(8213)  # noqa
+        else:
+            dash = chr(8213)
+    if get_platform() == 'Mac':
+        if sys.version_info[0] < 3:
+            dash = unichr(8212)  # noqa
+        else:
+            dash = chr(8212)
+    if get_platform() == 'Windows':  # CMD.exe
+        if sys.version_info[0] < 3:
+            dash = '-'
+        else:
+            dash = chr(8212)
+    if get_platform() == 'WindowsGitBash':
+        if sys.version_info[0] < 3:
+            dash = '-'
+        else:
+            dash = '-'
     print(dash * cmdbarwidth + dash + dash * (79 - 1 - cmdbarwidth))
 
 
