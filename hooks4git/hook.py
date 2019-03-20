@@ -5,6 +5,8 @@ import subprocess
 import sys
 import configparser
 import datetime
+from hooks4git import __version__
+# __version__ = 0.1
 
 # *****************************************************************************
 # https://github.com/tartley/colorama/blob/83364bf1dc2bd5a53ca9bd0154fe21d769d6f90f/colorama/ansi.py
@@ -134,9 +136,6 @@ Back = AnsiBack()
 Style = AnsiStyle()
 Cursor = AnsiCursor()
 # *****************************************************************************
-
-# from hooks4git import __version__
-__version__ = 0.1
 
 cmdbarwidth = 5
 steps_executed = 0
@@ -268,7 +267,8 @@ def main(cmd):
         hook = cfg.get('hooks.%s.scripts' % cmd, {})
         commands = hook.keys()
         if len(commands) > 0:
-            title = "\nhooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
+            divider()
+            title = "hooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
             title = Fore.YELLOW + Style.BRIGHT + title + Style.RESET_ALL
             print(title)
         for command_item in commands:
@@ -294,16 +294,17 @@ def main(cmd):
 
 def get_platform():
     platforms = {
+        'linux': 'Linux',
         'linux1': 'Linux',
         'linux2': 'Linux',
         'darwin': 'Mac',
         'win32': 'Windows',
         'win32MINGW64': 'WindowsGitBash'
     }
-    platform = sys.platform + os.environ.get('MSYSTEM')
+    platform = sys.platform + os.environ.get('MSYSTEM', '')
     if platform not in platforms:
         return sys.platform
-    return platforms[sys.platform]
+    return platforms[platform]
 
 
 def divider():
@@ -344,10 +345,12 @@ def run_trigger(cmd):
         report()
         if steps_executed > 0:
             out('PASS', "All green! Good!", Fore.WHITE, Back.GREEN)
+            divider()
         sys.exit(0)
     else:
         report()
         out('FAIL', "You have failed. One or more steps failed to execute.", Fore.YELLOW, Back.RED)
+        divider()
         sys.exit(1)
 
 
