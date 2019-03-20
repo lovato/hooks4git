@@ -285,7 +285,8 @@ def main(cmd):
 
 
 def divider():
-    print('—' * cmdbarwidth + '—' + '—' * (79 - 1 - cmdbarwidth))
+    dash = chr(8213)
+    print(dash * cmdbarwidth + dash + dash * (79 - 1 - cmdbarwidth))
 
 
 def report():
