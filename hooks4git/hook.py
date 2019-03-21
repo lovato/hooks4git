@@ -168,8 +168,7 @@ def system(*args, **kwargs):
     Run system command.
     """
     try:
-        kwargs.setdefault('stdout', subprocess.PIPE)
-        proc = subprocess.Popen(args, **kwargs)
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE)
         out = proc.communicate()[0]
         out = out.decode('utf-8')
         out = str(out)
@@ -209,19 +208,27 @@ def execute(cmd, files, settings):
             pass
         for path in sys.path:
             builtin_path = os.path.realpath(path + '/hooks4git/scripts/')
-            ext = 'sh' if get_platform() != 'Windows' else 'bat'
+            ext = 'sh'  # if get_platform() in ['Linux', 'Mac', 'WindowsGitBash'] else 'bat'
             _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1] + '.' + ext))
             if os.path.exists(_cmd):
                 cmd = os.path.join(builtin_path, cmd_list[1] + '.' + ext)
+                # if get_platform() == 'WindowsGitBash':
+                #     cmd = '/' + cmd[0].lower() + cmd[2:].replace('\\','/')
                 break
+
     args.insert(0, cmd)
     args.extend(files)
 
+    display_args = args[1:]
+
     if builtin_path == "":
-        cmd = args[0]
+        display_cmd = args[0]
     else:
-        cmd = args[0].replace(builtin_path, "scripts")
-    out("STEP", "$ %s %s" % (cmd, ' '.join(args[1:])), color=Fore.BLUE)
+        display_cmd = args[0].replace(builtin_path, "scripts").replace('\\', '/')
+        args.insert(0, 'bash')
+
+    out("STEP", "$ %s %s" % (display_cmd, ' '.join(display_args)), color=Fore.BLUE)
+
     code, result = system(*args)
     result = result.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
     if len(result) < 1:
