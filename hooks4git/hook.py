@@ -187,6 +187,12 @@ def execute(cmd, files, settings):
     #     raise Exception("Unknown lint command: {}".format(cmd))
     args = settings[:]
     builtin_path = ""
+
+    # backward compatibility to 0.1.x
+    if cmd[0] == '_':
+        cmd = 'scripts/' + cmd[1:]
+    # end
+
     cmd_list = cmd.split('/')
     if cmd_list[0] == 'scripts':
         git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
