@@ -21,13 +21,19 @@ Both can be downloaded and installed via the pip command.
 
 These instructions will show you how to install and use the application.
 
+### Supported OSs
+
+Supported OSs are Linux, MAC and Windows. However, I was not able to make it work CMD.exe (like if cmd.exe even works...). If you are using Windows, use it inside GitBash. DO NOT use it on `cmd.exe`.
+
 ### Installation
 
-#### As a programming tool
-
  ```bash
- pip install hooks4git --user
+ pip3 install hooks4git --user
  ```
+
+Depending on your setup, you might want to use `pip3` instead of `pip`.
+
+Please, keep in mind that `--user` folder might not be on your PATH environment var. If you fix this here, it will be automatically fixed for any other python tool you might eventually install inside your user context.
 
 In this case, a script called `hooks4git` will be available all the time, to hook any project you are currently in.
 By running this script, hooks will be applied. Please note you need to manually keep upgrading your system tools, like you do for others, like pip itself.
@@ -43,7 +49,7 @@ Inside your git repository, just type:
 hooks4git --init
  ```
 
-And get all your regular hook scripts updated.
+And get all your regular non-sense-hard-to-use-and-hard-to-maintain-and-hard-to-share hook scripts updated.
 Then, you just need to open [.hooks4git.ini](hooks4git/.hooks4git.ini) file on the root of your project and configure it the way you want.
 This first example section is meant for Python, but you can use any tool you want, at any given git hook event.
 
@@ -72,6 +78,10 @@ check_b = jslint
 
 Note: All scripts you add here need to be available on your PATH for execution. So you need to make all of them depedencies on your current project, no matter the language it is written with. Per default, the available hooks are only `echo` commands, which will always pass!
 
+#### Built-in Scripts
+
+Currently, there is only one available built-in script, called 'check_branch_name.sh'. If you want to use, just follow the exemple on the default .ini file, on sub-section 'checkbranch'. This is the way to trigger built-in scripts, prefixing them with 'scripts/'. On 0.1 release, I was using a '_' character for built-in scripts, but that caused so many headaches, mainly when trying to make this work inside GitBash for windows (ok, that was because I was actually trying to call a bat file ... then I gave up).
+
 ### Output
 
 Here is a sample output for a Python configuration, with Flake8 (black and white... it has actually a full colored output):
@@ -87,11 +97,6 @@ STEPS| 1 were executed
 TIME | Execution took 0:00:00.684762
 PASS | All green! Good!
  ```
-
-## Final Notes
-
-This is supposed to run fine on Windows too, BUT windows has no native support for GIT, and this is a GIT tool, not a Python tool.
-So, make sure you run this on the same command prompt you use to perform your git commands (i.e GitBash). DO NOT use it on `cmd.exe`.
 
 ## License
 
