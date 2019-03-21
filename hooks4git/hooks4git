@@ -18,20 +18,20 @@ def parse_args(args):
     """
     parser = argparse.ArgumentParser(description="hooks4git")
     parser.add_argument(
-        "--version", action="version", version="hooks4git {ver}".format(ver=__version__)
+        "-v",
+        "--version",
+        action="version",
+        version=""  # "hooks4git {ver}".format(ver=__version__),
     )
     parser.add_argument(
         "--init",
         dest="init",
         action="store_const",
         help="Install hooks4git on current repository",
-        const=True
+        const=True,
     )
     parser.add_argument(
-        "-t",
-        "--trigger",
-        dest="git_hook",
-        help="Select which hook to trigger",
+        "-t", "--trigger", dest="git_hook", help="Select which hook to trigger"
     )
     return parser.parse_args(args)
 

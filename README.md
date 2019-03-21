@@ -17,6 +17,10 @@ Production module is available from [Pypi](https://pypi.org/project/hooks4git), 
 
 Both can be downloaded and installed via the pip command.
 
+### More information on Git Hooks
+
+[Here](https://githooks.com).
+
 ## Getting started
 
 These instructions will show you how to install and use the application.
@@ -87,7 +91,8 @@ Currently, there is only one available built-in script, called 'check_branch_nam
 Here is a sample output for a Python configuration, with Flake8 (black and white... it has actually a full colored output):
 
  ```bash
-hooks4git v0.1.1 :: Pre-Commit :: hook triggered
+———————————————————————————————————————————————————————————————————————————————
+hooks4git v0.2.x :: Pre-Commit :: hook triggered
 ———————————————————————————————————————————————————————————————————————————————
 STEP | $ flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
 OUT  | None
@@ -96,6 +101,7 @@ PASS | 'flake8' step executed successfully
 STEPS| 1 were executed
 TIME | Execution took 0:00:00.684762
 PASS | All green! Good!
+———————————————————————————————————————————————————————————————————————————————
  ```
 
 ## License
@@ -110,3 +116,14 @@ See list of [contributors](../../graphs/contributors) who participated in this p
 
 - [Marco Lovato](https://github.com/lovato)
 - [Collins Abitekaniza](https://github.com/collin5/precommit-hook) (where I forked from)
+
+## Change Log
+
+### 0.2.x
+
+- Support for Windows with GitBash
+- Added docker scripts for quick clean machine testing environment
+
+### 0.1.x
+
+- Initial release
