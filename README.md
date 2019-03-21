@@ -119,9 +119,10 @@ See list of [contributors](../../graphs/contributors) who participated in this p
 
 ## Change Log
 
-### 0.2.131
+### 0.2.x
 
 - Support for Windows with GitBash
+- Added docker scripts for quick clean machine testing environment
 
 ### 0.1.x
 
