@@ -5,6 +5,8 @@ import subprocess
 import sys
 import configparser
 import datetime
+from hooks4git import __version__
+# __version__ = 0.1
 
 # *****************************************************************************
 # https://github.com/tartley/colorama/blob/83364bf1dc2bd5a53ca9bd0154fe21d769d6f90f/colorama/ansi.py
@@ -135,9 +137,6 @@ Style = AnsiStyle()
 Cursor = AnsiCursor()
 # *****************************************************************************
 
-# from hooks4git import __version__
-__version__ = 0.1
-
 cmdbarwidth = 5
 steps_executed = 0
 start_time = datetime.datetime.now()
@@ -169,8 +168,7 @@ def system(*args, **kwargs):
     Run system command.
     """
     try:
-        kwargs.setdefault('stdout', subprocess.PIPE)
-        proc = subprocess.Popen(args, **kwargs)
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE)
         out = proc.communicate()[0]
         out = out.decode('utf-8')
         out = str(out)
@@ -188,17 +186,49 @@ def execute(cmd, files, settings):
     # if cmd not in ('pep8', 'flake8'):
     #     raise Exception("Unknown lint command: {}".format(cmd))
     args = settings[:]
-    if cmd[0] == '_':
+    builtin_path = ""
+    cmd_list = cmd.split('/')
+    if cmd_list[0] == 'scripts':
         git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
         sys.path.insert(0, git_root)
+        try:
+            user_site = system('python', '-m', 'site', '--user-site')[1].replace('\n', '')
+            sys.path.insert(0, user_site)
+        except:  # noqa
+            pass
+        try:
+            user_site2 = system('python2', '-m', 'site', '--user-site')[1].replace('\n', '')
+            sys.path.insert(0, user_site2)
+        except:  # noqa
+            pass
+        try:
+            user_site3 = system('python3', '-m', 'site', '--user-site')[1].replace('\n', '')
+            sys.path.insert(0, user_site3)
+        except:  # noqa
+            pass
         for path in sys.path:
-            _cmd = path + '/hooks4git/scripts/' + cmd[1:] + '.sh'
+            builtin_path = os.path.realpath(path + '/hooks4git/scripts/')
+            ext = 'sh'  # if get_platform() in ['Linux', 'Mac', 'WindowsGitBash'] else 'bat'
+            _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1] + '.' + ext))
             if os.path.exists(_cmd):
-                cmd = _cmd
+                cmd = os.path.join(builtin_path, cmd_list[1] + '.' + ext)
+                # if get_platform() == 'WindowsGitBash':
+                #     cmd = '/' + cmd[0].lower() + cmd[2:].replace('\\','/')
                 break
+
     args.insert(0, cmd)
     args.extend(files)
-    out("STEP", "$ %s" % ' '.join(args), color=Fore.BLUE)
+
+    display_args = args[1:]
+
+    if builtin_path == "":
+        display_cmd = args[0]
+    else:
+        display_cmd = args[0].replace(builtin_path, "scripts").replace('\\', '/')
+        args.insert(0, 'bash')
+
+    out("STEP", "$ %s %s" % (display_cmd, ' '.join(display_args)), color=Fore.BLUE)
+
     code, result = system(*args)
     result = result.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
     if len(result) < 1:
@@ -223,7 +253,8 @@ def execute(cmd, files, settings):
 #         except Exception as ex:  # noqa
 #             pass
 #     return files
-
+#
+#
 def ini_as_dict(conf):
     d = dict(conf._sections)
     for k in d:
@@ -250,7 +281,8 @@ def main(cmd):
         hook = cfg.get('hooks.%s.scripts' % cmd, {})
         commands = hook.keys()
         if len(commands) > 0:
-            title = "\nhooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
+            divider()
+            title = "hooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
             title = Fore.YELLOW + Style.BRIGHT + title + Style.RESET_ALL
             print(title)
         for command_item in commands:
@@ -274,8 +306,44 @@ def main(cmd):
         raise(e)
 
 
+def get_platform():
+    platforms = {
+        'linux': 'Linux',
+        'linux1': 'Linux',
+        'linux2': 'Linux',
+        'darwin': 'Mac',
+        'win32': 'Windows',
+        'win32MINGW64': 'WindowsGitBash'
+    }
+    platform = sys.platform + os.environ.get('MSYSTEM', '')
+    if platform not in platforms:
+        return sys.platform
+    return platforms[platform]
+
+
 def divider():
-    print('—' * cmdbarwidth + '—' + '—' * (79 - 1 - cmdbarwidth))
+    dash = '-'
+    if get_platform() == 'Linux':
+        if sys.version_info[0] < 3:
+            dash = unichr(8213)  # noqa
+        else:
+            dash = chr(8213)
+    if get_platform() == 'Mac':
+        if sys.version_info[0] < 3:
+            dash = unichr(8212)  # noqa
+        else:
+            dash = chr(8212)
+    if get_platform() == 'Windows':  # CMD.exe
+        if sys.version_info[0] < 3:
+            dash = '-'
+        else:
+            dash = chr(8212)
+    if get_platform() == 'WindowsGitBash':
+        if sys.version_info[0] < 3:
+            dash = '-'
+        else:
+            dash = '-'
+    print(dash * cmdbarwidth + dash + dash * (79 - 1 - cmdbarwidth))
 
 
 def report():
@@ -291,10 +359,12 @@ def run_trigger(cmd):
         report()
         if steps_executed > 0:
             out('PASS', "All green! Good!", Fore.WHITE, Back.GREEN)
+            divider()
         sys.exit(0)
     else:
         report()
         out('FAIL', "You have failed. One or more steps failed to execute.", Fore.YELLOW, Back.RED)
+        divider()
         sys.exit(1)
 
 
