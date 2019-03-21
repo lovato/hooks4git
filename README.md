@@ -17,6 +17,10 @@ Production module is available from [Pypi](https://pypi.org/project/hooks4git), 
 
 Both can be downloaded and installed via the pip command.
 
+### More information on Git Hooks
+
+[Here](https://githooks.com).
+
 ## Getting started
 
 These instructions will show you how to install and use the application.
@@ -99,10 +103,6 @@ TIME | Execution took 0:00:00.684762
 PASS | All green! Good!
 ———————————————————————————————————————————————————————————————————————————————
  ```
-
-## More information on Git Hooks
-
-[Here](https://githooks.com).
 
 ## License
 
