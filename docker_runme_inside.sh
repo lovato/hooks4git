@@ -2,7 +2,7 @@
 echo INSTALLING from local folder /tmp/hooks4git
 echo
 cd /tmp
-pip install /tmp/hooks4git
+pip install -U /tmp/hooks4git
 echo
 mkdir /tmp/hooks4git_workdir
 cp -r /tmp/hooks4git /tmp/hooks4git_workdir
