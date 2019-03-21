@@ -121,8 +121,8 @@ See list of [contributors](../../graphs/contributors) who participated in this p
 
 ### 0.2.131
 
-* Support for Windows with GitBash
+- Support for Windows with GitBash
 
 ### 0.1.x
 
-* Initial release
+- Initial release
