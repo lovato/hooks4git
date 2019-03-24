@@ -5,8 +5,11 @@ import subprocess
 import sys
 import configparser
 import datetime
-from hooks4git import __version__
-# __version__ = 0.1
+try:
+    # This below only works if inside virtualenv you can still see sitepackages normally
+    from hooks4git import __version__
+except:  # noqa
+    __version__ = 0.2
 
 # *****************************************************************************
 # https://github.com/tartley/colorama/blob/83364bf1dc2bd5a53ca9bd0154fe21d769d6f90f/colorama/ansi.py
