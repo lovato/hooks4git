@@ -276,11 +276,13 @@ def main(cmd):
     git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
     configfile = "%s/.hooks4git.ini" % git_root
     config = configparser.ConfigParser()
+    cfg = {}
+    exception_message = ""
     try:
         config.read(configfile)
         cfg = ini_as_dict(config)
     except Exception as e:  # noqa
-        cfg = []
+        exception_message = str(e)
 
     global steps_executed
     steps_executed = 0
@@ -289,26 +291,35 @@ def main(cmd):
         scripts = cfg.get('scripts', {})
         hook = cfg.get('hooks.%s.scripts' % cmd, {})
         commands = hook.keys()
-        if len(commands) > 0:
+        # If section is ommited, app outputs absolutelly nothing to stdout
+        if 'hooks.'+cmd.lower()+'.scripts' in config.sections():
             divider()
             title = "hooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
             title = Fore.YELLOW + Style.BRIGHT + title + Style.RESET_ALL
             print(title)
-        for command_item in commands:
+            # if len(commands) == 0:
+            #     print("Somehow, nothing to do...")
+            if len(exception_message) > 0:
+                divider()
+                print("Oops! " + exception_message)
+                divider()
+                exit(1)
             divider()
-            steps_executed += 1
-            files = []
-            # if cmd == 'pre-commit':
-            #     files = get_changed_files()
-            command = scripts[hook[command_item]]
-            result = execute(command.split()[0], files, command.split()[1:])
-            if result[0] != 0:
-                no_fails = False
-                style = Fore.RED + Style.BRIGHT
-                out('FAIL', "%s'%s/%s' step failed to execute %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
-            else:
-                style = Fore.GREEN
-                out('PASS', "%s'%s/%s' step executed successfully %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
+            for command_item in commands:
+                steps_executed += 1
+                files = []
+                # if cmd == 'pre-commit':
+                #     files = get_changed_files()
+                command = scripts[hook[command_item]]
+                result = execute(command.split()[0], files, command.split()[1:])
+                if result[0] != 0:
+                    no_fails = False
+                    style = Fore.RED + Style.BRIGHT
+                    out('FAIL', "%s'%s/%s' step failed to execute %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
+                else:
+                    style = Fore.GREEN
+                    out('PASS', "%s'%s/%s' step executed successfully %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
+                divider()
         return no_fails
     except Exception as e:  # noqa
         out('ERR!', str(e), color=Fore.RED)
@@ -357,7 +368,7 @@ def divider():
 
 def report():
     if steps_executed > 0:
-        divider()
+        # divider()
         end_time = datetime.datetime.now()
         out('STEPS', '%s were executed' % steps_executed, color=Fore.BLUE)
         out('TIME', 'Execution took ' + str(end_time - start_time), color=Fore.BLUE)
