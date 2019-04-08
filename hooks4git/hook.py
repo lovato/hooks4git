@@ -193,11 +193,11 @@ def execute(cmd, files, settings):
 
     # backward compatibility to 0.1.x
     if cmd[0] == '_':
-        cmd = 'scripts/' + cmd[1:]
+        cmd = 'h4g/' + cmd[1:]
     # end
 
     cmd_list = cmd.split('/')
-    if cmd_list[0] == 'scripts':
+    if cmd_list[0] == 'h4g':
         git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
         sys.path.insert(0, git_root)
         try:
@@ -216,7 +216,7 @@ def execute(cmd, files, settings):
         except:  # noqa
             pass
         for path in sys.path:
-            builtin_path = os.path.realpath(path + '/hooks4git/scripts/')
+            builtin_path = os.path.realpath(path + '/hooks4git/h4g/')
             ext = 'sh'  # if get_platform() in ['Linux', 'Mac', 'WindowsGitBash'] else 'bat'
             _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1] + '.' + ext))
             if os.path.exists(_cmd):
@@ -233,7 +233,7 @@ def execute(cmd, files, settings):
     if builtin_path == "":
         display_cmd = args[0]
     else:
-        display_cmd = args[0].replace(builtin_path, "scripts").replace('\\', '/')
+        display_cmd = args[0].replace(builtin_path, "h4g").replace('\\', '/')
         args.insert(0, 'bash')
 
     out("STEP", "$ %s %s" % (display_cmd, ' '.join(display_args)), color=Fore.BLUE)
