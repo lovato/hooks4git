@@ -194,9 +194,11 @@ def execute(cmd, files, settings):
     # backward compatibility to 0.1.x
     if cmd[0] == '_':
         cmd = 'h4g/' + cmd[1:]
+        out('WARN', "Please upgrade your ini file to call built in scripts prefixed by 'h4g/'")
     # backward compatibility to early 0.2.x
-    if cmd[0] == 'scripts':
-        cmd = 'h4g/' + cmd[1:]
+    if cmd[0:8] == 'scripts/':
+        cmd = 'h4g/' + cmd[8:]
+        out('WARN', "Please upgrade your ini file to call built in scripts prefixed by 'h4g/'")
     # end
 
     cmd_list = cmd.split('/')

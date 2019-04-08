@@ -17,7 +17,7 @@ else
     echo Your branch \'$branch\' needs a better name to match conventions. Sorry.
     echo This rules branch naming: $valid
     echo You can try a few at https://regex101.com/
-    echo Then, please, follow these steps:
+    echo Then, please, follow these steps if needed:
     echo - http://tinyurl.com/renamegitbranches
     exit 1
 fi
