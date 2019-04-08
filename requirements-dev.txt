@@ -9,4 +9,4 @@ urllib3==1.22
 mock
 flake8
 bandit
-black
+# black
