@@ -194,6 +194,9 @@ def execute(cmd, files, settings):
     # backward compatibility to 0.1.x
     if cmd[0] == '_':
         cmd = 'h4g/' + cmd[1:]
+    # backward compatibility to early 0.2.x
+    if cmd[0] == 'scripts':
+        cmd = 'h4g/' + cmd[1:]
     # end
 
     cmd_list = cmd.split('/')
