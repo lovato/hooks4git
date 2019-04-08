@@ -114,9 +114,9 @@ class Exec:
                         src = os.path.join(setup_path, 'git/hooks', file)
                         target = os.path.join(git_path, 'hooks', file)
                         copy(src, target)
-                print("Wow! hooks4git scripts and files were installed successfully! Thanks for hooking!")
+                print("Wow! hooks4git files were installed successfully! Thanks for hooking!")
                 print("If you are a courious person, take a look at .git/hooks folder.")
-                print("TIP: If you want to get rid of the hooks, just delete the .hooks4git.ini from your project.")
+                print("TIP: To get rid of the hooks, delete the .hooks4git.ini from your project.")
             else:
                 if not standalone_run:
                     message = '*****************************************************************\n'
