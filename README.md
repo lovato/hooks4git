@@ -125,6 +125,7 @@ See list of [contributors](../../graphs/contributors) who participated in this p
 - Added docker scripts for quick clean machine testing environment
 - Better exception handling when user configures duplicate sections by mistake
 - Changed default max line length example to 119 instead of 120
+- Replaced copying code to .git/hooks and added a bash caller
 
 ### 0.1.x
 
