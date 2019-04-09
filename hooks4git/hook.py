@@ -172,22 +172,26 @@ def system(*args, **kwargs):
     """
     Run system command.
     """
-    out = ""
-    err = ""
+    result_out = ""
+    result_err = ""
     returncode = -1
     try:
         proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = proc.communicate()
-        if get_platform() == 'WindowsGitBash':
-            out = out.decode('utf-8')
-        out = str(out)
-        if get_platform() == 'WindowsGitBash':
-            err = err.decode('utf-8')
-        err = str(err)
+        try:
+            tmp_out = out.decode('utf-8')
+            result_out = str(tmp_out)
+        except Exception as e:  # noqa
+            result_out = str(out)
+        try:
+            tmp_err = err.decode('utf-8')
+            result_err = str(tmp_err)
+        except Exception as e:  # noqa
+            result_err = str(err)
         returncode = proc.returncode
     except Exception as e:  # noqa
-        err = str(e)
-    return returncode, out, err
+        err = 'maaaa' + str(e)
+    return returncode, result_out, result_err
 
 
 def execute(cmd, files, settings):
