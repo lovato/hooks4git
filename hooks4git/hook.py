@@ -151,7 +151,9 @@ def out(msg_type, msg, color='', bgcolor=''):
     if msg_type == 'FAIL':
         if color == '':
             color = Fore.RED
-    if msg_type == 'OUT':
+    if msg_type == 'SOUT':
+        style = Style.DIM
+    if msg_type == 'SERR':
         style = Style.DIM
     if msg_type == 'INFO':
         if color == '':
@@ -170,16 +172,26 @@ def system(*args, **kwargs):
     """
     Run system command.
     """
+    result_out = ""
+    result_err = ""
+    returncode = -1
     try:
-        proc = subprocess.Popen(args, stdout=subprocess.PIPE)
-        out = proc.communicate()[0]
-        out = out.decode('utf-8')
-        out = str(out)
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+        try:
+            tmp_out = out.decode('utf-8')
+            result_out = str(tmp_out)
+        except Exception as e:  # noqa
+            result_out = str(out)
+        try:
+            tmp_err = err.decode('utf-8')
+            result_err = str(tmp_err)
+        except Exception as e:  # noqa
+            result_err = str(err)
         returncode = proc.returncode
     except Exception as e:  # noqa
-        out = str(e)
-        returncode = -1
-    return returncode, out
+        err = str(e)
+    return returncode, result_out, result_err
 
 
 def execute(cmd, files, settings):
@@ -193,11 +205,16 @@ def execute(cmd, files, settings):
 
     # backward compatibility to 0.1.x
     if cmd[0] == '_':
-        cmd = 'scripts/' + cmd[1:]
+        cmd = 'h4g/' + cmd[1:]
+        out('WARN', "Please upgrade your ini file to call built in scripts prefixed by 'h4g/'")
+    # backward compatibility to early 0.2.x
+    if cmd[0:8] == 'scripts/':
+        cmd = 'h4g/' + cmd[8:]
+        out('WARN', "Please upgrade your ini file to call built in scripts prefixed by 'h4g/'")
     # end
 
     cmd_list = cmd.split('/')
-    if cmd_list[0] == 'scripts':
+    if cmd_list[0] == 'h4g':
         git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
         sys.path.insert(0, git_root)
         try:
@@ -216,7 +233,7 @@ def execute(cmd, files, settings):
         except:  # noqa
             pass
         for path in sys.path:
-            builtin_path = os.path.realpath(path + '/hooks4git/scripts/')
+            builtin_path = os.path.realpath(path + '/hooks4git/h4g/')
             ext = 'sh'  # if get_platform() in ['Linux', 'Mac', 'WindowsGitBash'] else 'bat'
             _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1] + '.' + ext))
             if os.path.exists(_cmd):
@@ -233,17 +250,18 @@ def execute(cmd, files, settings):
     if builtin_path == "":
         display_cmd = args[0]
     else:
-        display_cmd = args[0].replace(builtin_path, "scripts").replace('\\', '/')
+        display_cmd = args[0].replace(builtin_path, "h4g").replace('\\', '/')
         args.insert(0, 'bash')
 
     out("STEP", "$ %s %s" % (display_cmd, ' '.join(display_args)), color=Fore.BLUE)
 
-    code, result = system(*args)
+    code, result, err = system(*args)
     result = result.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
-    if len(result) < 1:
-        result = 'None'
-    # result = ''.ljust(cmdbarwidth)+'| ' + result + Style.RESET_ALL
-    out('OUT', "%s%s%s" % (Style.DIM, result, Style.RESET_ALL))
+    err = err.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
+    if len(result) > 0:
+        out('SOUT', "%s%s%s" % (Style.DIM, result, Style.RESET_ALL))
+    if len(err) > 0:
+        out('SERR', "%s%s%s" % (Style.DIM, err, Style.RESET_ALL))
     return code, result
 
 
@@ -264,23 +282,28 @@ def execute(cmd, files, settings):
 #     return files
 #
 #
-def ini_as_dict(conf):
-    d = dict(conf._sections)
-    for k in d:
-        d[k] = dict(conf._defaults, **d[k])
-        d[k].pop('__name__', None)
-    return d
+
+
+# def ini_as_dict(conf):
+#     d = dict(conf._sections)
+#     for k in d:
+#         d[k] = dict(conf._defaults, **d[k])
+#         d[k].pop('__name__', None)
+#     return d
 
 
 def main(cmd):
     git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
     configfile = "%s/.hooks4git.ini" % git_root
     config = configparser.ConfigParser()
+    cfg = {}
+    exception_message = ""
     try:
         config.read(configfile)
-        cfg = ini_as_dict(config)
+        cfg = dict(config._sections)
+        # cfg = ini_as_dict(config)
     except Exception as e:  # noqa
-        cfg = []
+        exception_message = str(e)
 
     global steps_executed
     steps_executed = 0
@@ -289,26 +312,35 @@ def main(cmd):
         scripts = cfg.get('scripts', {})
         hook = cfg.get('hooks.%s.scripts' % cmd, {})
         commands = hook.keys()
-        if len(commands) > 0:
+        # If section is ommited, app outputs absolutelly nothing to stdout
+        if 'hooks.'+cmd.lower()+'.scripts' in config.sections():
             divider()
             title = "hooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
             title = Fore.YELLOW + Style.BRIGHT + title + Style.RESET_ALL
             print(title)
-        for command_item in commands:
+            # if len(commands) == 0:
+            #     print("Somehow, nothing to do...")
+            if len(exception_message) > 0:
+                divider()
+                print("Oops! " + exception_message)
+                divider()
+                exit(1)
             divider()
-            steps_executed += 1
-            files = []
-            # if cmd == 'pre-commit':
-            #     files = get_changed_files()
-            command = scripts[hook[command_item]]
-            result = execute(command.split()[0], files, command.split()[1:])
-            if result[0] != 0:
-                no_fails = False
-                style = Fore.RED + Style.BRIGHT
-                out('FAIL', "%s'%s/%s' step failed to execute %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
-            else:
-                style = Fore.GREEN
-                out('PASS', "%s'%s/%s' step executed successfully %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
+            for command_item in commands:
+                steps_executed += 1
+                files = []
+                # if cmd == 'pre-commit':
+                #     files = get_changed_files()
+                command = scripts[hook[command_item]]
+                result = execute(command.split()[0], files, command.split()[1:])
+                if result[0] != 0:
+                    no_fails = False
+                    style = Fore.RED + Style.BRIGHT
+                    out('FAIL', "%s'%s/%s' step failed to execute %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
+                else:
+                    style = Fore.GREEN
+                    out('PASS', "%s'%s/%s' step executed successfully %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
+                divider()
         return no_fails
     except Exception as e:  # noqa
         out('ERR!', str(e), color=Fore.RED)
@@ -357,7 +389,7 @@ def divider():
 
 def report():
     if steps_executed > 0:
-        divider()
+        # divider()
         end_time = datetime.datetime.now()
         out('STEPS', '%s were executed' % steps_executed, color=Fore.BLUE)
         out('TIME', 'Execution took ' + str(end_time - start_time), color=Fore.BLUE)

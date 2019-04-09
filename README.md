@@ -61,7 +61,7 @@ Example section for pre-commit, for Python:
 
  ```bash
 [scripts]
-flake8 = flake8 --max-line-length=120 --exclude .git,build,dist,.env,.venv
+flake8 = flake8 --max-line-length=119 --exclude .git,build,dist,.env,.venv
 nosetests = nosetests --with-coverage
 
 [hooks.pre-commit.scripts]
@@ -84,7 +84,7 @@ Note: All scripts you add here need to be available on your PATH for execution. 
 
 #### Built-in Scripts
 
-Currently, there is only one available built-in script, called 'check_branch_name.sh'. If you want to use, just follow the exemple on the default .ini file, on sub-section 'checkbranch'. This is the way to trigger built-in scripts, prefixing them with 'scripts/'. On 0.1 release, I was using a '_' character for built-in scripts, but that caused so many headaches, mainly when trying to make this work inside GitBash for windows (ok, that was because I was actually trying to call a bat file ... then I gave up).
+Currently, there is only one available built-in script, called 'check_branch_name.sh'. If you want to use, just follow the exemple on the default .ini file, on sub-section 'checkbranch'. This is the way to trigger built-in scripts, prefixing them with 'h4g/'. On 0.1 release, I was using a '_' character for built-in scripts, but that caused so many headaches, mainly when trying to make this work inside GitBash for windows (ok, that was because I was actually trying to call a bat file ... then I gave it up). I also tried once calling 'scripts', but it may confuse with a local 'scripts' folder on the project.
 
 ### Output
 
@@ -94,7 +94,7 @@ Here is a sample output for a Python configuration, with Flake8 (black and white
 ———————————————————————————————————————————————————————————————————————————————
 hooks4git v0.2.x :: Pre-Commit :: hook triggered
 ———————————————————————————————————————————————————————————————————————————————
-STEP | $ flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
+STEP | $ flake8 --max-line-length=119 --exclude .git,__pycache__,build,dist
 OUT  | None
 PASS | 'flake8' step executed successfully
 ———————————————————————————————————————————————————————————————————————————————
@@ -123,6 +123,10 @@ See list of [contributors](../../graphs/contributors) who participated in this p
 
 - Support for Windows with GitBash
 - Added docker scripts for quick clean machine testing environment
+- Better exception handling when user configures duplicate sections by mistake
+- Changed default max line length example to 119 instead of 120
+- Replaced copying code to .git/hooks with a safe bash caller
+- Replaced '_' folder (or 'scripts' folder) with 'h4g' folder for internal scripts
 
 ### 0.1.x
 

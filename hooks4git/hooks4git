@@ -16,22 +16,27 @@ def parse_args(args):
     Returns:
       :obj:`argparse.Namespace`: command line parameters namespace
     """
-    parser = argparse.ArgumentParser(description="hooks4git")
+    parser = argparse.ArgumentParser(description="Extensible Hook System for GIT")
+
+    if len(sys.argv) < 2:
+        parser.print_usage()
+        sys.exit(1)
+
     parser.add_argument(
         "-v",
         "--version",
         action="version",
-        version=""  # "hooks4git {ver}".format(ver=__version__),
+        version="hooks4git {ver}".format(ver=__version__),
     )
     parser.add_argument(
         "--init",
         dest="init",
         action="store_const",
-        help="Install hooks4git on current repository",
+        help="Install hooks4git on current repository (.git/hooks)",
         const=True,
     )
     parser.add_argument(
-        "-t", "--trigger", dest="git_hook", help="Select which hook to trigger"
+        "-t", "--trigger", dest="git_hook", help="Select which hook to trigger manually"
     )
     return parser.parse_args(args)
 
@@ -43,6 +48,7 @@ def main(args):
       args ([str]): command line parameter list
     """
     args = parse_args(args)
+
     if args.init:
         Exec.add_hooks()
     else:
@@ -53,7 +59,6 @@ def main(args):
 def run():
     """Entry point for console_scripts
     """
-    print("hooks4git v" + __version__)
     main(sys.argv[1:])
 
 

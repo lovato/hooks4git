@@ -6,7 +6,7 @@ include LICENSE
 include README.md
 
 recursive-include hooks4git/git *
-recursive-include hooks4git/scripts *
+recursive-include hooks4git/h4g *
 
 recursive-exclude tests *
 recursive-exclude * __pycache__
