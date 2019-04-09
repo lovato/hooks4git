@@ -190,7 +190,7 @@ def system(*args, **kwargs):
             result_err = str(err)
         returncode = proc.returncode
     except Exception as e:  # noqa
-        err = 'maaaa' + str(e)
+        err = str(e)
     return returncode, result_out, result_err
 
 
