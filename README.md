@@ -31,9 +31,9 @@ Supported OSs are Linux, MAC and Windows. However, I was not able to make it wor
 
 ### Installation
 
- ```bash
- pip3 install hooks4git --user
- ```
+```bash
+pip3 install hooks4git --user
+```
 
 Depending on your setup, you might want to use `pip3` instead of `pip`.
 
@@ -43,15 +43,15 @@ In this case, a script called `hooks4git` will be available all the time, to hoo
 By running this script, hooks will be applied. Please note you need to manually keep upgrading your system tools, like you do for others, like pip itself.
 You probably added virtualenv and others with sudo. If in doubt, please take a look at source files.
 
-### Usage
+### CLI Usage
 
 After installation, your repo needs to be hooked for all events. Prior version used YAML for configuration management, but that caused PyYAML to be a dependency, and things went a little wrong when running it as a tool. So I choose .ini files over .json files (both have Python native parsers) because it looked less ugly.
 
 Inside your git repository, just type:
 
- ```bash
+```bash
 hooks4git --init
- ```
+```
 
 And get all your regular non-sense-hard-to-use-and-hard-to-maintain-and-hard-to-share hook scripts updated.
 Then, you just need to open [.hooks4git.ini](hooks4git/.hooks4git.ini) file on the root of your project and configure it the way you want.
@@ -59,18 +59,18 @@ This first example section is meant for Python, but you can use any tool you wan
 
 Example section for pre-commit, for Python:
 
- ```bash
+```bash
 [scripts]
 flake8 = flake8 --max-line-length=119 --exclude .git,build,dist,.env,.venv
 nosetests = nosetests --with-coverage
 
 [hooks.pre-commit.scripts]
 check = flake8
- ```
+```
 
 It also could be for NodeJS:
 
- ```bash
+```bash
 [scripts]
 eslint = eslint -f checkstyle index.js > checkstyle-result.xml
 jshint = jshint *.js
@@ -78,19 +78,29 @@ jshint = jshint *.js
 [hooks.pre-commit.scripts]
 check_a = eslint
 check_b = jslint
- ```
+```
 
 Note: All scripts you add here need to be available on your PATH for execution. So you need to make all of them depedencies on your current project, no matter the language it is written with. Per default, the available hooks are only `echo` commands, which will always pass!
 
-#### Built-in Scripts
+### CI Usage
 
-Currently, there is only one available built-in script, called 'check_branch_name.sh'. If you want to use, just follow the exemple on the default .ini file, on sub-section 'checkbranch'. This is the way to trigger built-in scripts, prefixing them with 'h4g/'. On 0.1 release, I was using a '_' character for built-in scripts, but that caused so many headaches, mainly when trying to make this work inside GitBash for windows (ok, that was because I was actually trying to call a bat file ... then I gave it up). I also tried once calling 'scripts', but it may confuse with a local 'scripts' folder on the project.
+When running inside CI, if you manage to have `hooks4git` package available, you can force trigger a hook this way:
+
+```bash
+hooks4git -t pre-commit
+```
+
+This will run the very same set of scrips you ran on your development workstation prior to the commit.
+
+### Built-in Scripts
+
+Currently, there is only one available built-in script, called 'check*branch_name.sh'. If you want to use, just follow the exemple on the default .ini file, on sub-section 'checkbranch'. This is the way to trigger built-in scripts, prefixing them with 'h4g/'. On 0.1 release, I was using a '*' character for built-in scripts, but that caused so many headaches, mainly when trying to make this work inside GitBash for windows (ok, that was because I was actually trying to call a bat file ... then I gave it up). I also tried once calling 'scripts', but it may confuse with a local 'scripts' folder on the project.
 
 ### Output
 
 Here is a sample output for a Python configuration, with Flake8 (black and white... it has actually a full colored output):
 
- ```bash
+```bash
 ———————————————————————————————————————————————————————————————————————————————
 hooks4git v0.2.x :: Pre-Commit :: hook triggered
 ———————————————————————————————————————————————————————————————————————————————
@@ -102,7 +112,7 @@ STEPS| 1 were executed
 TIME | Execution took 0:00:00.684762
 PASS | All green! Good!
 ———————————————————————————————————————————————————————————————————————————————
- ```
+```
 
 ## License
 
@@ -126,7 +136,9 @@ See list of [contributors](../../graphs/contributors) who participated in this p
 - Better exception handling when user configures duplicate sections by mistake
 - Changed default max line length example to 119 instead of 120
 - Replaced copying code to .git/hooks with a safe bash caller
-- Replaced '_' folder (or 'scripts' folder) with 'h4g' folder for internal scripts
+- Replaced '\_' folder (or 'scripts' folder) with 'h4g' folder for internal scripts
+- FIXED: Script order inside a hook definition was random
+- Standard Error is nao being handled and printed accordingly
 
 ### 0.1.x
 
