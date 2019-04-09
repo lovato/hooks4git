@@ -269,12 +269,14 @@ def execute(cmd, files, settings):
 #     return files
 #
 #
-def ini_as_dict(conf):
-    d = dict(conf._sections)
-    for k in d:
-        d[k] = dict(conf._defaults, **d[k])
-        d[k].pop('__name__', None)
-    return d
+
+
+# def ini_as_dict(conf):
+#     d = dict(conf._sections)
+#     for k in d:
+#         d[k] = dict(conf._defaults, **d[k])
+#         d[k].pop('__name__', None)
+#     return d
 
 
 def main(cmd):
@@ -285,7 +287,8 @@ def main(cmd):
     exception_message = ""
     try:
         config.read(configfile)
-        cfg = ini_as_dict(config)
+        cfg = dict(config._sections)
+        # cfg = ini_as_dict(config)
     except Exception as e:  # noqa
         exception_message = str(e)
 
