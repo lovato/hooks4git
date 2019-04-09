@@ -178,9 +178,11 @@ def system(*args, **kwargs):
     try:
         proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = proc.communicate()
-        # out = out.decode('utf-8')
+        if get_platform() == 'WindowsGitBash':
+            out = out.decode('utf-8')
         out = str(out)
-        # err = err.decode('utf-8')
+        if get_platform() == 'WindowsGitBash':
+            err = err.decode('utf-8')
         err = str(err)
         returncode = proc.returncode
     except Exception as e:  # noqa
