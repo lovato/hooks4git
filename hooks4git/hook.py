@@ -151,7 +151,9 @@ def out(msg_type, msg, color='', bgcolor=''):
     if msg_type == 'FAIL':
         if color == '':
             color = Fore.RED
-    if msg_type == 'OUT':
+    if msg_type == 'SOUT':
+        style = Style.DIM
+    if msg_type == 'SERR':
         style = Style.DIM
     if msg_type == 'INFO':
         if color == '':
@@ -170,16 +172,20 @@ def system(*args, **kwargs):
     """
     Run system command.
     """
+    out = ""
+    err = ""
+    returncode = -1
     try:
-        proc = subprocess.Popen(args, stdout=subprocess.PIPE)
-        out = proc.communicate()[0]
-        out = out.decode('utf-8')
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+        # out = out.decode('utf-8')
         out = str(out)
+        # err = err.decode('utf-8')
+        err = str(err)
         returncode = proc.returncode
     except Exception as e:  # noqa
-        out = str(e)
-        returncode = -1
-    return returncode, out
+        err = str(e)
+    return returncode, out, err
 
 
 def execute(cmd, files, settings):
@@ -243,12 +249,13 @@ def execute(cmd, files, settings):
 
     out("STEP", "$ %s %s" % (display_cmd, ' '.join(display_args)), color=Fore.BLUE)
 
-    code, result = system(*args)
+    code, result, err = system(*args)
     result = result.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
-    if len(result) < 1:
-        result = 'None'
-    # result = ''.ljust(cmdbarwidth)+'| ' + result + Style.RESET_ALL
-    out('OUT', "%s%s%s" % (Style.DIM, result, Style.RESET_ALL))
+    err = err.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
+    if len(result) > 0:
+        out('SOUT', "%s%s%s" % (Style.DIM, result, Style.RESET_ALL))
+    if len(err) > 0:
+        out('SERR', "%s%s%s" % (Style.DIM, err, Style.RESET_ALL))
     return code, result
 
 
