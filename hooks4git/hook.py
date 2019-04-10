@@ -5,11 +5,7 @@ import subprocess
 import sys
 import configparser
 import datetime
-try:
-    # This below only works if inside virtualenv you can still see sitepackages normally
-    from hooks4git import __version__
-except:  # noqa
-    __version__ = 0.2
+from hooks4git import __version__
 
 # *****************************************************************************
 # https://github.com/tartley/colorama/blob/83364bf1dc2bd5a53ca9bd0154fe21d769d6f90f/colorama/ansi.py
@@ -143,29 +139,56 @@ Cursor = AnsiCursor()
 cmdbarwidth = 5
 steps_executed = 0
 start_time = datetime.datetime.now()
+ci_output = False
 
 
-def out(msg_type, msg, color='', bgcolor=''):
+def out(msg_type, msg):
     label = msg_type
-    style = Style.BRIGHT
-    if msg_type == 'FAIL':
-        if color == '':
+    prefix = ""
+    color = ""
+    bgcolor = ""
+    msg_color = ""
+    style = ""
+    msg_style = ""
+    reset = ""
+    if ci_output is not True:
+        style = Style.BRIGHT
+        reset = Style.RESET_ALL
+        if msg_type == 'FAIL':
             color = Fore.RED
-    if msg_type == 'SOUT':
-        style = Style.DIM
-    if msg_type == 'SERR':
-        style = Style.DIM
-    if msg_type == 'INFO':
-        if color == '':
+        if msg_type == 'SOUT':
+            style = Style.DIM
+            msg_style = Style.DIM
+        if msg_type == 'SERR':
+            style = Style.DIM
+            msg_style = Style.DIM
+        if msg_type == 'INFO':
             color = Fore.BLUE
-    if msg_type == 'WARN':
-        if color == '':
+        if msg_type == 'TITLE':
+            msg_color = Fore.YELLOW
+            msg_style = Style.BRIGHT
+        if msg_type == 'WARN':
             color = Fore.YELLOW
-    if msg_type == 'PASS':
-        if color == '':
+        if msg_type in ['STEP', 'STEPS', 'TIME']:
+            color = Fore.BLUE
+        if msg_type == 'ERR!':
+            color = Fore.RED
+        if msg_type == 'PASS':
             color = Fore.GREEN
-    label = label.ljust(cmdbarwidth)
-    print(style + color + bgcolor + label + '|' + Style.RESET_ALL + color + ' ' + Style.RESET_ALL + msg)
+            msg_color = Fore.GREEN
+        if msg_type == 'FAIL':
+            color = Fore.RED
+            msg_color = Fore.RED
+            msg_style = Style.BRIGHT
+        if msg_type == 'PASS ':
+            color = Fore.WHITE
+            bgcolor = Back.GREEN
+        if msg_type == 'FAIL ':
+            color = Fore.YELLOW
+            bgcolor = Back.RED
+    if msg_type not in ['DIV', 'TITLE']:
+        prefix = label.ljust(cmdbarwidth) + '|' + reset + color + ' '
+    print(style + color + bgcolor + prefix + reset + msg_style + msg_color + msg + reset)
 
 
 def system(*args, **kwargs):
@@ -253,16 +276,16 @@ def execute(cmd, files, settings):
         display_cmd = args[0].replace(builtin_path, "h4g").replace('\\', '/')
         args.insert(0, 'bash')
 
-    out("STEP", "$ %s %s" % (display_cmd, ' '.join(display_args)), color=Fore.BLUE)
+    out("STEP", "$ %s %s" % (display_cmd, ' '.join(display_args)))
 
     code, result, err = system(*args)
     result = result.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
     err = err.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
     if len(result) > 0:
-        out('SOUT', "%s%s%s" % (Style.DIM, result, Style.RESET_ALL))
+        out('SOUT', result)
     if len(err) > 0:
-        out('SERR', "%s%s%s" % (Style.DIM, err, Style.RESET_ALL))
-    return code, result
+        out('SERR', err)
+    return code, result, err
 
 
 # def get_changed_files():
@@ -316,8 +339,7 @@ def main(cmd):
         if 'hooks.'+cmd.lower()+'.scripts' in config.sections():
             divider()
             title = "hooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
-            title = Fore.YELLOW + Style.BRIGHT + title + Style.RESET_ALL
-            print(title)
+            out('TITLE', title)
             # if len(commands) == 0:
             #     print("Somehow, nothing to do...")
             if len(exception_message) > 0:
@@ -335,15 +357,13 @@ def main(cmd):
                 result = execute(command.split()[0], files, command.split()[1:])
                 if result[0] != 0:
                     no_fails = False
-                    style = Fore.RED + Style.BRIGHT
-                    out('FAIL', "%s'%s/%s' step failed to execute %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
+                    out('FAIL', "'%s/%s' step failed to execute" % (command_item, hook[command_item]))  # noqa
                 else:
-                    style = Fore.GREEN
-                    out('PASS', "%s'%s/%s' step executed successfully %s" % (style, command_item, hook[command_item], Style.RESET_ALL))  # noqa
+                    out('PASS', "'%s/%s' step executed successfully" % (command_item, hook[command_item]))  # noqa
                 divider()
         return no_fails
     except Exception as e:  # noqa
-        out('ERR!', str(e), color=Fore.RED)
+        out('ERR!', str(e))
         raise(e)
 
 
@@ -384,30 +404,32 @@ def divider():
             dash = '-'
         else:
             dash = '-'
-    print(dash * cmdbarwidth + dash + dash * (79 - 1 - cmdbarwidth))
+    out('DIV', dash * cmdbarwidth + dash + dash * (79 - 1 - cmdbarwidth))
 
 
 def report():
     if steps_executed > 0:
         # divider()
         end_time = datetime.datetime.now()
-        out('STEPS', '%s were executed' % steps_executed, color=Fore.BLUE)
-        out('TIME', 'Execution took ' + str(end_time - start_time), color=Fore.BLUE)
+        if steps_executed > 1:
+            to_be = 'were'
+        else:
+            to_be = 'was'
+        out('STEPS', '%s %s executed' % (steps_executed, to_be))
+        out('TIME', 'Execution took ' + str(end_time - start_time))
 
 
-def run_trigger(cmd):
+def run_trigger(cmd, ci):
+    global ci_output
+    ci_output = ci
     if main(cmd):
         report()
         if steps_executed > 0:
-            out('PASS', "All green! Good!", Fore.WHITE, Back.GREEN)
+            out('PASS ', "All green! Good!")
             divider()
         sys.exit(0)
     else:
         report()
-        out('FAIL', "You have failed. One or more steps failed to execute.", Fore.YELLOW, Back.RED)
+        out('FAIL ', "You have failed. One or more steps failed to execute.")
         divider()
         sys.exit(1)
-
-
-if __name__ == '__main__':
-    run_trigger(os.path.basename(__file__))

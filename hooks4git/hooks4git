@@ -22,12 +22,7 @@ def parse_args(args):
         parser.print_usage()
         sys.exit(1)
 
-    parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version="hooks4git {ver}".format(ver=__version__),
-    )
+    parser.add_argument("-v", "--version", action="version", version="hooks4git {ver}".format(ver=__version__))
     parser.add_argument(
         "--init",
         dest="init",
@@ -36,8 +31,13 @@ def parse_args(args):
         const=True,
     )
     parser.add_argument(
-        "-t", "--trigger", dest="git_hook", help="Select which hook to trigger manually"
+        "--ci",
+        dest="ci",
+        action="store_const",
+        help="Tells hooks4git to not use colors, so output on CI will look good",
+        const=True,
     )
+    parser.add_argument("-t", "--trigger", dest="git_hook", help="Select which hook to trigger manually")
     return parser.parse_args(args)
 
 
@@ -53,7 +53,7 @@ def main(args):
         Exec.add_hooks()
     else:
         if args.git_hook:
-            run_trigger(args.git_hook)
+            run_trigger(args.git_hook, args.ci)
 
 
 def run():
