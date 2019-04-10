@@ -87,10 +87,11 @@ Note: All scripts you add here need to be available on your PATH for execution. 
 When running inside CI, if you manage to have `hooks4git` package available, you can force trigger a hook this way:
 
 ```bash
-hooks4git -t pre-commit
+hooks4git -t pre-commit --ci
 ```
 
 This will run the very same set of scrips you ran on your development workstation prior to the commit.
+The `--ci` parameter tells hooks4git to not print in nice colors, just plain strings.
 
 ### Built-in Scripts
 
@@ -98,7 +99,7 @@ Currently, there is only one available built-in script, called 'check*branch_nam
 
 ### Output
 
-Here is a sample output for a Python configuration, with Flake8 (black and white... it has actually a full colored output):
+Here is a sample output for a Python configuration, with Flake8 (black and white... it has actually a full colored output if --ci parameter is not issued):
 
 ```bash
 ———————————————————————————————————————————————————————————————————————————————
@@ -128,6 +129,11 @@ See list of [contributors](../../graphs/contributors) who participated in this p
 - [Collins Abitekaniza](https://github.com/collin5/precommit-hook) (where I forked from)
 
 ## Change Log
+
+### 0.3.x
+
+- Major rework on how strings are printed out
+- Added --ci parameter, so no color will be printed out
 
 ### 0.2.x
 
