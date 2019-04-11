@@ -53,7 +53,10 @@ def main(args):
         Exec.add_hooks()
     else:
         if args.git_hook:
-            run_trigger(args.git_hook, args.ci)
+            ci = False
+            if args.ci:
+                ci = True
+            run_trigger(args.git_hook, ci)
 
 
 def run():

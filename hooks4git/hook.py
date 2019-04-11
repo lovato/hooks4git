@@ -419,7 +419,7 @@ def report():
         out('TIME', 'Execution took ' + str(end_time - start_time))
 
 
-def run_trigger(cmd, ci):
+def run_trigger(cmd, ci=False):
     global ci_output
     ci_output = ci
     if main(cmd):
