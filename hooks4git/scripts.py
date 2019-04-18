@@ -107,8 +107,9 @@ class Exec:
                 try:
                     print("Looks like your '.git/hooks' folder is missing. Let's try to fix this...")
                     os.makedirs(hooks_path)
-                finally:
                     print("Cool! '.git/hooks' folder was created.")
+                except:  # noqa
+                    pass
             if os.path.isdir(hooks_path):
                 origin_config = os.path.join(setup_path, '.hooks4git.ini')
                 target_config = os.path.join(path, '.hooks4git.ini')
