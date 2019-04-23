@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from setuptools.command.install import install
+# from setuptools.command.install import install
 import sys
 import os
 import shutil
-import subprocess
+from hooks4git.hook import system
 from hooks4git import __version__
 import ast
 
@@ -65,21 +65,25 @@ def copy(src, dest):
         shutil.copy(src, dest)
 
 
-def system(*args, **kwargs):
-    """
-    Run system command.
-    """
-    try:
-        kwargs.setdefault('stdout', subprocess.PIPE)
-        proc = subprocess.Popen(args, **kwargs)
-        out = proc.communicate()[0]
-        out = out.decode('utf-8')
-        out = str(out)
-        returncode = proc.returncode
-    except Exception as e:  # noqa
-        out = str(e)
-        returncode = -1
-    return returncode, out
+def get_hooks_path(git_root_path):
+    if git_root_path is None:
+        print("I am afraid I can't to that. You are not inside a GIT repo. Reach one and re-run this tool.")
+        return None
+    if git_root_path.endswith("/.git") is False:
+        print("Humm, this is odd. Your GIT repo must have a .git folder. Looks like you are not inside a GIT repo.")  # noqa
+        return None
+    hooks_path = os.path.join(git_root_path, "hooks")
+    if not os.path.isdir(hooks_path):
+        message = "Looks like your '.git/hooks' folder is missing."
+        print("%s Let's try to fix this..." % message)
+        try:
+            os.makedirs(hooks_path)
+            print("Cool! '.git/hooks' folder was created.")
+            return hooks_path
+        except:  # noqa
+            return None
+    else:
+        return hooks_path
 
 
 class Exec:
@@ -99,45 +103,22 @@ class Exec:
         except:  # noqa
             git_path = None
 
-        if git_path:
-            path = os.path.abspath(path)
-            setup_path = os.path.abspath(setup_path)
-            hooks_path = os.path.join(git_path, "hooks")
-            if not os.path.isdir(hooks_path):
-                print("Looks like your '.git/hooks' folder is missing. Let's try to fix this...")
-                try:
-                    os.makedirs(hooks_path)
-                    print("Cool! '.git/hooks' folder was created.")
-                except:  # noqa
-                    pass
-            if os.path.isdir(hooks_path):
-                origin_config = os.path.join(setup_path, '.hooks4git.ini')
-                target_config = os.path.join(path, '.hooks4git.ini')
-                if os.path.isfile(target_config):
-                    target_config = target_config.replace('.ini', '-' + __version__ + '.ini')
-                copy(origin_config, target_config)
-                files_to_copy = system('ls', os.path.join(setup_path, 'git/hooks'))
-                for file in files_to_copy[1].split('\n'):
-                    if file not in ['__pycache__', '', 'hooks4git.py']:
-                        src = os.path.join(setup_path, 'git/hooks', file)
-                        target = os.path.join(git_path, 'hooks', file)
-                        copy(src, target)
-                print("Wow! hooks4git files were installed successfully! Thanks for hooking!")
-                print("If you are a courious person, take a look at .git/hooks folder.")
-                print("TIP: To get rid of the hooks, delete the .hooks4git.ini from your project.")
-            else:
-                if not standalone_run:
-                    message = '*****************************************************************\n'
-                    message += '* hooks4git is installed. Just run "hooks4git" to install the hooks.'
-                    print(message)
-                else:
-                    print("I am afraid I can't to that. Looks like your .git folder is not standard.")
-        else:
-            print("I am afraid I can't to that. You are not inside a GIT repo. Reach one and re-run this tool.")
+        path = os.path.abspath(path)
+        setup_path = os.path.abspath(setup_path)
+        hooks_path = get_hooks_path(git_path)
+        if hooks_path:
+            origin_config = os.path.join(setup_path, '.hooks4git.ini')
+            target_config = os.path.join(path, '.hooks4git.ini')
+            if os.path.isfile(target_config):
+                target_config = target_config.replace('.ini', '-' + __version__ + '.ini')
+            copy(origin_config, target_config)
+            files_to_copy = system('ls', os.path.join(setup_path, 'git/hooks'))
+            for file in files_to_copy[1].split('\n'):
+                if file not in ['__pycache__', '', 'hooks4git.py']:
+                    src = os.path.join(setup_path, 'git/hooks', file)
+                    target = os.path.join(git_path, 'hooks', file)
+                    copy(src, target)
+            print("Wow! hooks4git files were installed successfully! Thanks for hooking!")
+            print("If you are a courious person, take a look at .git/hooks folder.")
+            print("TIP: To get rid of hooks, comment lines on the .hooks4git.ini file.")
         return True
-
-
-class Post_install(install):
-    def run(self):
-        install.run(self)
-        Exec.add_hooks()
