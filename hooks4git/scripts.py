@@ -4,7 +4,7 @@ from setuptools.command.install import install
 import sys
 import os
 import shutil
-import subprocess
+from hooks4git.hook import system
 from hooks4git import __version__
 import ast
 
@@ -89,23 +89,6 @@ def get_hooks_path(git_root_path, hooks_folder_name="hooks", create_if_missing=F
         return hooks_path
 
 
-def system(*args, **kwargs):
-    """
-    Run system command.
-    """
-    try:
-        kwargs.setdefault('stdout', subprocess.PIPE)
-        proc = subprocess.Popen(args, **kwargs)
-        out = proc.communicate()[0]
-        out = out.decode('utf-8')
-        out = str(out)
-        returncode = proc.returncode
-    except Exception as e:  # noqa
-        out = str(e)
-        returncode = -1
-    return returncode, out
-
-
 class Exec:
     @staticmethod
     def add_hooks(path=os.environ["PWD"]):
@@ -140,7 +123,7 @@ class Exec:
                     copy(src, target)
             print("Wow! hooks4git files were installed successfully! Thanks for hooking!")
             print("If you are a courious person, take a look at .git/hooks folder.")
-            print("TIP: To get rid of the hooks, delete the .hooks4git.ini from your project.")
+            print("TIP: To get rid of hooks, comment lines on the .hooks4git.ini file.")
         # else:
         #     if not standalone_run:
         #         message = '*****************************************************************\n'
