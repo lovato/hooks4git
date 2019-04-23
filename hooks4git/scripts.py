@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from setuptools.command.install import install
+# from setuptools.command.install import install
 import sys
 import os
 import shutil
@@ -134,7 +134,7 @@ class Exec:
         return True
 
 
-class Post_install(install):
-    def run(self):
-        install.run(self)
-        Exec.add_hooks()
+# class Post_install(install):
+#     def run(self):
+#         install.run(self)
+#         Exec.add_hooks()
