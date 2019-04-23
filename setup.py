@@ -48,8 +48,5 @@ setup(
         'dev': [requirements_dev.split('\n')]
     },
     scripts=["hooks4git/hooks4git"],
-    # cmdclass={
-    #         "install": Post_install,
-    # },
     zip_safe=True
 )

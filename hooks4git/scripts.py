@@ -121,17 +121,4 @@ class Exec:
             print("Wow! hooks4git files were installed successfully! Thanks for hooking!")
             print("If you are a courious person, take a look at .git/hooks folder.")
             print("TIP: To get rid of hooks, comment lines on the .hooks4git.ini file.")
-        # else:
-        #     if not standalone_run:
-        #         message = '*****************************************************************\n'
-        #         message += '* hooks4git is installed. Just run "hooks4git" to install the hooks.'
-        #         print(message)
-        #     else:
-        #         print("I am afraid I can't to that. Looks like your .git folder is not standard.")
         return True
-
-
-# class Post_install(install):
-#     def run(self):
-#         install.run(self)
-#         Exec.add_hooks()
