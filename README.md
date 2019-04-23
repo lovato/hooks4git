@@ -32,7 +32,7 @@ Supported OSs are Linux, MAC and Windows. However, I was not able to make it wor
 ### Installation
 
 ```bash
-pip3 install hooks4git --user
+pip install hooks4git --user
 ```
 
 Depending on your setup, you might want to use `pip3` instead of `pip`.
@@ -103,7 +103,7 @@ Here is a sample output for a Python configuration, with Flake8 (black and white
 
 ```bash
 ———————————————————————————————————————————————————————————————————————————————
-hooks4git v0.2.x :: Pre-Commit :: hook triggered
+hooks4git v0.3.x :: Pre-Commit :: hook triggered
 ———————————————————————————————————————————————————————————————————————————————
 STEP | $ flake8 --max-line-length=119 --exclude .git,__pycache__,build,dist
 OUT  | None
@@ -133,18 +133,19 @@ See list of [contributors](../../graphs/contributors) who participated in this p
 ### 0.3.x
 
 - Major rework on how strings are printed out
-- Added --ci parameter, so no color will be printed out
+- Added --ci parameter, so no color will be printed out (Idea from [Fernando Espíndola](https://github.com/fernandoe))
+- Auto create hooks folder (inside .git) if it is missing (Idea from [Édouard Lopez](https://github.com/edouard-lopez))
 
 ### 0.2.x
 
 - Support for Windows with GitBash
 - Added docker scripts for quick clean machine testing environment
 - Better exception handling when user configures duplicate sections by mistake
-- Changed default max line length example to 119 instead of 120
+- FIXED: Changed default max line length example to 119 instead of 120
 - Replaced copying code to .git/hooks with a safe bash caller
 - Replaced '\_' folder (or 'scripts' folder) with 'h4g' folder for internal scripts
 - FIXED: Script order inside a hook definition was random
-- Standard Error is nao being handled and printed accordingly
+- Standard Error Output was not being handled and printed accordingly
 
 ### 0.1.x
 
