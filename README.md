@@ -99,7 +99,7 @@ This will run the very same set of scrips you ran on your development workstatio
 
 #### Colors
 
-The `--ci` parameter tells hooks4git to not print in nice colors, just plain strings. But first check if your CI output handle colors or not. For instance, BitBucket Pipelines handle it nicely, while Jenkins don't.
+The `--ci` parameter tells hooks4git to not print in nice colors, just plain strings. But first check if your CI output handle colors or not. For instance, Bitbucket Pipelines handle it nicely, while Jenkins doesn't.
 
 #### "Custom Hooks"
 
