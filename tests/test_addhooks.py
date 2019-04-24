@@ -9,10 +9,7 @@ import os
 class PreCommitTestCase(BaseTestCase):
 
     def test_add_precommit_successfully(self):
-        action = Exec.add_hooks(os.path.join(os.getcwd(), "tmp"))
+        action = Exec.add_hooks(BaseTestCase.tmp_valid_path)
         self.assertTrue(action)
-
-    def test_add_precommit_successfully_2(self):
-        action = Exec.add_hooks(os.path.join(os.getcwd(), "tmp"))
-        self.assertTrue(action)
-        self.assertTrue(os.path.isfile("tmp/.git/hooks/pre-commit"))
+        precommit_path = os.path.join(BaseTestCase.tmp_valid_git_path, "hooks/pre-commit")
+        self.assertTrue(os.path.isfile(precommit_path))  # noqa

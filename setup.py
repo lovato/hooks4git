@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
-from hooks4git.scripts import Post_install
+# from hooks4git.scripts import Post_install
 import codecs
 from os import path
 
@@ -48,8 +48,5 @@ setup(
         'dev': [requirements_dev.split('\n')]
     },
     scripts=["hooks4git/hooks4git"],
-    cmdclass={
-            "install": Post_install,
-    },
     zip_safe=True
 )
