@@ -235,8 +235,8 @@ def execute(cmd, files, settings):
     # end
 
     cmd_list = cmd.split('/')
+    git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
     if cmd_list[0] == 'h4g':
-        git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
         sys.path.insert(0, git_root)
         try:
             user_site = system('python', '-m', 'site', '--user-site')[1].replace('\n', '')
@@ -262,9 +262,6 @@ def execute(cmd, files, settings):
                 break
 
     args.insert(0, cmd)
-    if cmd == 'echo':
-        if files:
-            args.append('--filename=%s' % ','.join(files))
 
     display_args = args[1:]
 
@@ -274,7 +271,15 @@ def execute(cmd, files, settings):
         display_cmd = args[0].replace(builtin_path, "h4g").replace('\\', '/')
         args.insert(0, 'bash')
 
-    out("STEP", "$ %s %s" % (display_cmd, ' '.join(display_args)))
+    display_message = "%s %s" % (display_cmd, ' '.join(display_args))
+
+    if cmd == 'echo':
+        if files:
+            _arg = '--filename=%s' % ','.join(files)
+            args.append(_arg)
+            display_message += " " + _arg.replace(git_root, ".")[:(66 - len(display_message))] + "..."
+
+    out("STEP", "$ %s" % display_message)
 
     code, result, err = system(*args)
     result = result.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
