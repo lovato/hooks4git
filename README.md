@@ -13,9 +13,7 @@ Auto checks your code before you ship it. Works with any programmning language. 
 
 ## Availability
 
-Production module is available from [Pypi](https://pypi.org/project/hooks4git), and development branch is also published by Travis-CI to [Pypi TestServer](https://test.pypi.org/project/hooks4git). Both are provided as EGG packages, since there is a Post Install section which creates the hook files on your local directory. Wheel packaging is not intented to do that.
-
-Both can be downloaded and installed via the pip command.
+Production version is available from [Pypi](https://pypi.org/project/hooks4git), and development branch is also published by Travis-CI to [Pypi TestServer](https://test.pypi.org/project/hooks4git). Both can be downloaded and installed via the pip command.
 
 ### More information on Git Hooks
 
@@ -27,7 +25,7 @@ These instructions will show you how to install and use the application.
 
 ### Supported OSs
 
-Supported OSs are Linux, MAC and Windows. However, I was not able to make it work CMD.exe (like if cmd.exe even works...). If you are using Windows, use it inside GitBash. **DO NOT** use it on `cmd.exe`.
+Supported OSs are Linux, MAC and Windows. However, I was not able to make it work `cmd.exe` (like if cmd.exe even works...). If you are using Windows, use it inside GitBash. **DO NOT**, I repeat, do not use it on `cmd.exe`.
 
 ### Installation
 
@@ -37,16 +35,17 @@ pip install hooks4git --user
 
 Depending on your setup, you might want to use `pip3` instead of `pip`.
 
-Please, keep in mind that `--user` folder might not be on your PATH environment var. If you fix this here, it will be automatically fixed for any other python tool you might eventually install inside your user context.
+Please, keep in mind that `--user` folder might not be on your PATH environment var. Usually you can find it under `~/.local/bin`. If you fix your `$PATH` now, it will be automatically fixed for any other python tool you might eventually install inside your user context.
 
-In this case, a script called `hooks4git` will be available all the time, to hook any project you are currently in.
-By running this script, hooks will be applied. Please note you need to manually keep upgrading your system tools, like you do for others, like pip itself.
-You probably added virtualenv and others with sudo. If in doubt, please take a look at source files.
+Then, a script called `hooks4git` will be available all the time, to hook any project you are currently in. By running with the `--init` argument, hooks will be applied (i.e replace all your sample hook files).
+
+Please note you need to manually keep upgrading your system tools, like you do for other tools, like pip itself.
 
 ### Built-in Scripts
 
 Currently, there is only one available built-in script, called `check_branch_name.sh`. If you want to use, just follow the exemple on the default .ini file, on sub-section 'checkbranch'. This is the way to trigger built-in scripts, prefixing them with 'h4g/'.
-On 0.1 release, I was using a '*' character for built-in scripts, but that caused so many headaches, mainly when trying to make this work inside GitBash for windows (ok, that was because I was actually trying to call a bat file ... then I just gave it up). I also tried once calling 'scripts', but it may confuse with a possible local 'scripts' folder on your project.
+
+On 0.1 release, I was using a wildcard character for built-in scripts, but that caused so many headaches, mainly when trying to make this work inside GitBash for windows (ok, that was because I was actually trying to call a bat file ... then I just gave it up). I also tried once calling 'scripts', but it may confuse with a possible local 'scripts' folder on your project.
 
 ### CLI Usage
 
@@ -59,7 +58,9 @@ hooks4git --init
 ```
 
 And get all your regular non-sense-hard-to-use-and-hard-to-maintain-and-hard-to-share hook scripts updated.
+
 Then, you just need to open [.hooks4git.ini](hooks4git/.hooks4git.ini) file on the root of your project and configure it the way you want.
+
 This first example section is meant for Python, but you can use any tool you want, at any given git hook event.
 
 Example section for pre-commit, for Python:
@@ -104,6 +105,7 @@ The `--ci` parameter tells hooks4git to not print in nice colors, just plain str
 #### "Custom Hooks"
 
 Hooks have those static names because they are automatically triggered by GIT. However, you can create others inside `.hooks4git.ini` file. And you can trigger them using the `-t` parameter.
+
 So, if you like `check_branch_name` feature, you might think running it inside CI wouldn't be a great idea. How to solve it?
 
 ```bash
