@@ -255,10 +255,9 @@ def execute(cmd, files, settings):
             pass
         for path in sys.path:
             builtin_path = os.path.realpath(path + '/hooks4git/h4g/')
-            ext = 'sh'
-            _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1] + '.' + ext))
+            _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1]))
             if os.path.exists(_cmd):
-                cmd = os.path.join(builtin_path, cmd_list[1] + '.' + ext)
+                cmd = os.path.join(builtin_path, cmd_list[1])
                 break
 
     args.insert(0, cmd)
@@ -289,24 +288,6 @@ def execute(cmd, files, settings):
     if len(err) > 0:
         out('SERR', err)
     return code, result, err
-
-
-def get_changed_files():
-    """
-    Get python files from 'files to commit' git cache list.
-    """
-    git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
-    files = []
-    filelist = system('git', 'diff', '--name-status')[1].replace('\t', ';').split('\n')
-    filelist.pop()
-    for line in filelist:
-        try:
-            action, filename = line.strip().split(';')
-            if action != 'D':
-                files.append("%s/%s" % (git_root, filename))
-        except Exception as ex:  # noqa
-            pass
-    return files
 
 
 def main(cmd):
@@ -344,8 +325,7 @@ def main(cmd):
             for command_item in commands:
                 steps_executed += 1
                 files = []
-                if cmd == 'pre-commit':
-                    files = get_changed_files()
+                # files = get_changed_files()
                 command = scripts[hook[command_item]]
                 result = execute(command.split()[0], files, command.split()[1:])
                 if result[0] != 0:

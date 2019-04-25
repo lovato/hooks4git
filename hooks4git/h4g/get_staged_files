@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import subprocess
+import sys
+import argparse
+
+
+def parse_args(args):
+    parser = argparse.ArgumentParser(description="Gets staged files from a GIT Repository")
+
+    parser.add_argument(
+        "--prefix",
+        dest="prefix",
+        help="String to be added before output",
+    )
+    parser.add_argument(
+        "--suffix",
+        dest="suffix",
+        help="String to be added after output",
+    )
+    parser.add_argument(
+        "--format",
+        dest="format",
+        help="Defines output format",
+    )
+    return parser.parse_args(args)
+
+
+def system(*args, **kwargs):
+    """
+    Run system command.
+    """
+    result_out = ""
+    result_err = ""
+    returncode = -1
+    try:
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+        try:
+            tmp_out = out.decode('utf-8')
+            result_out = str(tmp_out)
+        except Exception as e:  # noqa
+            result_out = str(out)
+        try:
+            tmp_err = err.decode('utf-8')
+            result_err = str(tmp_err)
+        except Exception as e:  # noqa
+            result_err = str(err)
+        returncode = proc.returncode
+    except Exception as e:  # noqa
+        err = str(e)
+    return returncode, result_out, result_err
+
+
+def get_staged_files():
+    git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
+    files = []
+    filelist = system('git', 'diff', '--name-status')[1].replace('\t', ';').split('\n')
+    filelist.pop()
+    for line in filelist:
+        try:
+            action, filename = line.strip().split(';')
+            if action != 'D':
+                files.append("%s/%s" % (git_root, filename))
+        except Exception as ex:  # noqa
+            pass
+    return files
+
+
+if __name__ == "__main__":
+    args = parse_args(sys.argv[1:])
+    result = get_staged_files()
+    if args.format == 'csv':
+        print("%s%s%s" % (args.prefix, ','.join(result), args.suffix))
