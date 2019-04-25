@@ -221,8 +221,6 @@ def execute(cmd, files, settings):
     """
     Prepare system command.
     """
-    # if cmd not in ('pep8', 'flake8'):
-    #     raise Exception("Unknown lint command: {}".format(cmd))
     args = settings[:]
     builtin_path = ""
 
@@ -257,16 +255,16 @@ def execute(cmd, files, settings):
             pass
         for path in sys.path:
             builtin_path = os.path.realpath(path + '/hooks4git/h4g/')
-            ext = 'sh'  # if get_platform() in ['Linux', 'Mac', 'WindowsGitBash'] else 'bat'
+            ext = 'sh'
             _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1] + '.' + ext))
             if os.path.exists(_cmd):
                 cmd = os.path.join(builtin_path, cmd_list[1] + '.' + ext)
-                # if get_platform() == 'WindowsGitBash':
-                #     cmd = '/' + cmd[0].lower() + cmd[2:].replace('\\','/')
                 break
 
     args.insert(0, cmd)
-    args.extend(files)
+    if cmd == 'echo':
+        if files:
+            args.append('--filename=%s' % ','.join(files))
 
     display_args = args[1:]
 
@@ -288,31 +286,22 @@ def execute(cmd, files, settings):
     return code, result, err
 
 
-# def get_changed_files():
-#     """
-#     Get python files from 'files to commit' git cache list.
-#     """
-#     files = []
-#     # filelist = system('git', 'diff', '--cached', '--name-status')[1]
-#     filelist = system('git', 'diff', '--name-status')[1]
-#     for line in filelist:
-#         try:
-#             action, filename = line.strip().split()
-#             if filename.endswith('.py') and action != 'D':
-#                 files.append(filename)
-#         except Exception as ex:  # noqa
-#             pass
-#     return files
-#
-#
-
-
-# def ini_as_dict(conf):
-#     d = dict(conf._sections)
-#     for k in d:
-#         d[k] = dict(conf._defaults, **d[k])
-#         d[k].pop('__name__', None)
-#     return d
+def get_changed_files():
+    """
+    Get python files from 'files to commit' git cache list.
+    """
+    git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
+    files = []
+    filelist = system('git', 'diff', '--name-status')[1].replace('\t', ';').split('\n')
+    filelist.pop()
+    for line in filelist:
+        try:
+            action, filename = line.strip().split(';')
+            if action != 'D':
+                files.append("%s/%s" % (git_root, filename))
+        except Exception as ex:  # noqa
+            pass
+    return files
 
 
 def main(cmd):
@@ -324,7 +313,6 @@ def main(cmd):
     try:
         config.read(configfile)
         cfg = dict(config._sections)
-        # cfg = ini_as_dict(config)
     except Exception as e:  # noqa
         exception_message = str(e)
 
@@ -351,8 +339,8 @@ def main(cmd):
             for command_item in commands:
                 steps_executed += 1
                 files = []
-                # if cmd == 'pre-commit':
-                #     files = get_changed_files()
+                if cmd == 'pre-commit':
+                    files = get_changed_files()
                 command = scripts[hook[command_item]]
                 result = execute(command.split()[0], files, command.split()[1:])
                 if result[0] != 0:
@@ -409,7 +397,6 @@ def divider():
 
 def report():
     if steps_executed > 0:
-        # divider()
         end_time = datetime.datetime.now()
         if steps_executed > 1:
             to_be = 'were'
