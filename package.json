@@ -1,0 +1,18 @@
+{
+  "name": "hooks4git",
+  "version": "1.0.0",
+  "description": "Node Tools Installation Helper",
+  "main": "",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "markdownlint-cli": "^0.15.0",
+    "travis-lint": "^1.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/lovato/hooks4git/issues"
+  },
+  "homepage": "https://github.com/lovato/hooks4git"
+}

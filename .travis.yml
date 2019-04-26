@@ -31,8 +31,9 @@ before_install:
 install:
 - pip install -r requirements.txt
 - pip install -r requirements-dev.txt
-- npm install -g travis-lint
-- npm install -g markdownlint-cli
+- npm install
+# - npm install -g travis-lint
+# - npm install -g markdownlint-cli
 before_script:
 - travis-lint .travis.yml
 - markdownlint README.md
