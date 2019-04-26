@@ -35,8 +35,8 @@ install:
 # - npm install -g travis-lint
 # - npm install -g markdownlint-cli
 before_script:
-- travis-lint .travis.yml
-- markdownlint README.md
+# - ./node_modules/.bin/travis-lint .travis.yml
+- ./node_modules/.bin/markdownlint README.md
 # - pip install . -t /tmp
 script:
 # - /tmp/bin/hooks4git -t ci
