@@ -7,7 +7,7 @@
 
 [![asciicast](https://asciinema.org/a/197368.png)](https://asciinema.org/a/197368)
 
-Fully configurable language-agnostic git hooks.
+A fully configurable and extensible language-agnostic Hook Management System for GIT
 
 Auto checks your code before you ship it. Works with any programmning language. If not, let me know.
 
@@ -17,7 +17,7 @@ Production version is available from [Pypi](https://pypi.org/project/hooks4git),
 
 ### More information on Git Hooks
 
-[Here](https://githooks.com).
+[Here](https://githooks.com). There is lots of quick information, and as well other githooks management approaches.
 
 ## Getting started
 

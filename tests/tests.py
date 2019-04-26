@@ -7,6 +7,7 @@ import os
 
 class BaseTestCase(TestCase):
     base_path = os.getcwd()
+    tmp_path = os.path.join(base_path, "tmp")
     tmp_valid_path = os.path.join(base_path, "tmp/valid")
     tmp_invalid_path = os.path.join(base_path, "tmp/invalid")
     tmp_valid_git_path = os.path.join(tmp_valid_path, ".git")
@@ -16,6 +17,7 @@ class BaseTestCase(TestCase):
         # create test temporary directory
         os.system("mkdir -p tmp/valid && cd tmp/valid && git init")  # noqa
         os.system("mkdir -p tmp/invalid && cd tmp/invalid && git init && cd .git && rm -rf hooks")  # noqa
+        os.system("touch tmp/valid_file")
 
     def tearDown(self):
         # remove all test files

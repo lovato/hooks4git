@@ -1,28 +1,36 @@
 language: python
+os:
+- linux
+# - osx
 python:
 - '2.7'
-- '3.4'
 - '3.5'
 - '3.6'
-cache: pip
+# - '3.7'
+cache:
+- pip
+- npm
+addons:
+  apt:
+    update: true
+    packages:
+    - nodejs
+    - npm
+  homebrew:
+    update: true
+    packages:
+    - node
 before_install:
-- sudo apt-get update -qq
-- pip install -U pip
-- sudo apt-get install nodejs
-- sudo apt-get install npm
+- curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+- python get-pip.py
 install:
 - pip install -r requirements.txt
 - pip install -r requirements-dev.txt
-- npm install -g travis-lint
-- npm install -g markdownlint-cli
+- npm install
 before_script:
-- travis-lint .travis.yml
-- markdownlint README.md
+- pip install .
 script:
-- flake8 --max-line-length=120 --exclude .git,__pycache__,build,dist
-- python -m pytest tests
-# - rm -f .hooks4git.yml
-# - pip install . -t /tmp
+- hooks4git -t ci
 after_success:
 - coveralls
 deploy:
