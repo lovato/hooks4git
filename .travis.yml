@@ -28,7 +28,7 @@ install:
 - pip install -r requirements-dev.txt
 - npm install
 before_script:
-- pip install . --user
+- pip install .
 script:
 - hooks4git -t ci
 after_success:
