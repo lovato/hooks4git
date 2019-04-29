@@ -33,7 +33,7 @@ Supported OSs are Linux, MAC and Windows. However, I was not able to make it wor
 pip install hooks4git --user
 ```
 
-Depending on your setup, you might want to use `pip3` instead of `pip`.
+Depending on your setup, you might want to use `pip3` instead of `pip`. Sometimes, during execution, Python2.7 complains about not finding module `configparser`. Using Python3x this doesn't happen.
 
 Please, keep in mind that `--user` folder might not be on your PATH environment var. Usually you can find it under `~/.local/bin`. If you fix your `$PATH` now, it will be automatically fixed for any other python tool you might eventually install inside your user context.
 
@@ -144,6 +144,24 @@ TIME | Execution took 0:00:00.684762
 PASS | All green! Good!
 ———————————————————————————————————————————————————————————————————————————————
 ```
+
+## Contribute
+
+If you are willing to code something on this project, it is quite simple. You first need to fork it directly on GitHub, so you can get a copy on your computer that you can push to. Therefore, you would be able to open a Pull Request to the original repository.
+
+```bash
+> git clone git@github.com:<super_cool_developer>/hooks4git.git
+> cd hooks4git
+> mkvirtualenv hooks4git -p python3  # or any way to to that
+> pip install -r requirements.txt  # yes, pipenv is close
+> pip install -r requirements-dev.txt
+> pip uninstall hooks4git  # just in case
+> pip install -e . --user
+> hooks4git --init  # OF COURSE!!!
+> git checkout -b feature/super_cool_feature
+```
+
+The above will install hooks4git linked to the folder you cloned the repository to, instead of the module you normally download from Pypi. This way, every change you make on the source code will affect your environment, makeing it easy to use. Of course there are several other ways, like using virtualenv, for instance. That was only a suggestion and affects all repos you have. This is the way I usually test develop versions for a few days prior to a release.
 
 ## License
 
