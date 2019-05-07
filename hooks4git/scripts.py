@@ -1,68 +1,20 @@
 # -*- coding: utf-8 -*-
 
 # from setuptools.command.install import install
-import sys
 import os
 import shutil
 from hooks4git.hook import system
 from hooks4git import __version__
-import ast
 
 standalone_run = False
 
 
-def query_yes_no(question, default="yes"):
-    """Ask a yes/no question via raw_input() and return their answer.
-
-    "question" is a string that is presented to the user.
-    "default" is the presumed answer if the user just hits <Enter>.
-        It must be "yes" (the default), "no" or None (meaning
-        an answer is required of the user).
-
-    The "answer" return value is True for "yes" or False for "no".
-    """
-    valid = {"yes": True, "y": True, "ye": True,
-             "no": False, "n": False}
-    if default is None:
-        prompt = " [y/n] "
-    elif default == "yes":
-        prompt = " [Y/n] "
-    elif default == "no":
-        prompt = " [y/N] "
-    else:
-        raise ValueError("invalid default answer: '%s'" % default)
-
-    if sys.version_info[:2] <= (2, 7):
-        # If this is Python 2, use raw_input()
-        get_input = ast.literal_eval('raw_input')
-    else:
-        get_input = ast.literal_eval('input')
-
-    while True:
-        print('>>>> ' + question + prompt)
-        choice = get_input().lower()
-        if default is not None and choice == '':
-            return valid[default]
-        elif choice in valid:
-            return valid[choice]
-        else:
-            print("Please respond with 'yes' or 'no' (or 'y' or 'n').\n")
-
-
-def copy(src, dest):
-    # print('From: %s' % src)
-    # print('To: %s' % dest)
-    if standalone_run:
-        if os.path.isfile(dest):
-            # print(dest)
-            # if query_yes_no('Target file exists. Can I replace it?'):
-            shutil.copy(src, dest)
-            # else:
-            #     print('Your file was left untouched. Please consider upgrading it.')
-        else:
-            shutil.copy(src, dest)
-    else:
+def copy_file(src, dest):
+    try:
         shutil.copy(src, dest)
+        return True
+    except:  # noqa
+        return False
 
 
 def get_hooks_path(git_root_path):
@@ -111,13 +63,13 @@ class Exec:
             target_config = os.path.join(path, '.hooks4git.ini')
             if os.path.isfile(target_config):
                 target_config = target_config.replace('.ini', '-' + __version__ + '.ini')
-            copy(origin_config, target_config)
+            copy_file(origin_config, target_config)
             files_to_copy = system('ls', os.path.join(setup_path, 'git/hooks'))
             for file in files_to_copy[1].split('\n'):
                 if file not in ['__pycache__', '', 'hooks4git.py']:
                     src = os.path.join(setup_path, 'git/hooks', file)
                     target = os.path.join(git_path, 'hooks', file)
-                    copy(src, target)
+                    copy_file(src, target)
             print("Wow! hooks4git files were installed successfully! Thanks for hooking!")
             print("If you are a courious person, take a look at .git/hooks folder.")
             print("TIP: To get rid of hooks, comment lines on the .hooks4git.ini file.")

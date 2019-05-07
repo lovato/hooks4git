@@ -221,8 +221,6 @@ def execute(cmd, files, settings):
     """
     Prepare system command.
     """
-    # if cmd not in ('pep8', 'flake8'):
-    #     raise Exception("Unknown lint command: {}".format(cmd))
     args = settings[:]
     builtin_path = ""
 
@@ -237,8 +235,8 @@ def execute(cmd, files, settings):
     # end
 
     cmd_list = cmd.split('/')
+    git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
     if cmd_list[0] == 'h4g':
-        git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
         sys.path.insert(0, git_root)
         try:
             user_site = system('python', '-m', 'site', '--user-site')[1].replace('\n', '')
@@ -257,16 +255,12 @@ def execute(cmd, files, settings):
             pass
         for path in sys.path:
             builtin_path = os.path.realpath(path + '/hooks4git/h4g/')
-            ext = 'sh'  # if get_platform() in ['Linux', 'Mac', 'WindowsGitBash'] else 'bat'
-            _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1] + '.' + ext))
+            _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1]))
             if os.path.exists(_cmd):
-                cmd = os.path.join(builtin_path, cmd_list[1] + '.' + ext)
-                # if get_platform() == 'WindowsGitBash':
-                #     cmd = '/' + cmd[0].lower() + cmd[2:].replace('\\','/')
+                cmd = os.path.join(builtin_path, cmd_list[1])
                 break
 
     args.insert(0, cmd)
-    args.extend(files)
 
     display_args = args[1:]
 
@@ -276,7 +270,15 @@ def execute(cmd, files, settings):
         display_cmd = args[0].replace(builtin_path, "h4g").replace('\\', '/')
         args.insert(0, 'bash')
 
-    out("STEP", "$ %s %s" % (display_cmd, ' '.join(display_args)))
+    display_message = "%s %s" % (display_cmd, ' '.join(display_args))
+
+    if cmd == 'echo':
+        if files:
+            _arg = '--filename=%s' % ','.join(files)
+            args.append(_arg)
+            display_message += " " + _arg.replace(git_root, ".")[:(66 - len(display_message))] + "..."
+
+    out("STEP", "$ %s" % display_message)
 
     code, result, err = system(*args)
     result = result.strip().replace('\n', '\n'.ljust(cmdbarwidth + 1) + '| ')
@@ -288,33 +290,6 @@ def execute(cmd, files, settings):
     return code, result, err
 
 
-# def get_changed_files():
-#     """
-#     Get python files from 'files to commit' git cache list.
-#     """
-#     files = []
-#     # filelist = system('git', 'diff', '--cached', '--name-status')[1]
-#     filelist = system('git', 'diff', '--name-status')[1]
-#     for line in filelist:
-#         try:
-#             action, filename = line.strip().split()
-#             if filename.endswith('.py') and action != 'D':
-#                 files.append(filename)
-#         except Exception as ex:  # noqa
-#             pass
-#     return files
-#
-#
-
-
-# def ini_as_dict(conf):
-#     d = dict(conf._sections)
-#     for k in d:
-#         d[k] = dict(conf._defaults, **d[k])
-#         d[k].pop('__name__', None)
-#     return d
-
-
 def main(cmd):
     git_root = system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
     configfile = "%s/.hooks4git.ini" % git_root
@@ -324,7 +299,6 @@ def main(cmd):
     try:
         config.read(configfile)
         cfg = dict(config._sections)
-        # cfg = ini_as_dict(config)
     except Exception as e:  # noqa
         exception_message = str(e)
 
@@ -351,8 +325,7 @@ def main(cmd):
             for command_item in commands:
                 steps_executed += 1
                 files = []
-                # if cmd == 'pre-commit':
-                #     files = get_changed_files()
+                # files = get_changed_files()
                 command = scripts[hook[command_item]]
                 result = execute(command.split()[0], files, command.split()[1:])
                 if result[0] != 0:
@@ -409,7 +382,6 @@ def divider():
 
 def report():
     if steps_executed > 0:
-        # divider()
         end_time = datetime.datetime.now()
         if steps_executed > 1:
             to_be = 'were'

@@ -7,19 +7,17 @@
 
 [![asciicast](https://asciinema.org/a/197368.png)](https://asciinema.org/a/197368)
 
-Fully configurable language-agnostic git hooks.
+A fully configurable and extensible language-agnostic Hook Management System for GIT
 
 Auto checks your code before you ship it. Works with any programmning language. If not, let me know.
 
 ## Availability
 
-Production module is available from [Pypi](https://pypi.org/project/hooks4git), and development branch is also published by Travis-CI to [Pypi TestServer](https://test.pypi.org/project/hooks4git). Both are provided as EGG packages, since there is a Post Install section which creates the hook files on your local directory. Wheel packaging is not intented to do that.
-
-Both can be downloaded and installed via the pip command.
+Production version is available from [Pypi](https://pypi.org/project/hooks4git), and development branch is also published by Travis-CI to [Pypi TestServer](https://test.pypi.org/project/hooks4git). Both can be downloaded and installed via the pip command.
 
 ### More information on Git Hooks
 
-[Here](https://githooks.com).
+[Here](https://githooks.com). There is lots of quick information, and as well other githooks management approaches.
 
 ## Getting started
 
@@ -27,7 +25,7 @@ These instructions will show you how to install and use the application.
 
 ### Supported OSs
 
-Supported OSs are Linux, MAC and Windows. However, I was not able to make it work CMD.exe (like if cmd.exe even works...). If you are using Windows, use it inside GitBash. **DO NOT** use it on `cmd.exe`.
+Supported OSs are Linux, MAC and Windows. However, I was not able to make it work `cmd.exe` (like if cmd.exe even works...). If you are using Windows, use it inside GitBash. **DO NOT**, I repeat, do not use it on `cmd.exe`.
 
 ### Installation
 
@@ -35,18 +33,19 @@ Supported OSs are Linux, MAC and Windows. However, I was not able to make it wor
 pip install hooks4git --user
 ```
 
-Depending on your setup, you might want to use `pip3` instead of `pip`.
+Depending on your setup, you might want to use `pip3` instead of `pip`. Sometimes, during execution, Python2.7 complains about not finding module `configparser`. Using Python3x this doesn't happen.
 
-Please, keep in mind that `--user` folder might not be on your PATH environment var. If you fix this here, it will be automatically fixed for any other python tool you might eventually install inside your user context.
+Please, keep in mind that `--user` folder might not be on your PATH environment var. Usually you can find it under `~/.local/bin`. If you fix your `$PATH` now, it will be automatically fixed for any other python tool you might eventually install inside your user context.
 
-In this case, a script called `hooks4git` will be available all the time, to hook any project you are currently in.
-By running this script, hooks will be applied. Please note you need to manually keep upgrading your system tools, like you do for others, like pip itself.
-You probably added virtualenv and others with sudo. If in doubt, please take a look at source files.
+Then, a script called `hooks4git` will be available all the time, to hook any project you are currently in. By running with the `--init` argument, hooks will be applied (i.e replace all your sample hook files).
+
+Please note you need to manually keep upgrading your system tools, like you do for other tools, like pip itself.
 
 ### Built-in Scripts
 
 Currently, there is only one available built-in script, called `check_branch_name.sh`. If you want to use, just follow the exemple on the default .ini file, on sub-section 'checkbranch'. This is the way to trigger built-in scripts, prefixing them with 'h4g/'.
-On 0.1 release, I was using a '*' character for built-in scripts, but that caused so many headaches, mainly when trying to make this work inside GitBash for windows (ok, that was because I was actually trying to call a bat file ... then I just gave it up). I also tried once calling 'scripts', but it may confuse with a possible local 'scripts' folder on your project.
+
+On 0.1 release, I was using a wildcard character for built-in scripts, but that caused so many headaches, mainly when trying to make this work inside GitBash for windows (ok, that was because I was actually trying to call a bat file ... then I just gave it up). I also tried once calling 'scripts', but it may confuse with a possible local 'scripts' folder on your project.
 
 ### CLI Usage
 
@@ -59,7 +58,9 @@ hooks4git --init
 ```
 
 And get all your regular non-sense-hard-to-use-and-hard-to-maintain-and-hard-to-share hook scripts updated.
+
 Then, you just need to open [.hooks4git.ini](hooks4git/.hooks4git.ini) file on the root of your project and configure it the way you want.
+
 This first example section is meant for Python, but you can use any tool you want, at any given git hook event.
 
 Example section for pre-commit, for Python:
@@ -104,6 +105,7 @@ The `--ci` parameter tells hooks4git to not print in nice colors, just plain str
 #### "Custom Hooks"
 
 Hooks have those static names because they are automatically triggered by GIT. However, you can create others inside `.hooks4git.ini` file. And you can trigger them using the `-t` parameter.
+
 So, if you like `check_branch_name` feature, you might think running it inside CI wouldn't be a great idea. How to solve it?
 
 ```bash
@@ -142,6 +144,24 @@ TIME | Execution took 0:00:00.684762
 PASS | All green! Good!
 ———————————————————————————————————————————————————————————————————————————————
 ```
+
+## Contribute
+
+If you are willing to code something on this project, it is quite simple. You first need to fork it directly on GitHub, so you can get a copy on your computer that you can push to. Therefore, you would be able to open a Pull Request to the original repository.
+
+```bash
+> git clone git@github.com:<super_cool_developer>/hooks4git.git
+> cd hooks4git
+> mkvirtualenv hooks4git -p python3  # or any way to to that
+> pip install -r requirements.txt  # yes, pipenv is close
+> pip install -r requirements-dev.txt
+> pip uninstall hooks4git  # just in case
+> pip install -e . --user
+> hooks4git --init  # OF COURSE!!!
+> git checkout -b feature/super_cool_feature
+```
+
+The above will install hooks4git linked to the folder you cloned the repository to, instead of the module you normally download from Pypi. This way, every change you make on the source code will affect your environment, makeing it easy to use. Of course there are several other ways, like using virtualenv, for instance. That was only a suggestion and affects all repos you have. This is the way I usually test develop versions for a few days prior to a release.
 
 ## License
 

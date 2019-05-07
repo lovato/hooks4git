@@ -36,6 +36,6 @@ __build__ = None
 if os.path.exists(__path('build.info')):
     __build__ = open(__path('build.info')).read().strip()
 if __build__ is None:
-    __build__ = "dev"
+    __build__ = "0"
 
 __version__ = __version__ + '.' + __build__
