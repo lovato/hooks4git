@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-import subprocess
+import subprocess  # nosec
 import sys
 import configparser
 import datetime
@@ -199,7 +199,7 @@ def system(*args, **kwargs):
     result_err = ""
     returncode = -1
     try:
-        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # nosec
         out, err = proc.communicate()
         try:
             tmp_out = out.decode('utf-8')
@@ -241,17 +241,17 @@ def execute(cmd, files, settings):
         try:
             user_site = system('python', '-m', 'site', '--user-site')[1].replace('\n', '')
             sys.path.insert(0, user_site)
-        except:  # noqa
+        except:  # noqa # nosec
             pass
         try:
             user_site2 = system('python2', '-m', 'site', '--user-site')[1].replace('\n', '')
             sys.path.insert(0, user_site2)
-        except:  # noqa
+        except:  # noqa # nosec
             pass
         try:
             user_site3 = system('python3', '-m', 'site', '--user-site')[1].replace('\n', '')
             sys.path.insert(0, user_site3)
-        except:  # noqa
+        except:  # noqa # nosec
             pass
         for path in sys.path:
             builtin_path = os.path.realpath(path + '/hooks4git/h4g/')
