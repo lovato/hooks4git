@@ -32,8 +32,8 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-def main(args):
-    args = parse_args(args)
+def main():
+    args = parse_args(sys.argv[1:])
 
     if args.init:
         hook_it()
@@ -45,9 +45,5 @@ def main(args):
             run_trigger(args.git_hook, ci)
 
 
-def run():
-    main(sys.argv[1:])
-
-
 if __name__ == "__main__":
-    run()
+    main()

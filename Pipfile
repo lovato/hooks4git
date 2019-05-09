@@ -13,7 +13,7 @@ mock = "*"
 bandit = "*"
 pytest-cov = "*"
 autopep8 = "*"
-pipfile = "*"
+pipenv-to-requirements = "*"
 
 [packages]
 colorama = "*"
