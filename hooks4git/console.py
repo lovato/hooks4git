@@ -12,7 +12,8 @@ class Display(object):
         init()
         self.color = color
 
-    def bareprint(self, msg):
+    @staticmethod
+    def bareprint(msg):
         print(msg)
 
     def say(self, msg_type, msg):

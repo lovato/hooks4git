@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from tests import BaseTestCase
-from hooks4git.tools import get_hooks_path
+from hooks4git.hook import get_hooks_path
 
 
 class HooksFolderTestCase(BaseTestCase):

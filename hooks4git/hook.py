@@ -4,7 +4,7 @@ import sys
 import configparser
 import datetime
 from hooks4git import __version__
-from hooks4git.tools import oscall, get_hooks_path, copy_file
+from hooks4git.tools import oscall, copy_file
 from hooks4git.console import Display
 
 steps_executed = 0
@@ -12,8 +12,30 @@ start_time = datetime.datetime.now()
 display = None
 
 
+def get_hooks_path(git_root_path):
+    if git_root_path is None:
+        msg = "I am afraid I can't to that. You are not inside a GIT repo. Reach one and re-run this tool."
+        Display.bareprint(msg)
+        return None
+    if git_root_path.endswith("/.git") is False:
+        msg = "Humm, this is odd. Your GIT repo must have a .git folder. Looks like you are not inside a GIT repo."
+        Display.bareprint(msg)
+        return None
+    hooks_path = os.path.join(git_root_path, "hooks")
+    if not os.path.isdir(hooks_path):
+        message = "Looks like your '.git/hooks' folder is missing."
+        Display.bareprint("%s Let's try to fix this..." % message)
+        try:
+            os.makedirs(hooks_path)
+            Display.bareprint("Cool! '.git/hooks' folder was created.")
+            return hooks_path
+        except:  # noqa
+            return None
+    else:
+        return hooks_path
+
+
 def hook_it(path=os.environ["PWD"]):
-    # print('Current Working Folder: %s' % path)
     # setup_path = os.path.join(oscall('git', 'rev-parse', '--show-toplevel')[1].replace('\n', ''), 'hooks4git')
     setup_path = os.path.dirname(os.path.realpath(__file__))
     try:
@@ -39,9 +61,9 @@ def hook_it(path=os.environ["PWD"]):
                 src = os.path.join(setup_path, "git/hooks", file)
                 target = os.path.join(git_path, "hooks", file)
                 copy_file(src, target)
-        print("Wow! hooks4git files were installed successfully! Thanks for hooking!")
-        print("If you are a courious person, take a look at .git/hooks folder.")
-        print("TIP: To get rid of hooks, comment lines on the .hooks4git.ini file.")
+        Display.bareprint("Wow! hooks4git files were installed successfully! Thanks for hooking!")
+        Display.bareprint("If you are a courious person, take a look at .git/hooks folder.")
+        Display.bareprint("TIP: To get rid of hooks, comment lines on the .hooks4git.ini file.")
     return True
 
 
@@ -142,11 +164,9 @@ def main(cmd):
             display.divider()
             title = "hooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
             display.say("TITLE", title)
-            # if len(commands) == 0:
-            #     print("Somehow, nothing to do...")
             if len(exception_message) > 0:
                 display.divider()
-                print("Oops! " + exception_message)
+                Display.bareprint("Oops! " + exception_message)
                 display.divider()
                 exit(1)
             display.divider()

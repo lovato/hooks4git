@@ -14,29 +14,6 @@ def copy_file(src, dest):
         return False
 
 
-def get_hooks_path(git_root_path):
-    if git_root_path is None:
-        print("I am afraid I can't to that. You are not inside a GIT repo. Reach one and re-run this tool.")
-        return None
-    if git_root_path.endswith("/.git") is False:
-        print(
-            "Humm, this is odd. Your GIT repo must have a .git folder. Looks like you are not inside a GIT repo."
-        )  # noqa
-        return None
-    hooks_path = os.path.join(git_root_path, "hooks")
-    if not os.path.isdir(hooks_path):
-        message = "Looks like your '.git/hooks' folder is missing."
-        print("%s Let's try to fix this..." % message)
-        try:
-            os.makedirs(hooks_path)
-            print("Cool! '.git/hooks' folder was created.")
-            return hooks_path
-        except:  # noqa
-            return None
-    else:
-        return hooks_path
-
-
 def oscall(*args, **kwargs):
     """
     Run system command.
