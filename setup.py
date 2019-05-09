@@ -5,22 +5,16 @@ from setuptools import setup, find_packages
 # from hooks4git.scripts import Post_install
 import codecs
 from os import path
+from pipfile import Pipfile
 
 here = path.abspath(path.dirname(__file__))
 with codecs.open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-# Get the requirements from the requirements.txt file
-with codecs.open(path.join(here, 'requirements.txt'), encoding='utf-8') as f:
-    requirements = f.read()
-
-try:
-    # Get the dev requirements from the requirements-dev.txt file
-    with codecs.open(path.join(here, 'requirements-dev.txt'), encoding='utf-8') as f:
-        requirements_dev = f.read()
-except:  # noqa
-    # It is ok, this file only exists when developing this package, not when installing.
-    requirements_dev = ''
+# Get the requirements from the Pipfile
+parsed = Pipfile.load(filename="Pipfile")
+requirements = list(parsed.data['default'].keys())
+requirements_dev = list(parsed.data['develop'].keys())
 
 project_name = 'hooks4git'
 __version__ = __import__(project_name).__version__
@@ -45,7 +39,7 @@ setup(
     install_requires=requirements,
     platforms=['any'],
     extras_require={
-        'dev': [requirements_dev.split('\n')]
+        'dev': requirements_dev
     },
     entry_points={
         'console_scripts': ['hooks4git=hooks4git.app:run'],

@@ -25,7 +25,7 @@ before_install:
 - python get-pip.py
 - pip install pipenv
 install:
-- pipenv install
+- pipenv install --dev
 - npm install
 before_script:
 - pip install .
