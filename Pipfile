@@ -1,0 +1,24 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+black = "*"
+coverage = "*"
+coveralls = "*"
+pytest = "*"
+flake8 = "*"
+mock = "*"
+bandit = "*"
+pytest-cov = "*"
+autopep8 = "*"
+
+[packages]
+colorama = "*"
+
+[requires]
+python_version = "3.6"
+
+[pipenv]
+allow_prereleases = true

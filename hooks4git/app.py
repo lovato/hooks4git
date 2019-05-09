@@ -1,21 +1,12 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import argparse
 import sys
-from hooks4git.scripts import Exec
+from hooks4git.tools import hook_it
 from hooks4git import __version__
 from hooks4git.hook import run_trigger
 
 
 def parse_args(args):
-    """Parse command line parameters
-
-    Args:
-      args ([str]): command line parameters as list of strings
-
-    Returns:
-      :obj:`argparse.Namespace`: command line parameters namespace
-    """
     parser = argparse.ArgumentParser(description="Extensible Hook System for GIT")
 
     if len(sys.argv) < 2:
@@ -42,15 +33,10 @@ def parse_args(args):
 
 
 def main(args):
-    """Main entry point allowing external calls
-
-    Args:
-      args ([str]): command line parameter list
-    """
     args = parse_args(args)
 
     if args.init:
-        Exec.add_hooks()
+        hook_it()
     else:
         if args.git_hook:
             ci = False
@@ -60,8 +46,6 @@ def main(args):
 
 
 def run():
-    """Entry point for console_scripts
-    """
     main(sys.argv[1:])
 
 

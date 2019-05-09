@@ -1,8 +1,0 @@
-coverage
-coveralls
-pytest
-mock
-flake8
-bandit
-pytest-cov
-# black

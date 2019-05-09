@@ -47,6 +47,8 @@ setup(
     extras_require={
         'dev': [requirements_dev.split('\n')]
     },
-    scripts=["hooks4git/hooks4git"],
+    entry_points={
+        'console_scripts': ['hooks4git=hooks4git.app:run'],
+    },
     zip_safe=True
 )

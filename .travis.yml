@@ -23,9 +23,9 @@ addons:
 before_install:
 - curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 - python get-pip.py
+- pip install pipenv
 install:
-- pip install -r requirements.txt
-- pip install -r requirements-dev.txt
+- pipenv install
 - npm install
 before_script:
 - pip install .

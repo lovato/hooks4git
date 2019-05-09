@@ -1,8 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 from tests import BaseTestCase
-from hooks4git.scripts import copy_file
+from hooks4git.tools import copy_file
 import os
 
 
