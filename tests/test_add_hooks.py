@@ -5,7 +5,6 @@ import os
 
 
 class PreCommitTestCase(BaseTestCase):
-
     def test_add_precommit_successfully(self):
         action = hook_it(BaseTestCase.tmp_valid_path)
         self.assertTrue(action)

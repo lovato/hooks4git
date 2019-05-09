@@ -4,7 +4,6 @@ import os
 import sys
 import shutil
 import subprocess  # nosec
-from hooks4git import __version__
 
 
 def copy_file(src, dest):
@@ -20,7 +19,9 @@ def get_hooks_path(git_root_path):
         print("I am afraid I can't to that. You are not inside a GIT repo. Reach one and re-run this tool.")
         return None
     if git_root_path.endswith("/.git") is False:
-        print("Humm, this is odd. Your GIT repo must have a .git folder. Looks like you are not inside a GIT repo.")  # noqa
+        print(
+            "Humm, this is odd. Your GIT repo must have a .git folder. Looks like you are not inside a GIT repo."
+        )  # noqa
         return None
     hooks_path = os.path.join(git_root_path, "hooks")
     if not os.path.isdir(hooks_path):
@@ -47,12 +48,12 @@ def oscall(*args, **kwargs):
         proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # nosec
         out, err = proc.communicate()
         try:
-            tmp_out = out.decode('utf-8')
+            tmp_out = out.decode("utf-8")
             result_out = str(tmp_out)
         except Exception as e:  # noqa
             result_out = str(out)
         try:
-            tmp_err = err.decode('utf-8')
+            tmp_err = err.decode("utf-8")
             result_err = str(tmp_err)
         except Exception as e:  # noqa
             result_err = str(err)
@@ -64,14 +65,14 @@ def oscall(*args, **kwargs):
 
 def get_platform():
     platforms = {
-        'linux': 'Linux',
-        'linux1': 'Linux',
-        'linux2': 'Linux',
-        'darwin': 'Mac',
-        'win32': 'Windows',
-        'win32MINGW64': 'WindowsGitBash'
+        "linux": "Linux",
+        "linux1": "Linux",
+        "linux2": "Linux",
+        "darwin": "Mac",
+        "win32": "Windows",
+        "win32MINGW64": "WindowsGitBash",
     }
-    platform = sys.platform + os.environ.get('MSYSTEM', '')
+    platform = sys.platform + os.environ.get("MSYSTEM", "")
     if platform not in platforms:
         return sys.platform
     return platforms[platform]

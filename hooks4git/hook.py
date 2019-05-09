@@ -17,9 +17,9 @@ def hook_it(path=os.environ["PWD"]):
     # setup_path = os.path.join(oscall('git', 'rev-parse', '--show-toplevel')[1].replace('\n', ''), 'hooks4git')
     setup_path = os.path.dirname(os.path.realpath(__file__))
     try:
-        path = oscall('git', '-C', path, 'rev-parse', '--show-toplevel')[1].replace('\n', '')
-        git_path = oscall('git', '-C', path, 'rev-parse', '--git-dir')[1].replace('\n', '')
-        if git_path == '.git':
+        path = oscall("git", "-C", path, "rev-parse", "--show-toplevel")[1].replace("\n", "")
+        git_path = oscall("git", "-C", path, "rev-parse", "--git-dir")[1].replace("\n", "")
+        if git_path == ".git":
             git_path = os.path.join(path, git_path)
     except:  # noqa
         git_path = None
@@ -28,16 +28,16 @@ def hook_it(path=os.environ["PWD"]):
     setup_path = os.path.abspath(setup_path)
     hooks_path = get_hooks_path(git_path)
     if hooks_path:
-        origin_config = os.path.join(setup_path, '.hooks4git.ini')
-        target_config = os.path.join(path, '.hooks4git.ini')
+        origin_config = os.path.join(setup_path, ".hooks4git.ini")
+        target_config = os.path.join(path, ".hooks4git.ini")
         if os.path.isfile(target_config):
-            target_config = target_config.replace('.ini', '-' + __version__ + '.ini')
+            target_config = target_config.replace(".ini", "-" + __version__ + ".ini")
         copy_file(origin_config, target_config)
-        files_to_copy = oscall('ls', os.path.join(setup_path, 'git/hooks'))
-        for file in files_to_copy[1].split('\n'):
-            if file not in ['__pycache__', '', 'hooks4git.py']:
-                src = os.path.join(setup_path, 'git/hooks', file)
-                target = os.path.join(git_path, 'hooks', file)
+        files_to_copy = oscall("ls", os.path.join(setup_path, "git/hooks"))
+        for file in files_to_copy[1].split("\n"):
+            if file not in ["__pycache__", "", "hooks4git.py"]:
+                src = os.path.join(setup_path, "git/hooks", file)
+                target = os.path.join(git_path, "hooks", file)
                 copy_file(src, target)
         print("Wow! hooks4git files were installed successfully! Thanks for hooking!")
         print("If you are a courious person, take a look at .git/hooks folder.")
@@ -53,36 +53,36 @@ def execute(cmd, files, settings):
     builtin_path = ""
 
     # backward compatibility to 0.1.x
-    if cmd[0] == '_':
-        cmd = 'h4g/' + cmd[1:]
+    if cmd[0] == "_":
+        cmd = "h4g/" + cmd[1:]
         display.say("WARN", "Please upgrade your ini file to call built in scripts prefixed by 'h4g/'")
     # backward compatibility to early 0.2.x
-    if cmd[0:8] == 'scripts/':
-        cmd = 'h4g/' + cmd[8:]
-        display.say('WARN', "Please upgrade your ini file to call built in scripts prefixed by 'h4g/'")
+    if cmd[0:8] == "scripts/":
+        cmd = "h4g/" + cmd[8:]
+        display.say("WARN", "Please upgrade your ini file to call built in scripts prefixed by 'h4g/'")
     # end
 
-    cmd_list = cmd.split('/')
-    git_root = oscall('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
-    if cmd_list[0] == 'h4g':
+    cmd_list = cmd.split("/")
+    git_root = oscall("git", "rev-parse", "--show-toplevel")[1].replace("\n", "")
+    if cmd_list[0] == "h4g":
         sys.path.insert(0, git_root)
         try:
-            user_site = oscall('python', '-m', 'site', '--user-site')[1].replace('\n', '')
+            user_site = oscall("python", "-m", "site", "--user-site")[1].replace("\n", "")
             sys.path.insert(0, user_site)
         except:  # noqa # nosec
             pass
         try:
-            user_site2 = oscall('python2', '-m', 'site', '--user-site')[1].replace('\n', '')
+            user_site2 = oscall("python2", "-m", "site", "--user-site")[1].replace("\n", "")
             sys.path.insert(0, user_site2)
         except:  # noqa # nosec
             pass
         try:
-            user_site3 = oscall('python3', '-m', 'site', '--user-site')[1].replace('\n', '')
+            user_site3 = oscall("python3", "-m", "site", "--user-site")[1].replace("\n", "")
             sys.path.insert(0, user_site3)
         except:  # noqa # nosec
             pass
         for path in sys.path:
-            builtin_path = os.path.realpath(path + '/hooks4git/h4g/')
+            builtin_path = os.path.realpath(path + "/hooks4git/h4g/")
             _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1]))
             if os.path.exists(_cmd):
                 cmd = os.path.join(builtin_path, cmd_list[1])
@@ -95,31 +95,31 @@ def execute(cmd, files, settings):
     if builtin_path == "":
         display_cmd = args[0]
     else:
-        display_cmd = args[0].replace(builtin_path, "h4g").replace('\\', '/')
-        args.insert(0, 'bash')
+        display_cmd = args[0].replace(builtin_path, "h4g").replace("\\", "/")
+        args.insert(0, "bash")
 
-    display_message = "%s %s" % (display_cmd, ' '.join(display_args))
+    display_message = "%s %s" % (display_cmd, " ".join(display_args))
 
-    if cmd == 'echo':
+    if cmd == "echo":
         if files:
-            _arg = '--filename=%s' % ','.join(files)
+            _arg = "--filename=%s" % ",".join(files)
             args.append(_arg)
-            display_message += " " + _arg.replace(git_root, ".")[:(66 - len(display_message))] + "..."
+            display_message += " " + _arg.replace(git_root, ".")[: (66 - len(display_message))] + "..."
 
     display.say("STEP", "$ %s" % display_message)
 
     code, result, err = oscall(*args)
-    result = result.strip().replace('\n', '\n'.ljust(display.cmdbarwidth + 1) + '| ')
-    err = err.strip().replace('\n', '\n'.ljust(display.cmdbarwidth + 1) + '| ')
+    result = result.strip().replace("\n", "\n".ljust(display.cmdbarwidth + 1) + "| ")
+    err = err.strip().replace("\n", "\n".ljust(display.cmdbarwidth + 1) + "| ")
     if len(result) > 0:
-        display.say('SOUT', result)
+        display.say("SOUT", result)
     if len(err) > 0:
-        display.say('SERR', err)
+        display.say("SERR", err)
     return code, result, err
 
 
 def main(cmd):
-    git_root = oscall('git', 'rev-parse', '--show-toplevel')[1].replace('\n', '')
+    git_root = oscall("git", "rev-parse", "--show-toplevel")[1].replace("\n", "")
     configfile = "%s/.hooks4git.ini" % git_root
     config = configparser.ConfigParser()
     cfg = {}
@@ -134,14 +134,14 @@ def main(cmd):
     steps_executed = 0
     no_fails = True
     try:
-        scripts = cfg.get('scripts', {})
-        hook = cfg.get('hooks.%s.scripts' % cmd, {})
+        scripts = cfg.get("scripts", {})
+        hook = cfg.get("hooks.%s.scripts" % cmd, {})
         commands = hook.keys()
         # If section is ommited, app outputs absolutelly nothing to stdout
-        if 'hooks.'+cmd.lower()+'.scripts' in config.sections():
+        if "hooks." + cmd.lower() + ".scripts" in config.sections():
             display.divider()
             title = "hooks4git v%s :: %s :: hook triggered" % (__version__, cmd.title())
-            display.say('TITLE', title)
+            display.say("TITLE", title)
             # if len(commands) == 0:
             #     print("Somehow, nothing to do...")
             if len(exception_message) > 0:
@@ -158,25 +158,27 @@ def main(cmd):
                 result = execute(command.split()[0], files, command.split()[1:])
                 if result[0] != 0:
                     no_fails = False
-                    display.say('FAIL', "'%s/%s' step failed to execute" % (command_item, hook[command_item]))  # noqa
+                    display.say("FAIL", "'%s/%s' step failed to execute" % (command_item, hook[command_item]))  # noqa
                 else:
-                    display.say('PASS', "'%s/%s' step executed successfully" % (command_item, hook[command_item]))  # noqa
+                    display.say(
+                        "PASS", "'%s/%s' step executed successfully" % (command_item, hook[command_item])
+                    )  # noqa
                 display.divider()
         return no_fails
     except Exception as e:  # noqa
-        display.say('ERR!', str(e))
-        raise(e)
+        display.say("ERR!", str(e))
+        raise (e)
 
 
 def report():
     if steps_executed > 0:
         end_time = datetime.datetime.now()
         if steps_executed > 1:
-            to_be = 'were'
+            to_be = "were"
         else:
-            to_be = 'was'
-        display.say('STEPS', '%s %s executed' % (steps_executed, to_be))
-        display.say('TIME', 'Execution took ' + str(end_time - start_time))
+            to_be = "was"
+        display.say("STEPS", "%s %s executed" % (steps_executed, to_be))
+        display.say("TIME", "Execution took " + str(end_time - start_time))
 
 
 def run_trigger(cmd, ci=False):
@@ -187,11 +189,11 @@ def run_trigger(cmd, ci=False):
     if main(cmd):
         report()
         if steps_executed > 0:
-            display.say('PASS ', "All green! Good!")
+            display.say("PASS ", "All green! Good!")
             display.divider()
         sys.exit(0)
     else:
         report()
-        display.say('FAIL ', "You have failed. One or more steps failed to execute.")
+        display.say("FAIL ", "You have failed. One or more steps failed to execute.")
         display.divider()
         sys.exit(1)

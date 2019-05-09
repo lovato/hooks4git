@@ -6,7 +6,10 @@ import os
 
 class HooksFolderTestCase(BaseTestCase):
     def test_copy_file_source_invalid(self):
-        flag = copy_file(os.path.join(BaseTestCase.tmp_path, "invalid_file"), os.path.join(BaseTestCase.tmp_path, "invalid_file_copy"))  # noqa
+        flag = copy_file(
+            os.path.join(BaseTestCase.tmp_path, "invalid_file"),
+            os.path.join(BaseTestCase.tmp_path, "invalid_file_copy"),
+        )  # noqa
         self.assertTrue(flag is False)
 
     def test_copy_file_destination_invalid(self):
@@ -14,5 +17,7 @@ class HooksFolderTestCase(BaseTestCase):
         self.assertTrue(flag is False)
 
     def test_copy_file_both_valid(self):
-        flag = copy_file(os.path.join(BaseTestCase.tmp_path, "valid_file"), os.path.join(BaseTestCase.tmp_path, "valid_file_copy"))  # noqa
+        flag = copy_file(
+            os.path.join(BaseTestCase.tmp_path, "valid_file"), os.path.join(BaseTestCase.tmp_path, "valid_file_copy")
+        )  # noqa
         self.assertTrue(flag is True)
