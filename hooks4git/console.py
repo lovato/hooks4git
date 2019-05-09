@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from colorama import init, Fore, Back, Style
-from tools import get_platform
+from hooks4git.tools import get_platform
 import sys
 
 

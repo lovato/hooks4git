@@ -4,8 +4,8 @@ import sys
 import configparser
 import datetime
 from hooks4git import __version__
-from console import Display
-from tools import oscall, get_hooks_path, copy_file
+from hooks4git.tools import oscall, get_hooks_path, copy_file
+from hooks4git.console import Display
 
 steps_executed = 0
 start_time = datetime.datetime.now()

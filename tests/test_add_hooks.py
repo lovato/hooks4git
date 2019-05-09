@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from tests import BaseTestCase
-from hooks4git.tools import hook_it
+from hooks4git.hook import hook_it
 import os
 
 
