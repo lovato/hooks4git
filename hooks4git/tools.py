@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # from setuptools.command.install import install
 import os
+import sys
 import shutil
-from hooks4git.hook import system
+import subprocess  # nosec
 from hooks4git import __version__
-
-standalone_run = False
 
 
 def copy_file(src, dest):
@@ -37,16 +36,39 @@ def get_hooks_path(git_root_path):
         return hooks_path
 
 
+def oscall(*args, **kwargs):
+    """
+    Run system command.
+    """
+    result_out = ""
+    result_err = ""
+    returncode = -1
+    try:
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # nosec
+        out, err = proc.communicate()
+        try:
+            tmp_out = out.decode('utf-8')
+            result_out = str(tmp_out)
+        except Exception as e:  # noqa
+            result_out = str(out)
+        try:
+            tmp_err = err.decode('utf-8')
+            result_err = str(tmp_err)
+        except Exception as e:  # noqa
+            result_err = str(err)
+        returncode = proc.returncode
+    except Exception as e:  # noqa
+        err = str(e)
+    return returncode, result_out, result_err
+
+
 def hook_it(path=os.environ["PWD"]):
     # print('Current Working Folder: %s' % path)
-    # setup_path = os.path.join(system('git', 'rev-parse', '--show-toplevel')[1].replace('\n', ''), 'hooks4git')
+    # setup_path = os.path.join(oscall('git', 'rev-parse', '--show-toplevel')[1].replace('\n', ''), 'hooks4git')
     setup_path = os.path.dirname(os.path.realpath(__file__))
-    if 'site-packages' in setup_path:
-        global standalone_run
-        standalone_run = True
     try:
-        path = system('git', '-C', path, 'rev-parse', '--show-toplevel')[1].replace('\n', '')
-        git_path = system('git', '-C', path, 'rev-parse', '--git-dir')[1].replace('\n', '')
+        path = oscall('git', '-C', path, 'rev-parse', '--show-toplevel')[1].replace('\n', '')
+        git_path = oscall('git', '-C', path, 'rev-parse', '--git-dir')[1].replace('\n', '')
         if git_path == '.git':
             git_path = os.path.join(path, git_path)
     except:  # noqa
@@ -61,7 +83,7 @@ def hook_it(path=os.environ["PWD"]):
         if os.path.isfile(target_config):
             target_config = target_config.replace('.ini', '-' + __version__ + '.ini')
         copy_file(origin_config, target_config)
-        files_to_copy = system('ls', os.path.join(setup_path, 'git/hooks'))
+        files_to_copy = oscall('ls', os.path.join(setup_path, 'git/hooks'))
         for file in files_to_copy[1].split('\n'):
             if file not in ['__pycache__', '', 'hooks4git.py']:
                 src = os.path.join(setup_path, 'git/hooks', file)
@@ -71,3 +93,18 @@ def hook_it(path=os.environ["PWD"]):
         print("If you are a courious person, take a look at .git/hooks folder.")
         print("TIP: To get rid of hooks, comment lines on the .hooks4git.ini file.")
     return True
+
+
+def get_platform():
+    platforms = {
+        'linux': 'Linux',
+        'linux1': 'Linux',
+        'linux2': 'Linux',
+        'darwin': 'Mac',
+        'win32': 'Windows',
+        'win32MINGW64': 'WindowsGitBash'
+    }
+    platform = sys.platform + os.environ.get('MSYSTEM', '')
+    if platform not in platforms:
+        return sys.platform
+    return platforms[platform]
