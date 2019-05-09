@@ -152,10 +152,8 @@ If you are willing to code something on this project, it is quite simple. You fi
 ```bash
 > git clone git@github.com:<super_cool_developer>/hooks4git.git
 > cd hooks4git
-> mkvirtualenv hooks4git -p python3  # or any way to to that
-> pip install -r requirements.txt  # yes, pipenv is close
-> pip install -r requirements-dev.txt
-> pip uninstall hooks4git  # just in case
+> pipenv install --dev
+> pip uninstall hooks4git  # just in case, it may fail
 > pip install -e . --user
 > hooks4git --init  # OF COURSE!!!
 > git checkout -b feature/super_cool_feature
