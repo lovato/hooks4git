@@ -178,6 +178,11 @@ See list of [contributors](../../graphs/contributors) who participated in this p
 
 ## Change Log
 
+### 0.4.x
+
+- Major rework on classes and dependencies usage
+- Added more tests
+
 ### 0.3.x
 
 - Major rework on how strings are printed out
