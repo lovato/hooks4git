@@ -14,7 +14,7 @@ def copy_file(src, dest):
         return False
 
 
-def oscall(*args, **kwargs):
+def os_call(*args, **kwargs):
     """
     Run system command.
     """
@@ -27,12 +27,12 @@ def oscall(*args, **kwargs):
         try:
             tmp_out = out.decode("utf-8")
             result_out = str(tmp_out)
-        except Exception as e:  # noqa
+        except Exception as e:  # noqa # pragma: no cover
             result_out = str(out)
         try:
             tmp_err = err.decode("utf-8")
             result_err = str(tmp_err)
-        except Exception as e:  # noqa
+        except Exception as e:  # noqa # pragma: no cover
             result_err = str(err)
         returncode = proc.returncode
     except Exception as e:  # noqa
@@ -40,7 +40,7 @@ def oscall(*args, **kwargs):
     return returncode, result_out, result_err
 
 
-def get_platform():
+def get_platform(platform=sys.platform, environ=os.environ):
     platforms = {
         "linux": "Linux",
         "linux1": "Linux",
@@ -49,7 +49,7 @@ def get_platform():
         "win32": "Windows",
         "win32MINGW64": "WindowsGitBash",
     }
-    platform = sys.platform + os.environ.get("MSYSTEM", "")
-    if platform not in platforms:
-        return sys.platform
-    return platforms[platform]
+    _platform = platform + environ.get("MSYSTEM", "")
+    if _platform not in platforms:
+        return platform
+    return platforms[_platform]

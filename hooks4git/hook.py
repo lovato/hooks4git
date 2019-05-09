@@ -4,7 +4,7 @@ import sys
 import configparser
 import datetime
 from hooks4git import __version__
-from hooks4git.tools import oscall, copy_file
+from hooks4git.tools import os_call, copy_file
 from hooks4git.console import Display
 
 steps_executed = 0
@@ -36,11 +36,11 @@ def get_hooks_path(git_root_path):
 
 
 def hook_it(path=os.environ["PWD"]):
-    # setup_path = os.path.join(oscall('git', 'rev-parse', '--show-toplevel')[1].replace('\n', ''), 'hooks4git')
+    # setup_path = os.path.join(os_call('git', 'rev-parse', '--show-toplevel')[1].replace('\n', ''), 'hooks4git')
     setup_path = os.path.dirname(os.path.realpath(__file__))
     try:
-        path = oscall("git", "-C", path, "rev-parse", "--show-toplevel")[1].replace("\n", "")
-        git_path = oscall("git", "-C", path, "rev-parse", "--git-dir")[1].replace("\n", "")
+        path = os_call("git", "-C", path, "rev-parse", "--show-toplevel")[1].replace("\n", "")
+        git_path = os_call("git", "-C", path, "rev-parse", "--git-dir")[1].replace("\n", "")
         if git_path == ".git":
             git_path = os.path.join(path, git_path)
     except:  # noqa
@@ -55,7 +55,7 @@ def hook_it(path=os.environ["PWD"]):
         if os.path.isfile(target_config):
             target_config = target_config.replace(".ini", "-" + __version__ + ".ini")
         copy_file(origin_config, target_config)
-        files_to_copy = oscall("ls", os.path.join(setup_path, "git/hooks"))
+        files_to_copy = os_call("ls", os.path.join(setup_path, "git/hooks"))
         for file in files_to_copy[1].split("\n"):
             if file not in ["__pycache__", "", "hooks4git.py"]:
                 src = os.path.join(setup_path, "git/hooks", file)
@@ -85,21 +85,21 @@ def execute(cmd, files, settings):
     # end
 
     cmd_list = cmd.split("/")
-    git_root = oscall("git", "rev-parse", "--show-toplevel")[1].replace("\n", "")
+    git_root = os_call("git", "rev-parse", "--show-toplevel")[1].replace("\n", "")
     if cmd_list[0] == "h4g":
         sys.path.insert(0, git_root)
         try:
-            user_site = oscall("python", "-m", "site", "--user-site")[1].replace("\n", "")
+            user_site = os_call("python", "-m", "site", "--user-site")[1].replace("\n", "")
             sys.path.insert(0, user_site)
         except:  # noqa # nosec
             pass
         try:
-            user_site2 = oscall("python2", "-m", "site", "--user-site")[1].replace("\n", "")
+            user_site2 = os_call("python2", "-m", "site", "--user-site")[1].replace("\n", "")
             sys.path.insert(0, user_site2)
         except:  # noqa # nosec
             pass
         try:
-            user_site3 = oscall("python3", "-m", "site", "--user-site")[1].replace("\n", "")
+            user_site3 = os_call("python3", "-m", "site", "--user-site")[1].replace("\n", "")
             sys.path.insert(0, user_site3)
         except:  # noqa # nosec
             pass
@@ -130,7 +130,7 @@ def execute(cmd, files, settings):
 
     display.say("STEP", "$ %s" % display_message)
 
-    code, result, err = oscall(*args)
+    code, result, err = os_call(*args)
     result = result.strip().replace("\n", "\n".ljust(display.cmdbarwidth + 1) + "| ")
     err = err.strip().replace("\n", "\n".ljust(display.cmdbarwidth + 1) + "| ")
     if len(result) > 0:
@@ -141,7 +141,7 @@ def execute(cmd, files, settings):
 
 
 def main(cmd):
-    git_root = oscall("git", "rev-parse", "--show-toplevel")[1].replace("\n", "")
+    git_root = os_call("git", "rev-parse", "--show-toplevel")[1].replace("\n", "")
     configfile = "%s/.hooks4git.ini" % git_root
     config = configparser.ConfigParser()
     cfg = {}
