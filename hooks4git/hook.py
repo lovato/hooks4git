@@ -5,11 +5,44 @@ import configparser
 import datetime
 from hooks4git import __version__
 from console import Display
-from tools import oscall
+from tools import oscall, get_hooks_path, copy_file
 
 steps_executed = 0
 start_time = datetime.datetime.now()
 display = None
+
+
+def hook_it(path=os.environ["PWD"]):
+    # print('Current Working Folder: %s' % path)
+    # setup_path = os.path.join(oscall('git', 'rev-parse', '--show-toplevel')[1].replace('\n', ''), 'hooks4git')
+    setup_path = os.path.dirname(os.path.realpath(__file__))
+    try:
+        path = oscall('git', '-C', path, 'rev-parse', '--show-toplevel')[1].replace('\n', '')
+        git_path = oscall('git', '-C', path, 'rev-parse', '--git-dir')[1].replace('\n', '')
+        if git_path == '.git':
+            git_path = os.path.join(path, git_path)
+    except:  # noqa
+        git_path = None
+
+    path = os.path.abspath(path)
+    setup_path = os.path.abspath(setup_path)
+    hooks_path = get_hooks_path(git_path)
+    if hooks_path:
+        origin_config = os.path.join(setup_path, '.hooks4git.ini')
+        target_config = os.path.join(path, '.hooks4git.ini')
+        if os.path.isfile(target_config):
+            target_config = target_config.replace('.ini', '-' + __version__ + '.ini')
+        copy_file(origin_config, target_config)
+        files_to_copy = oscall('ls', os.path.join(setup_path, 'git/hooks'))
+        for file in files_to_copy[1].split('\n'):
+            if file not in ['__pycache__', '', 'hooks4git.py']:
+                src = os.path.join(setup_path, 'git/hooks', file)
+                target = os.path.join(git_path, 'hooks', file)
+                copy_file(src, target)
+        print("Wow! hooks4git files were installed successfully! Thanks for hooking!")
+        print("If you are a courious person, take a look at .git/hooks folder.")
+        print("TIP: To get rid of hooks, comment lines on the .hooks4git.ini file.")
+    return True
 
 
 def execute(cmd, files, settings):

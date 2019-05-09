@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import argparse
 import sys
-from hooks4git.tools import hook_it
 from hooks4git import __version__
-from hooks4git.hook import run_trigger
+from hooks4git.hook import run_trigger, hook_it
 
 
 def parse_args(args):
