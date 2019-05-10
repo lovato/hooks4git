@@ -53,3 +53,28 @@ def get_platform(platform=sys.platform, environ=os.environ):
     if _platform not in platforms:
         return platform
     return platforms[_platform]
+
+
+def get_dash():
+    dash = "-"
+    if get_platform() == "Linux":
+        if sys.version_info[0] < 3:
+            dash = unichr(8213)  # noqa
+        else:
+            dash = chr(8213)
+    if get_platform() == "Mac":
+        if sys.version_info[0] < 3:
+            dash = unichr(8212)  # noqa
+        else:
+            dash = chr(8212)
+    if get_platform() == "Windows":  # CMD.exe
+        if sys.version_info[0] < 3:
+            dash = "-"
+        else:
+            dash = chr(8212)
+    if get_platform() == "WindowsGitBash":
+        if sys.version_info[0] < 3:
+            dash = "-"
+        else:
+            dash = "-"
+    return dash

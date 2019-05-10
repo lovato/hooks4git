@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from colorama import init, Fore, Back, Style
-from hooks4git.tools import get_platform
-import sys
+from hooks4git.tools import get_dash
 
 
 class Display(object):
@@ -62,28 +61,10 @@ class Display(object):
                 bgcolor = Back.RED
         if msg_type not in ["DIV", "TITLE"]:
             prefix = label.ljust(self.cmdbarwidth) + "|" + reset + color + " "
-        print(style + color + bgcolor + prefix + reset + msg_style + msg_color + msg + reset)
+        line = style + color + bgcolor + prefix + reset + msg_style + msg_color + msg + reset
+        print(line)
+        return line
 
     def divider(self):
-        dash = "-"
-        if get_platform() == "Linux":
-            if sys.version_info[0] < 3:
-                dash = unichr(8213)  # noqa
-            else:
-                dash = chr(8213)
-        if get_platform() == "Mac":
-            if sys.version_info[0] < 3:
-                dash = unichr(8212)  # noqa
-            else:
-                dash = chr(8212)
-        if get_platform() == "Windows":  # CMD.exe
-            if sys.version_info[0] < 3:
-                dash = "-"
-            else:
-                dash = chr(8212)
-        if get_platform() == "WindowsGitBash":
-            if sys.version_info[0] < 3:
-                dash = "-"
-            else:
-                dash = "-"
-        self.say("DIV", dash * self.cmdbarwidth + dash + dash * (79 - 1 - self.cmdbarwidth))
+        dash = get_dash()
+        return self.say("DIV", dash * self.cmdbarwidth + dash + dash * (79 - 1 - self.cmdbarwidth))

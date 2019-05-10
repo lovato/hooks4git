@@ -25,14 +25,14 @@ def __path(filename):
 
 
 # Travis
-if os.getenv("TRAVIS_BUILD_NUMBER"):
+if os.getenv("TRAVIS_BUILD_NUMBER"):  # pragma: no cover
     file_ = open(__path("build.info"), "w")
     file_.write(os.getenv("TRAVIS_BUILD_NUMBER"))
     file_.close()
 
 __build__ = None
 if os.path.exists(__path("build.info")):
-    __build__ = open(__path("build.info")).read().strip()
+    __build__ = open(__path("build.info")).read().strip()  # pragma: no cover
 if __build__ is None:
     __build__ = "0"
 

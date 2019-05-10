@@ -67,7 +67,7 @@ def hook_it(path=os.environ["PWD"]):
     return True
 
 
-def execute(cmd, files, settings):
+def run_hook_cmd(cmd, files, settings):
     """
     Prepare system command.
     """
@@ -175,7 +175,7 @@ def main(cmd):
                 files = []
                 # files = get_changed_files()
                 command = scripts[hook[command_item]]
-                result = execute(command.split()[0], files, command.split()[1:])
+                result = run_hook_cmd(command.split()[0], files, command.split()[1:])
                 if result[0] != 0:
                     no_fails = False
                     display.say("FAIL", "'%s/%s' step failed to execute" % (command_item, hook[command_item]))  # noqa
