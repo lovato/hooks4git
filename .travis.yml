@@ -24,7 +24,6 @@ before_install:
 - pip install pipenv
 install:
 - sed -i 's/black = "\*"//g' Pipfile
-- pipenv install --dev
 - npm install
 before_script:
 - pip install .
