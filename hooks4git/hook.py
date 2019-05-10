@@ -29,7 +29,7 @@ def get_hooks_path(git_root_path):
             os.makedirs(hooks_path)
             Display.bareprint("Cool! '.git/hooks' folder was created.")
             return hooks_path
-        except:  # noqa
+        except:  # noqa # pragma: no cover
             return None
     else:
         return hooks_path
@@ -43,7 +43,7 @@ def hook_it(path=os.environ["PWD"]):
         git_path = os_call("git", "-C", path, "rev-parse", "--git-dir")[1].replace("\n", "")
         if git_path == ".git":
             git_path = os.path.join(path, git_path)
-    except:  # noqa
+    except:  # noqa # pragma: no cover
         git_path = None
 
     path = os.path.abspath(path)

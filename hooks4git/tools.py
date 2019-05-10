@@ -22,7 +22,9 @@ def os_call(*args, **kwargs):
     result_err = ""
     returncode = -1
     try:
-        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # nosec
+        proc = subprocess.Popen(
+            args, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )  # nosec
         out, err = proc.communicate()
         try:
             tmp_out = out.decode("utf-8")
@@ -59,20 +61,20 @@ def get_dash():
     dash = "-"
     if get_platform() == "Linux":
         if sys.version_info[0] < 3:
-            dash = unichr(8213)  # noqa
+            dash = unichr(8213)  # noqa # pragma: no cover
         else:
             dash = chr(8213)
-    if get_platform() == "Mac":
+    if get_platform() == "Mac":  # pragma: no cover
         if sys.version_info[0] < 3:
             dash = unichr(8212)  # noqa
         else:
             dash = chr(8212)
-    if get_platform() == "Windows":  # CMD.exe
+    if get_platform() == "Windows":  # CMD.exe # pragma: no cover
         if sys.version_info[0] < 3:
             dash = "-"
         else:
             dash = chr(8212)
-    if get_platform() == "WindowsGitBash":
+    if get_platform() == "WindowsGitBash":  # pragma: no cover
         if sys.version_info[0] < 3:
             dash = "-"
         else:
