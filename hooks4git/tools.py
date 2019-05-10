@@ -22,9 +22,7 @@ def os_call(*args, **kwargs):
     result_err = ""
     returncode = -1
     try:
-        proc = subprocess.Popen(
-            args, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        )  # nosec
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # nosec
         out, err = proc.communicate()
         try:
             tmp_out = out.decode("utf-8")
