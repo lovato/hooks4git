@@ -40,7 +40,9 @@ def os_call(*args, **kwargs):
     return returncode, result_out, result_err
 
 
-def get_platform(platform=sys.platform, environ=os.environ):
+def get_platform():
+    platform = sys.platform
+    environ = os.environ
     platforms = {
         "linux": "Linux",
         "linux1": "Linux",
