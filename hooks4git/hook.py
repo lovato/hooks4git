@@ -8,7 +8,6 @@ from hooks4git.tools import os_call, copy_file
 from hooks4git.console import Display
 
 steps_executed = 0
-start_time = datetime.datetime.now()
 display = None
 
 
@@ -190,15 +189,18 @@ def main(cmd):
         raise (e)
 
 
-def report():
+def report(start_time, display):
+    line1 = None
+    line2 = None
     if steps_executed > 0:
         end_time = datetime.datetime.now()
         if steps_executed > 1:
             to_be = "were"
         else:
             to_be = "was"
-        display.say("STEPS", "%s %s executed" % (steps_executed, to_be))
-        display.say("TIME", "Execution took " + str(end_time - start_time))
+        line1 = display.say("STEPS", "%s %s executed" % (steps_executed, to_be))
+        line2 = display.say("TIME", "Execution took " + str(end_time - start_time))
+    return line1, line2
 
 
 def run_trigger(cmd, ci=False):
@@ -206,14 +208,16 @@ def run_trigger(cmd, ci=False):
     global display
     display = Display(color_flag)
 
+    start_time = datetime.datetime.now()
+
     if main(cmd):
-        report()
+        report(start_time, display)
         if steps_executed > 0:
             display.say("PASS ", "All green! Good!")
             display.divider()
         sys.exit(0)
     else:
-        report()
+        report(start_time, display)
         display.say("FAIL ", "You have failed. One or more steps failed to execute.")
         display.divider()
         sys.exit(1)

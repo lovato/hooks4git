@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from colorama import init, Fore, Back, Style
 from hooks4git.tools import get_dash
+import sys
 
 
 class Display(object):
@@ -63,6 +64,7 @@ class Display(object):
             prefix = label.ljust(self.cmdbarwidth) + "|" + reset + color + " "
         line = style + color + bgcolor + prefix + reset + msg_style + msg_color + msg + reset
         print(line)
+        sys.stdout.flush()
         return line
 
     def divider(self):
