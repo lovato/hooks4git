@@ -44,8 +44,8 @@ def add_usersitepackages_to_path(binary):
     try:
         user_site = os_call(binary, "-m", "site", "--user-site")[1].replace("\n", "")
         sys.path.insert(0, user_site)
-        return True
-    except:  # noqa # nosec
+        return user_site
+    except:  # noqa # nosec # pragma: no cover
         return False
 
 
