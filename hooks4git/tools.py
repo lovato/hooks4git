@@ -22,9 +22,10 @@ def os_call(command):
     result_err = ""
     returncode = -1
     try:
-        proc = subprocess.Popen(
-            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, executable="/bin/bash"
-        )  # noqa # nosec
+        pipe1 = subprocess.PIPE
+        pipe2 = subprocess.PIPE
+        bash = "/bin/bash"
+        proc = subprocess.Popen(command, stdout=pipe1, stderr=pipe2, shell=True, executable=bash)  # noqa # nosec
         out, err = proc.communicate()
         try:
             tmp_out = out.decode("utf-8")
