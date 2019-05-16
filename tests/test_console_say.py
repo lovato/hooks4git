@@ -3,7 +3,7 @@ from tests import BaseTestCase
 from hooks4git.console import Display
 
 
-class DividerTestCase(BaseTestCase):
+class SayTestCase(BaseTestCase):
     def test_divider(self):
         d = Display()
         check = "CHECK"

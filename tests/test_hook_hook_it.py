@@ -4,7 +4,7 @@ from hooks4git.hook import hook_it
 import os
 
 
-class PreCommitTestCase(BaseTestCase):
+class HookHookItTestCase(BaseTestCase):
     def test_add_precommit_successfully(self):
         action = hook_it(BaseTestCase.tmp_valid_path)
         self.assertTrue(action)
