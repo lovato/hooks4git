@@ -14,7 +14,7 @@ def copy_file(src, dest):
         return False
 
 
-def os_call(*args, **kwargs):
+def os_call(command):
     """
     Run system command.
     """
@@ -22,7 +22,9 @@ def os_call(*args, **kwargs):
     result_err = ""
     returncode = -1
     try:
-        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)  # nosec
+        proc = subprocess.Popen(
+            command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, executable="/bin/bash"
+        )  # noqa # nosec
         out, err = proc.communicate()
         try:
             tmp_out = out.decode("utf-8")
@@ -35,14 +37,14 @@ def os_call(*args, **kwargs):
         except Exception as e:  # noqa # pragma: no cover
             result_err = str(err)
         returncode = proc.returncode
-    except Exception as e:  # noqa
-        err = str(e)
+    except Exception as e:  # noqa # pragma: no cover
+        result_err = str(e)
     return returncode, result_out, result_err
 
 
 def add_usersitepackages_to_path(binary):
     try:
-        user_site = os_call(binary, "-m", "site", "--user-site")[1].replace("\n", "")
+        user_site = os_call("%s -m site --user-site" % binary)[1].replace("\n", "")
         sys.path.insert(0, user_site)
         return user_site
     except:  # noqa # nosec # pragma: no cover

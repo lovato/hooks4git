@@ -6,6 +6,7 @@ import datetime
 from hooks4git import __version__
 from hooks4git.tools import os_call, copy_file, add_usersitepackages_to_path
 from hooks4git.console import Display
+import shlex
 
 steps_executed = 0
 display = None
@@ -38,8 +39,8 @@ def hook_it(path=os.environ["PWD"]):
     # setup_path = os.path.join(os_call('git', 'rev-parse', '--show-toplevel')[1].replace('\n', ''), 'hooks4git')
     setup_path = os.path.dirname(os.path.realpath(__file__))
     try:
-        path = os_call("git", "-C", path, "rev-parse", "--show-toplevel")[1].replace("\n", "")
-        git_path = os_call("git", "-C", path, "rev-parse", "--git-dir")[1].replace("\n", "")
+        path = os_call("git -C %s rev-parse --show-toplevel" % path)[1].replace("\n", "")
+        git_path = os_call("git -C %s rev-parse --git-dir" % path)[1].replace("\n", "")
         if git_path == ".git":
             git_path = os.path.join(path, git_path)
     except:  # noqa # pragma: no cover
@@ -54,7 +55,7 @@ def hook_it(path=os.environ["PWD"]):
         if os.path.isfile(target_config):
             target_config = target_config.replace(".ini", "-" + __version__ + ".ini")
         copy_file(origin_config, target_config)
-        files_to_copy = os_call("ls", os.path.join(setup_path, "git/hooks"))
+        files_to_copy = os_call("ls %s" % os.path.join(setup_path, "git/hooks"))
         for file in files_to_copy[1].split("\n"):
             if file not in ["__pycache__", "", "hooks4git.py"]:
                 src = os.path.join(setup_path, "git/hooks", file)
@@ -66,11 +67,13 @@ def hook_it(path=os.environ["PWD"]):
     return True
 
 
-def run_hook_cmd(cmd, files, settings):
+def run_hook_cmd(command, files):
     """
     Prepare system command.
     """
-    args = settings[:]
+    splited_args = shlex.split(command)
+    cmd = splited_args[0]
+    args = splited_args[1:]
     builtin_path = ""
 
     # backward compatibility to 0.1.x
@@ -81,10 +84,14 @@ def run_hook_cmd(cmd, files, settings):
     if cmd[0:8] == "scripts/":
         cmd = "h4g/" + cmd[8:]
         display.say("WARN", "Please upgrade your ini file to call built in scripts prefixed by 'h4g/'")
+    # backward compatibility to 0.3.x
+    if cmd[0:21] == "h4g/check_branch_name":
+        _command = shlex.split(command)
+        command = _command[0] + ' "' + _command[1] + '"'
     # end
 
     cmd_list = cmd.split("/")
-    git_root = os_call("git", "rev-parse", "--show-toplevel")[1].replace("\n", "")
+    git_root = os_call("git rev-parse --show-toplevel")[1].replace("\n", "")
     if cmd_list[0] == "h4g":
         sys.path.insert(0, git_root)
         add_usersitepackages_to_path("python")
@@ -97,18 +104,7 @@ def run_hook_cmd(cmd, files, settings):
                 cmd = os.path.join(builtin_path, cmd_list[1])
                 break
 
-    args.insert(0, cmd)
-
-    display_args = args[1:]
-
-    if builtin_path == "":
-        display_cmd = args[0]
-    else:
-        display_cmd = args[0].replace(builtin_path, "h4g").replace("\\", "/")
-        args.insert(0, "bash")
-
-    display_message = "%s %s" % (display_cmd, " ".join(display_args))
-
+    display_message = "%s" % (command)
     if cmd == "echo":
         if files:
             _arg = "--filename=%s" % ",".join(files)
@@ -116,8 +112,7 @@ def run_hook_cmd(cmd, files, settings):
             display_message += " " + _arg.replace(git_root, ".")[: (66 - len(display_message))] + "..."
 
     display.say("STEP", "$ %s" % display_message)
-
-    code, result, err = os_call(*args)
+    code, result, err = os_call("%s %s" % (cmd, command.split(" ", 1)[1]))
     result = result.strip().replace("\n", "\n".ljust(display.cmdbarwidth + 1) + "| ")
     err = err.strip().replace("\n", "\n".ljust(display.cmdbarwidth + 1) + "| ")
     if len(result) > 0:
@@ -128,7 +123,7 @@ def run_hook_cmd(cmd, files, settings):
 
 
 def main(cmd):
-    git_root = os_call("git", "rev-parse", "--show-toplevel")[1].replace("\n", "")
+    git_root = os_call("git rev-parse --show-toplevel")[1].replace("\n", "")
     configfile = "%s/.hooks4git.ini" % git_root
     config = configparser.ConfigParser()
     cfg = {}
@@ -162,7 +157,7 @@ def main(cmd):
                 files = []
                 # files = get_changed_files()
                 command = scripts[hook[command_item]]
-                result = run_hook_cmd(command.split()[0], files, command.split()[1:])
+                result = run_hook_cmd(command, files)
                 if result[0] != 0:
                     no_fails = False
                     display.say("FAIL", "'%s/%s' step failed to execute" % (command_item, hook[command_item]))  # noqa
