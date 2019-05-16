@@ -8,7 +8,6 @@ class GetPlatformTestCase(BaseTestCase):
     @mock.patch("sys.platform", "FakeOS")
     def test_get_platform_invalid(self):
         platform = get_platform()
-        print(platform)
         self.assertTrue(platform == "FakeOS")
 
     @mock.patch("sys.platform", "linux")

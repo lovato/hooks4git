@@ -40,6 +40,15 @@ def os_call(*args, **kwargs):
     return returncode, result_out, result_err
 
 
+def add_usersitepackages_to_path(binary):
+    try:
+        user_site = os_call(binary, "-m", "site", "--user-site")[1].replace("\n", "")
+        sys.path.insert(0, user_site)
+        return True
+    except:  # noqa # nosec
+        return False
+
+
 def get_platform():
     platform = sys.platform
     environ = os.environ

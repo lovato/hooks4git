@@ -4,7 +4,7 @@ import sys
 import configparser
 import datetime
 from hooks4git import __version__
-from hooks4git.tools import os_call, copy_file
+from hooks4git.tools import os_call, copy_file, add_usersitepackages_to_path
 from hooks4git.console import Display
 
 steps_executed = 0
@@ -87,21 +87,9 @@ def run_hook_cmd(cmd, files, settings):
     git_root = os_call("git", "rev-parse", "--show-toplevel")[1].replace("\n", "")
     if cmd_list[0] == "h4g":
         sys.path.insert(0, git_root)
-        try:
-            user_site = os_call("python", "-m", "site", "--user-site")[1].replace("\n", "")
-            sys.path.insert(0, user_site)
-        except:  # noqa # nosec
-            pass
-        try:
-            user_site2 = os_call("python2", "-m", "site", "--user-site")[1].replace("\n", "")
-            sys.path.insert(0, user_site2)
-        except:  # noqa # nosec
-            pass
-        try:
-            user_site3 = os_call("python3", "-m", "site", "--user-site")[1].replace("\n", "")
-            sys.path.insert(0, user_site3)
-        except:  # noqa # nosec
-            pass
+        add_usersitepackages_to_path("python")
+        add_usersitepackages_to_path("python2")
+        add_usersitepackages_to_path("python3")
         for path in sys.path:
             builtin_path = os.path.realpath(path + "/hooks4git/h4g/")
             _cmd = os.path.realpath(os.path.join(builtin_path, cmd_list[1]))
