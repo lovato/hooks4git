@@ -152,10 +152,8 @@ If you are willing to code something on this project, it is quite simple. You fi
 ```bash
 > git clone git@github.com:<super_cool_developer>/hooks4git.git
 > cd hooks4git
-> mkvirtualenv hooks4git -p python3  # or any way to to that
-> pip install -r requirements.txt  # yes, pipenv is close
-> pip install -r requirements-dev.txt
-> pip uninstall hooks4git  # just in case
+> pipenv install --dev
+> pip uninstall hooks4git  # just in case, it may fail
 > pip install -e . --user
 > hooks4git --init  # OF COURSE!!!
 > git checkout -b feature/super_cool_feature
@@ -177,6 +175,11 @@ See list of [contributors](../../graphs/contributors) who participated in this p
 - [Collins Abitekaniza](https://github.com/collin5/precommit-hook) (where I forked from)
 
 ## Change Log
+
+### 0.4.x
+
+- Major rework on classes and dependencies usage
+- Added more tests
 
 ### 0.3.x
 

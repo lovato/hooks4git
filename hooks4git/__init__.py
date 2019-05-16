@@ -6,20 +6,18 @@ import logging
 import getpass
 import tempfile
 
-__version__ = '0.3'
-__author__ = 'Marco Lovato'
-__author_username__ = 'lovato'
-__author_email__ = 'maglovato@gmail.com'
-__description__ = 'Extensible Hook System for GIT'
+__version__ = "0.4"
+__author__ = "Marco Lovato"
+__author_username__ = "lovato"
+__author_email__ = "maglovato@gmail.com"
+__description__ = "Extensible Hook System for GIT"
 
-log_filename = os.path.join(tempfile.gettempdir(),
-                            'hooks4git-' + getpass.getuser() + '.log')
+log_filename = os.path.join(tempfile.gettempdir(), "hooks4git-" + getpass.getuser() + ".log")
 
 log = logging
-log.basicConfig(level=logging.DEBUG,
-                format='%(asctime)s %(levelname)s %(message)s',
-                filename=log_filename,
-                filemode='a')
+log.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s %(levelname)s %(message)s", filename=log_filename, filemode="a"
+)
 
 
 def __path(filename):
@@ -27,15 +25,15 @@ def __path(filename):
 
 
 # Travis
-if os.getenv("TRAVIS_BUILD_NUMBER"):
-    file_ = open(__path('build.info'), 'w')
+if os.getenv("TRAVIS_BUILD_NUMBER"):  # pragma: no cover
+    file_ = open(__path("build.info"), "w")
     file_.write(os.getenv("TRAVIS_BUILD_NUMBER"))
     file_.close()
 
 __build__ = None
-if os.path.exists(__path('build.info')):
-    __build__ = open(__path('build.info')).read().strip()
+if os.path.exists(__path("build.info")):
+    __build__ = open(__path("build.info")).read().strip()  # pragma: no cover
 if __build__ is None:
     __build__ = "0"
 
-__version__ = __version__ + '.' + __build__
+__version__ = __version__ + "." + __build__
