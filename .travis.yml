@@ -31,12 +31,12 @@ matrix:
       python: 3.6           # this works for Linux but is ignored on macOS or Windows
       before_install:
         - pip3 install -U pip pipenv
-    - name: "Python 3.7.1 on Xenial Linux"
+    - name: "Python 3.7 on Linux"
       python: 3.7           # this works for Linux but is ignored on macOS or Windows
       dist: xenial          # required for Python >= 3.7
       before_install:
         - pip3 install -U pip pipenv
-    - name: "Python 3.7.2 on macOS"
+    - name: "Python 3.7 on macOS"
       os: osx
       osx_image: xcode10.2  # Python 3.7.2 running on macOS 10.14.3
       before_install:
@@ -51,8 +51,9 @@ matrix:
       env: "PATH=/c/Progra~1/nodejs:/c/Python37:/c/Python37/Scripts:$PATH"
 # before_install: pip3 install -U pip pipenv
 install:
-- python --version
-# - python3 --version
+- python --version || true
+- python2 --version || true
+- python3 --version || true
 - npm install
 before_script:
 - pip3 install .
