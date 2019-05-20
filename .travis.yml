@@ -49,6 +49,7 @@ matrix:
         - cp $(which python) /c/python3
         - pip3 install -U pip pipenv --user
         - pip3 install . --user
+        - ls -lasR /c/Users/travis/AppData/Roaming/Python/Python37/Scripts
         - pwd
 # before_install: pip3 install -U pip pipenv
 install:
@@ -62,7 +63,7 @@ script:
 - pwd
 - ls -las
 - git rev-parse --show-toplevel
-- hooks4git -t ci
+- hooks4git -t ci --ci
 after_success:
 - coveralls
 deploy:
