@@ -127,7 +127,6 @@ def main(cmd):
     if len(git_root) == 0:
         git_root = "."
     configfile = "%s/.hooks4git.ini" % git_root
-    print(configfile)
     config = configparser.ConfigParser()
     cfg = {}
     exception_message = ""
