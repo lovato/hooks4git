@@ -12,7 +12,7 @@ addons:
     update: true
     packages:
     - node
-    - python3
+    - python
     # - gnu-sed
   # choco:
   #   update: true
@@ -43,6 +43,7 @@ matrix:
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 # before_install: pip3 install -U pip pipenv
 install:
+- python --version
 # - sed -i 's/black = "\*"//g' Pipfile
 - npm install
 before_script:
