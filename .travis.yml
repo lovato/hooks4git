@@ -49,6 +49,7 @@ matrix:
         - cp $(which python) /c/python3
         - pip3 install -U pip pipenv --user
         - pip3 install . --user
+        - pwd
 # before_install: pip3 install -U pip pipenv
 install:
 - npm install
@@ -59,6 +60,7 @@ script:
 - which hooks4git
 - hooks4git -h
 - pwd
+- ls -las
 - hooks4git -t ci
 after_success:
 - coveralls
