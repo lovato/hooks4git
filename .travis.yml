@@ -38,13 +38,13 @@ addons:
     - python3 --version 3.6.5
     # - sed
 before_install:
-- pip install -U pip
-- pip install pipenv
+- pip3 install -U pip
+- pip3 install pipenv
 install:
 # - sed -i 's/black = "\*"//g' Pipfile
 - npm install
 before_script:
-- pip install .
+- pip3 install .
 script:
 - hooks4git -t ci
 after_success:
