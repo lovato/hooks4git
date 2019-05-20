@@ -25,6 +25,7 @@ matrix:
     - name: "Python 3.5 on Linux"
       python: 3.5           # this works for Linux but is ignored on macOS or Windows
       before_install:
+        - sed -i 's/black = "\*"//g' Pipfile
         - pip3 install -U pip pipenv
     - name: "Python 3.6 on Linux"
       python: 3.6           # this works for Linux but is ignored on macOS or Windows
@@ -46,13 +47,12 @@ matrix:
       language: shell       # 'language: python' is an error on Travis CI Windows
       before_install:
         - choco install python nodejs
-        - pip install -U pip pipenv
+        - pip install -U pip pipenv --user
       env: "PATH=/c/Progra~1/nodejs:/c/Python37:/c/Python37/Scripts:$PATH"
 # before_install: pip3 install -U pip pipenv
 install:
 - python --version
 # - python3 --version
-# - sed -i 's/black = "\*"//g' Pipfile
 - npm install
 before_script:
 - pip3 install .
