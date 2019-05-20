@@ -14,12 +14,6 @@ addons:
     - node
     - python3
     # - gnu-sed
-  # choco:
-  #   update: true
-  #   packages:
-  #   - nodejs
-  #   - python3 --version 3.6.5
-    # - sed
 matrix:
   include:
     - name: "Python 3.5.6 on Linux"
@@ -27,20 +21,24 @@ matrix:
       before_install:
         - sed -i 's/black = "\*"//g' Pipfile
         - pip3 install -U pip pipenv
+        - pip3 install .
     - name: "Python 3.6.3 on Linux"
       python: 3.6           # this works for Linux but is ignored on macOS or Windows
       before_install:
         - pip3 install -U pip pipenv
+        - pip3 install .
     - name: "Python 3.7.1 on Linux"
       python: 3.7           # this works for Linux but is ignored on macOS or Windows
       dist: xenial          # required for Python >= 3.7
       before_install:
         - pip3 install -U pip pipenv
+        - pip3 install .
     - name: "Python 3.7.3 on macOS"
       os: osx
       osx_image: xcode10.2  # Python 3.7.2 running on macOS 10.14.3
       before_install:
         - pip3 install -U pip pipenv
+        - pip3 install .
       language: shell       # 'language: python' is an error on Travis CI macOS
     - name: "Python 3.7.3 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
@@ -48,16 +46,15 @@ matrix:
       before_install:
         - choco install python nodejs
         - pip install -U pip pipenv --user
+        - pip3 install . --user
       env: "PATH=/c/Progra~1/nodejs:/c/Python37:/c/Python37/Scripts:$PATH"
 # before_install: pip3 install -U pip pipenv
 install:
+- npm install
+script:
 - python --version || true
 - python2 --version || true
 - python3 --version || true
-- npm install
-before_script:
-- pip3 install . --user
-script:
 - hooks4git -t ci
 after_success:
 - coveralls
