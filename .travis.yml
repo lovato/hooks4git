@@ -46,7 +46,6 @@ matrix:
       env: "PATH=/c:/c/Python37:/c/Python37/Scripts:/c/Users/travis/AppData/Roaming/Python/Python37/Scripts:/c/Progra~1/nodejs:$PATH"
       before_install:
         - choco install python nodejs
-        - which python
         - cp $(which python) /c/python3
         - pip3 install -U pip pipenv --user
         - pip3 install . --user
@@ -59,6 +58,7 @@ script:
 - python3 --version || true
 - which hooks4git
 - hooks4git -h
+- pwd
 - hooks4git -t ci
 after_success:
 - coveralls
