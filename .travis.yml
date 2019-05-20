@@ -22,29 +22,36 @@ addons:
     # - sed
 matrix:
   include:
-    # - name: "Python 3.5 on Linux"
-    #   python: 3.5           # this works for Linux but is ignored on macOS or Windows
+    - name: "Python 3.5 on Linux"
+      python: 3.5           # this works for Linux but is ignored on macOS or Windows
+      before_install:
+        - pip3 install -U pip pipenv
     - name: "Python 3.6 on Linux"
       python: 3.6           # this works for Linux but is ignored on macOS or Windows
-      before_install: pip3 install -U pip pipenv
+      before_install:
+        - pip3 install -U pip pipenv
     - name: "Python 3.7.1 on Xenial Linux"
       python: 3.7           # this works for Linux but is ignored on macOS or Windows
       dist: xenial          # required for Python >= 3.7
-      before_install: pip3 install -U pip pipenv
+      before_install:
+        - pip3 install -U pip pipenv
     - name: "Python 3.7.2 on macOS"
       os: osx
       osx_image: xcode10.2  # Python 3.7.2 running on macOS 10.14.3
-      before_install: pip3 install -U pip pipenv
+      before_install:
+        - pip3 install -U pip pipenv
       language: shell       # 'language: python' is an error on Travis CI macOS
     - name: "Python 3.6 on Windows"
       os: windows           # Windows 10.0.17134 N/A Build 17134
       language: shell       # 'language: python' is an error on Travis CI Windows
-      before_install: choco install python nodejs
+      before_install:
+        - choco install python nodejs
+        - pip install -U pip pipenv
       env: "PATH=/c/Progra~1/nodejs:/c/Python37:/c/Python37/Scripts:$PATH"
 # before_install: pip3 install -U pip pipenv
 install:
 - python --version
-- python3 --version
+# - python3 --version
 # - sed -i 's/black = "\*"//g' Pipfile
 - npm install
 before_script:
