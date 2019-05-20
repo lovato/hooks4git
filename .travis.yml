@@ -46,8 +46,8 @@ matrix:
       env: "PATH=/c/Progra~1/nodejs:/c/Python37:/c/Python37/Scripts:/c/Users/travis/AppData/Roaming/Python/Python37/Scripts:$PATH"
       before_install:
         - choco install python nodejs
-        - pip3 install -U pip pipenv
-        - pip3 install .
+        - pip3 install -U pip pipenv --user
+        - pip3 install . --user
 # before_install: pip3 install -U pip pipenv
 install:
 - npm install
