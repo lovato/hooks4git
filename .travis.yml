@@ -47,7 +47,7 @@ matrix:
       before_install:
         - choco install python nodejs
         - $(which python)
-        - copy $(which python) /c/python3
+        - cp $(which python) /c/python3
         - pip3 install -U pip pipenv --user
         - pip3 install . --user
 # before_install: pip3 install -U pip pipenv
