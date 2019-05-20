@@ -124,7 +124,10 @@ def run_hook_cmd(command, files):
 
 def main(cmd):
     git_root = os_call("git rev-parse --show-toplevel")[1].replace("\n", "")
+    if len(git_root) == 0:
+        git_root = "."
     configfile = "%s/.hooks4git.ini" % git_root
+    print(configfile)
     config = configparser.ConfigParser()
     cfg = {}
     exception_message = ""

@@ -61,6 +61,7 @@ script:
 - hooks4git -h
 - pwd
 - ls -las
+- git rev-parse --show-toplevel
 - hooks4git -t ci
 after_success:
 - coveralls
