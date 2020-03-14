@@ -47,7 +47,7 @@ Please note you need to manually keep upgrading your system tools, like you do f
 Those are currently built-in scripts, some implemented, some planned:
 
 - `check_branch_name`: Written in bash, receives a regex as parameter to match your branch name.
-- `get_stageg_files`: Written in Python, will fix Issue#21 ... perhaps. It is still under testing.
+- `get_staged_files`: Written in Python, will fix Issue#21 ... perhaps. It is still under testing.
 - `print_leftovers`: Planned, to find print statements. A few can be legit, so a little planning is required here.
 
 If you want to use, just follow the exemple on the default .ini file, on sub-section 'checkbranch'. This is the way to trigger built-in scripts, prefixing them with 'h4g/'. Make sure you wrap parameters properly with double quotes.
