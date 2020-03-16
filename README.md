@@ -2,9 +2,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/lovato/hooks4git.svg?branch=master)](https://travis-ci.org/lovato/hooks4git)
-[![Coverage Status](https://coveralls.io/repos/github/lovato/hooks4git/badge.svg?branch=master)](https://coveralls.io/github/lovato/hooks4git?branch=master)
+![Travis (.org) branch](https://img.shields.io/travis/lovato/hooks4git/develop.svg?label=build%20develop)
+[![Coverage Status](https://coveralls.io/repos/github/lovato/hooks4git/badge.svg?branch=master&label=2)](https://coveralls.io/github/lovato/hooks4git?branch=master)
+![Coveralls github](https://img.shields.io/coveralls/github/lovato/hooks4git/develop.svg?color=red&label=coverage%20develop)
 [![PyPI version](https://badge.fury.io/py/hooks4git.svg)](https://badge.fury.io/py/hooks4git)
-
 [![asciicast](https://asciinema.org/a/197368.png)](https://asciinema.org/a/197368)
 
 A fully configurable and extensible language-agnostic Hook Management System for GIT
@@ -43,9 +44,15 @@ Please note you need to manually keep upgrading your system tools, like you do f
 
 ### Built-in Scripts
 
-Currently, there is only one available built-in script, called `check_branch_name.sh`. If you want to use, just follow the exemple on the default .ini file, on sub-section 'checkbranch'. This is the way to trigger built-in scripts, prefixing them with 'h4g/'.
+Those are currently built-in scripts, some implemented, some planned:
 
-On 0.1 release, I was using a wildcard character for built-in scripts, but that caused so many headaches, mainly when trying to make this work inside GitBash for windows (ok, that was because I was actually trying to call a bat file ... then I just gave it up). I also tried once calling 'scripts', but it may confuse with a possible local 'scripts' folder on your project.
+- `check_branch_name`: Written in bash, receives a regex as parameter to match your branch name.
+- `get_staged_files`: Written in Python, will fix Issue#21 ... perhaps. It is still under testing.
+- `print_leftovers`: Planned, to find print statements. A few can be legit, so a little planning is required here.
+
+If you want to use, just follow the exemple on the default .ini file, on sub-section 'checkbranch'. This is the way to trigger built-in scripts, prefixing them with 'h4g/'. Make sure you wrap parameters properly with double quotes.
+
+What else do you hate people often push to the repo? Have an idea? Open an issue and let's talk about it. Those IDE .ini files? Yeah, I hate that too.
 
 ### CLI Usage
 
@@ -133,7 +140,7 @@ Here is a sample output for a Python configuration, with Flake8 (black and white
 
 ```bash
 ———————————————————————————————————————————————————————————————————————————————
-hooks4git v0.3.x :: Pre-Commit :: hook triggered
+hooks4git v0.4.x :: Pre-Commit :: hook triggered
 ———————————————————————————————————————————————————————————————————————————————
 STEP | $ flake8 --max-line-length=119 --exclude .git,__pycache__,build,dist
 OUT  | None
@@ -152,10 +159,8 @@ If you are willing to code something on this project, it is quite simple. You fi
 ```bash
 > git clone git@github.com:<super_cool_developer>/hooks4git.git
 > cd hooks4git
-> mkvirtualenv hooks4git -p python3  # or any way to to that
-> pip install -r requirements.txt  # yes, pipenv is close
-> pip install -r requirements-dev.txt
-> pip uninstall hooks4git  # just in case
+> pipenv install --dev
+> pip uninstall hooks4git  # just in case, it may fail
 > pip install -e . --user
 > hooks4git --init  # OF COURSE!!!
 > git checkout -b feature/super_cool_feature
@@ -177,6 +182,14 @@ See list of [contributors](../../graphs/contributors) who participated in this p
 - [Collins Abitekaniza](https://github.com/collin5/precommit-hook) (where I forked from)
 
 ## Change Log
+
+### 0.4.x
+
+- Major rework on classes and dependencies usage
+- Added more tests
+- Fixed Issue#57 - Subprocess Call Error
+- Fixed Issue#54 - Pipenv usage
+- Fixed Issue#47 - Colorama usage
 
 ### 0.3.x
 

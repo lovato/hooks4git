@@ -3,7 +3,7 @@ os:
 - linux
 # - osx
 python:
-- '2.7'
+# - '2.7' due to configparser problem
 - '3.5'
 - '3.6'
 # - '3.7'
@@ -21,11 +21,9 @@ addons:
     packages:
     - node
 before_install:
-- curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-- python get-pip.py
+- pip install pipenv
 install:
-- pip install -r requirements.txt
-- pip install -r requirements-dev.txt
+- sed -i 's/black = "\*"//g' Pipfile
 - npm install
 before_script:
 - pip install .

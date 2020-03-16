@@ -1,11 +1,13 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 from tests import BaseTestCase
-from hooks4git.scripts import get_hooks_path
+from hooks4git.hook import get_hooks_path
 
 
 class HooksFolderTestCase(BaseTestCase):
+    def test_get_hooks_path_empty(self):
+        path = get_hooks_path(None)
+        self.assertTrue(path is None)
+
     def test_get_hooks_path_missing_folder(self):
         path = get_hooks_path("/tmp")
         self.assertTrue(path is None)
