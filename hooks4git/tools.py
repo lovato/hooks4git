@@ -24,7 +24,7 @@ def os_call(command):
     try:
         pipe1 = subprocess.PIPE
         pipe2 = subprocess.PIPE
-        bash = "/bin/bash"
+        bash = None if "Windows" in get_platform() else "/bin/bash"
         proc = subprocess.Popen(command, stdout=pipe1, stderr=pipe2, shell=True, executable=bash)  # noqa # nosec
         out, err = proc.communicate()
         try:

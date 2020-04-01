@@ -17,7 +17,7 @@ def get_hooks_path(git_root_path):
         msg = "I am afraid I can't to that. You are not inside a GIT repo. Reach one and re-run this tool."
         Display.bareprint(msg)
         return None
-    if git_root_path.endswith("/.git") is False:
+    if git_root_path.replace("\\", "/").endswith("/.git") is False:
         msg = "Humm, this is odd. Your GIT repo must have a .git folder. Looks like you are not inside a GIT repo."
         Display.bareprint(msg)
         return None
