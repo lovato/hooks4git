@@ -18,14 +18,24 @@ def os_call(command):
     """
     Run system command.
     """
+    command = command.strip()
     result_out = ""
     result_err = ""
     returncode = -1
     try:
         pipe1 = subprocess.PIPE
         pipe2 = subprocess.PIPE
-        bash = None if "Windows" in get_platform() else "/bin/bash"
-        proc = subprocess.Popen(command, stdout=pipe1, stderr=pipe2, shell=True, executable=bash)  # noqa # nosec
+        bash = "/bin/bash"
+        shell = True
+
+        if "Windows" in get_platform():
+            bash = None
+            shell = False
+            if "h4g" in command:
+                command = "/" + command[0].lower() + command[2:].replace(":\\", "/").replace("\\", "/")  # noqa
+                command = 'c:\\Program Files\\Git\\bin\\bash.exe -c "' + command + '"'  # noqa
+
+        proc = subprocess.Popen(command, stdout=pipe1, stderr=pipe2, shell=shell, executable=bash)  # noqa # nosec
         out, err = proc.communicate()
         try:
             tmp_out = out.decode("utf-8")
