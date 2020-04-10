@@ -117,7 +117,7 @@ def run_hook_cmd(command, files):
     params = ""
     try:
         params = command.split(" ", 1)[1]
-    except:  # noqa
+    except:  # noqa # nosec
         pass
     code, result, err = os_call("%s %s" % (cmd, params))
     result = result.strip().replace("\n", "\n".ljust(display.cmdbarwidth + 1) + "| ")
