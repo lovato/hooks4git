@@ -4,7 +4,7 @@ import sys
 import configparser
 import datetime
 from hooks4git import __version__
-from hooks4git.tools import os_call, copy_file, add_usersitepackages_to_path
+from hooks4git.tools import os_call, copy_file, add_usersitepackages_to_path, get_platform
 from hooks4git.console import Display
 import shlex
 
@@ -87,7 +87,10 @@ def run_hook_cmd(command, files):
     # backward compatibility to 0.3.x
     if cmd[0:21] == "h4g/check_branch_name":
         _command = shlex.split(command)
-        command = _command[0] + ' "' + _command[1] + '"'
+        command = _command[0]
+        if "Windows" not in get_platform():
+            if len(_command) > 1:
+                command = command + ' "' + _command[1] + '"'
     # end
 
     cmd_list = cmd.split("/")
@@ -112,7 +115,12 @@ def run_hook_cmd(command, files):
             display_message += " " + _arg.replace(git_root, ".")[: (66 - len(display_message))] + "..."
 
     display.say("STEP", "$ %s" % display_message)
-    code, result, err = os_call("%s %s" % (cmd, command.split(" ", 1)[1]))
+    params = ""
+    try:
+        params = command.split(" ", 1)[1]
+    except:  # noqa # nosec
+        pass
+    code, result, err = os_call("%s %s" % (cmd, params))
     result = result.strip().replace("\n", "\n".ljust(display.cmdbarwidth + 1) + "| ")
     err = err.strip().replace("\n", "\n".ljust(display.cmdbarwidth + 1) + "| ")
     if len(result) > 0:
