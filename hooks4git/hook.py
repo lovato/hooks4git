@@ -4,7 +4,7 @@ import sys
 import configparser
 import datetime
 from hooks4git import __version__
-from hooks4git.tools import os_call, copy_file, add_usersitepackages_to_path
+from hooks4git.tools import os_call, copy_file, add_usersitepackages_to_path, get_platform
 from hooks4git.console import Display
 import shlex
 
@@ -88,8 +88,9 @@ def run_hook_cmd(command, files):
     if cmd[0:21] == "h4g/check_branch_name":
         _command = shlex.split(command)
         command = _command[0]
-        if len(_command) > 1:
-            command = command + ' "' + _command[1] + '"'
+        if "Windows" not in get_platform():
+            if len(_command) > 1:
+                command = command + ' "' + _command[1] + '"'
     # end
 
     cmd_list = cmd.split("/")
